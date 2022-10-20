@@ -1,11 +1,12 @@
+import os
 from pathlib import Path
 from scipy.io import wavfile
 import dawdreamer as daw
-
+from setup import check_and_update_plugin_paths
 
 class MyEngine(daw.RenderEngine):
 
-    def create_structure_from_dirs(self, folder: Path, plug_paths: dict) -> list:
+    def create_structure_from_dirs(self, folder: Path, ) -> list:
         """
         Creates the structure of the track by the folders and presets. Loads required plugins into the engine.
         """
@@ -21,10 +22,10 @@ class MyEngine(daw.RenderEngine):
                     continue
                 position, plugin = file.name.split('.')[0].split('_')  # the name of preset contains it
                 name = plugin + '_' + track.name
-                setattr(self, name, self.make_plugin_processor(name, plug_paths.get(plugin)))  # create the processor
+                path_to_plugin = os.environ.get(plugin.upper())
+                setattr(self, name, self.make_plugin_processor(name, path_to_plugin))  # create the processor
                 # if file.name.endswith('vst3'):
                 #     getattr(self, name).load_vst3_preset(str(file))
-                #     print(str(file))
                 #     getattr(self, name).open_editor()
                 getattr(self, name).load_preset(str(file))  # load preset into previously created plugin processor
                 if int(position) is 0:  # we suppose, that synth is on the 0-th position of the folder
@@ -48,17 +49,12 @@ def main():
     # Parameters of the engine
     sample_rate = 44100
     buffer_size = 128
+    plugin_environment_variables = ['SERUM', 'VALHALLAFREQ', 'VALHALLASUPER', ]
+    check_and_update_plugin_paths(plugin_environment_variables)
     directory = Path('demo')  # the path to the track files
-    # total paths for the plugins, which we are going to use
-    plugin_paths = {'serum': r'C:\Program Files\vstplugins\Serum_x64.dll',
-                    'valhallafreq': r'C:\vstplugins\ValhallaFreqEcho_x64.dll',
-                    'valhallasuper': r'C:\Program Files\Common Files\VST2\ValhallaSupermassive_x64.dll',
-                    'smart': r'C:\Program Files\Common Files\VST3\smartcomp2.vst3'
-                    }
-
     # https://dirt.design/DawDreamer/
     engine = MyEngine(sample_rate, buffer_size)  # create dawdreamer engine
-    graph = engine.create_structure_from_dirs(directory, plugin_paths)
+    graph = engine.create_structure_from_dirs(directory, )
     engine.load_graph(graph)
     engine.render(100)
     audio = engine.get_audio()
