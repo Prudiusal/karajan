@@ -1,8 +1,11 @@
 import os
 from pathlib import Path
+
 from scipy.io import wavfile
 import dawdreamer as daw
-from setup import check_and_update_plugin_paths
+
+import settings as cfg
+
 
 class MyEngine(daw.RenderEngine):
 
@@ -22,13 +25,13 @@ class MyEngine(daw.RenderEngine):
                     continue
                 position, plugin = file.name.split('.')[0].split('_')  # the name of preset contains it
                 name = plugin + '_' + track.name
-                path_to_plugin = os.environ.get(plugin.upper())
+                path_to_plugin = os.environ.get(f'{plugin.upper()}_PATH')
                 setattr(self, name, self.make_plugin_processor(name, path_to_plugin))  # create the processor
                 # if file.name.endswith('vst3'):
                 #     getattr(self, name).load_vst3_preset(str(file))
                 #     getattr(self, name).open_editor()
                 getattr(self, name).load_preset(str(file))  # load preset into previously created plugin processor
-                if int(position) is 0:  # we suppose, that synth is on the 0-th position of the folder
+                if int(position) == 0:  # we suppose, that synth is on the 0-th position of the folder
                     midi_player_plugin = name  # if the midi file will be found, is will be loaded into this processor
                     graph.append((getattr(self, name), []))  # add the new track into the graph
                 else:
@@ -47,19 +50,15 @@ def main():
     into this folder.
     """
     # Parameters of the engine
-    sample_rate = 44100
-    buffer_size = 128
-    plugin_environment_variables = ['SERUM', 'VALHALLAFREQ', 'VALHALLASUPER', ]
-    check_and_update_plugin_paths(plugin_environment_variables)
     directory = Path('demo')  # the path to the track files
     # https://dirt.design/DawDreamer/
-    engine = MyEngine(sample_rate, buffer_size)  # create dawdreamer engine
-    graph = engine.create_structure_from_dirs(directory, )
+    engine = MyEngine(cfg.SAMPLE_RATE, cfg.BUFFER_SIZE)  # create dawdreamer engine
+    graph = engine.create_structure_from_dirs(directory)
     engine.load_graph(graph)
     engine.render(100)
     audio = engine.get_audio()
     save_path = directory / 'demo1.wav'
-    wavfile.write(save_path, sample_rate, audio.transpose())
+    wavfile.write(save_path, cfg.SAMPLE_RATE, audio.transpose())
 
 
 if __name__ == '__main__':

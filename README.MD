@@ -1,14 +1,18 @@
 This is an example of the use of dawdreamer to create the sound with different plugins.
 
-You have to:
-    - python 3.7 or later
-    - DawDreamer module ('pip install dawdreamer');
-    - tkinter.
+### How to run:
 
-If your system is not Windows, you have to wait for the repo update.
+1. Crete .env file by running the following command:
+```shell
+cat deploy/.env.example > .env
+```
+adjust the .env file; specify the paths to the plugins
 
-During the first run, the system will ask for the plugins paths and record them 
-in the 'env.csv' file of project folder.
+2. Install required dependencies and run the app:
+```shell
+pipenv install
+pipenv run python testVST.py
+```
 
 The 'demo' folder contains the folders for each channel of the track structure:
     - plugin preset name pattern '{position}_{plugin_name}.fxb';
@@ -16,4 +20,4 @@ The 'demo' folder contains the folders for each channel of the track structure:
     - processing sequence is defined by the digits in the start of plugin name;
     - '.mid' file is processed by the plugin, which name starts on '0_'.
 
-Have a fun!
+Have fun!
