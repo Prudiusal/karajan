@@ -53,3 +53,5 @@ venv/
 
 # Paths for of the plugins
 env.csv
+
+.vs
