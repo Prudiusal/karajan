@@ -55,6 +55,7 @@ venv/
 env.csv
 
 .vs
-.wav
-.was.asd
+*.wav
+*.was.asd
 /env
+
