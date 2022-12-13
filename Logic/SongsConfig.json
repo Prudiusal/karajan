@@ -1,0 +1,25 @@
+{
+  "OutputPath": "C:/repo/sshkeys/karajan/WAVs/",
+  "BPM": "120.",
+  "SongLengthInSeconds":  100,
+  "HousetrackDemo": [
+    {
+      "synthPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+      "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp",
+      "midiPath": "C:/repo/sshkeys/karajan/Resources/MIDI/Minimal Steady Drive.mid"
+    },
+    {
+      "synthPath": "C:/Program Files/Steinberg/VSTPlugins/Serum_x64.dll",
+      "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/1_Serum.fxp",
+      "midiPath": "C:/repo/sshkeys/karajan/Resources/MIDI/CloudyChordsSerum.mid"
+    }
+  ],
+  "LoungeDemo": [
+    {
+      "synthPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3"
+    },
+    {
+      "synthPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3"
+    }
+  ]
+}

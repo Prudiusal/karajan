@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+scipy = "*"
+dawdreamer = "*"
+python-dotenv = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+
+pip~=22.3.1
+attrs~=22.1.0
+asyncio~=3.4.3
+pytest~=7.2.0
+numpy~=1.23.5
+setuptools~=58.1.0
+scipy~=1.9.3
+packaging~=21.3
+pyparsing~=3.0.9
+dawdreamer~=0.6.14
+python-dotenv~=0.21.0
+tqdm~=4.64.1
