@@ -1,0 +1,25 @@
+{
+  "OutputPath": "./WAVs/",
+  "BPM": "120.",
+  "SongLengthInSeconds":  100,
+  "HousetrackDemo": [
+    {
+      "synthPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+      "fxpPresetPath": "./Resources/Presets/1_Serum.fxp",
+      "midiPath": "./Resources/MIDI/Minimal Steady Drive.mid"
+    },
+    {
+      "synthPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+      "fxpPresetPath": "./Resources/Presets/1_Serum.fxp",
+      "midiPath": "./Resources/MIDI/CloudyChordsSerum.mid"
+    }
+  ],
+  "LoungeDemo": [
+    {
+      "synthMain": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3"
+    },
+    {
+      "synthPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3"
+    }
+  ]
+}
