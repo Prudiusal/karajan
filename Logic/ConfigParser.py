@@ -1,6 +1,7 @@
 import json
 # import logging
 from os.path import isfile
+from pathlib import Path  # much more usefull, then os
 
 from pretty_midi import pretty_midi
 
@@ -10,7 +11,26 @@ from logger import logger_conf
 
 
 class ConfigParser:
-    def build_song_data(self: str = 'HousetrackDemo'):
+    def __init__(self, separate=False):
+        # if separate -> two configs with style and midi
+        self.separate = separate
+        self.song_config_version = 0
+        self.song_data_struct = 'json'
+        self.style_data_struct = 'json'
+        self.config_path = Path('.')
+        logger_conf.warning(f'current path is {str(self.config_path)}')
+
+    def build_midi_data(self):
+        pass
+
+    def build_style_data(self):
+
+        pass
+
+    # def build_song_data(self: str = 'HousetrackDemo'):
+
+    @staticmethod
+    def build_song_data(style='HousetrackDemo'):
         """
         Parses SongsConfig.json for information about genre chosen,
         instruments and other information.
@@ -27,6 +47,7 @@ class ConfigParser:
             # :TODO Add Serialization as a class object?
             # :TODO Add checks for JSON structure, values. Add an exception
             #  raising.
+            logger_conf.info(f'{style=}')
             if json_file is None:
                 logger_conf.error(f'Config {config_path} is empty')
                 raise JsonError
@@ -37,19 +58,19 @@ class ConfigParser:
             if data["OutputPath"] is not None:
                 song_data.output_path = data["OutputPath"]
             else:
+                logger_conf.warning('No output path')
                 song_data.output_path = '.'
 
             song_data.bpm = float(data["BPM"])
             song_data.length = float(data["SongLengthInSeconds"])
-
+            logger_conf.debug(data)
+            logger_conf.info(data[style])
             logger_conf.info(f'OutputPath: {song_data.output_path}')
             logger_conf.debug(f'BPM: {song_data.bpm}')
             logger_conf.debug(f'SongLengthInSeconds: {song_data.length}')
-
-            print(data[self])
             # :TODO RIGHT NOW only the latest instrument for the genre is
             #  being loaded. Get rif of the loop.
-            for i in data[self]:
+            for i in data[style]:
                 song_data.synth_path = i['synthPath']
                 song_data.preset_path = i['fxpPresetPath']
                 song_data.midi_path = i['midiPath']

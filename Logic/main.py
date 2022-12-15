@@ -4,11 +4,17 @@ from ConfigParser import ConfigParser
 from MidiVST import MidiVST
 from RenderEngine import RenderEngine
 
+from logger import logger_main
+
 
 def main():
     # :TODO Add auto-parsing and creation of instruments class instances if
     # found by name
+    parser = ConfigParser(separate=False)
+    song_data = parser.build_song_data()
     song_data = ConfigParser.build_song_data()
+    logger_main.debug(f'{type(song_data)=}')
+    logger_main.info(repr(song_data))
     render_engine = RenderEngine(44100, 128)
     serum = MidiVST(song_data.synth_path, song_data.preset_path,
                     song_data.midi_path)

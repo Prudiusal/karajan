@@ -29,6 +29,7 @@ class MidiVST:
         #         print(e)
         #         continue
 
+
 # class SerumSynth(MidiVST):
 #     # :TODO Add autodeterming from the config if it's the Serum synth
 #     def __init__(self, preset_path, output_path=None, sr=44100,

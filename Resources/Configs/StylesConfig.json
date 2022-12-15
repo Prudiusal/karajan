@@ -1,25 +1,105 @@
 {
-  "OutputPath": "C:/repo/sshkeys/karajan/WAVs/",
-  "BPM": "120.",
-  "SongLengthInSeconds":  100,
-  "HousetrackDemo": [
+  "HouseTrackDemo": [
+    
     {
-      "synthPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-      "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp",
-      "midiPath": "C:/repo/sshkeys/karajan/Resources/MIDI/Minimal Steady Drive.mid"
+      "channel_name": "synth1",
+      "plugins": 
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "efx",
+          "pluginPath": "C:/Program Files/VstPlugins/",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+        }
+      ]
     },
     {
-      "synthPath": "C:/Program Files/Steinberg/VSTPlugins/Serum_x64.dll",
-      "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/1_Serum.fxp",
-      "midiPath": "C:/repo/sshkeys/karajan/Resources/MIDI/CloudyChordsSerum.mid"
+      "channel_name": "synth2",
+      "plugins": 
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "efx",
+          "pluginPath": "C:/Program Files/VstPlugins/",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+        }
+      ]
+    },
+    {
+      "channel_name": "synth3",
+      "plugins":
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "efx",
+          "pluginPath": "C:/Program Files/VstPlugins/",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presed" 
+        }
+      ]
     }
   ],
+
   "LoungeDemo": [
+    
     {
-      "synthPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3"
+      "channel_name": "synth1",
+      "plugins": 
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "valhallFreqEcho",
+          "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+        }
+      ]
     },
     {
-      "synthPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3"
+      "channel_name": "synth2",
+      "plugins": 
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "valhallaSupermassive",
+          "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+        }
+      ]
+    },
+    {
+      "channel_name": "synth3",
+      "plugins":
+      [
+        { 
+          "synthName": "serum",
+          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+        },
+        {
+          "synthName": "efx",
+          "pluginPath": "C:/Program Files/VstPlugins/",
+          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presed" 
+        }
+      ]
     }
   ]
 }

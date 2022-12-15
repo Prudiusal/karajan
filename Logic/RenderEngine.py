@@ -10,6 +10,8 @@ from logger import logger_render
 class RenderEngine(dawdreamer.RenderEngine):
     # :TODO Override ___init___(), if you need a custom values for the buffer
     # :size
+    # :REPORT We can set it while creation, or I didn't get the idea
+
     def preconfigure_renderer(self):
         self.engine(self.sample_rate, self.buffer_size)
         self.engine.set_bpm(120.)
@@ -28,6 +30,12 @@ class RenderEngine(dawdreamer.RenderEngine):
         # if audio.mean() != 0.0:
         #     raise SynthesisError('Synthetized audio is silent. Check VSTi'
         # 'parameters')
+
+#   def load_plugin(MidiVST):
+#       plug = self.plugin_processor(MidiVST.name, plugin_conf.path)
+#        plug.load_preset(plugin_conf.preset)
+#       if plugin_conf.midi:
+#           plug.load_midi(plugin_conf_midi)
 
         rendered_output_path = song_data.output_path + \
             f'demo_{int(time.time())}.wav'
