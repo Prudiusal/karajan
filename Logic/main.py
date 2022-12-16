@@ -10,9 +10,14 @@ from logger import logger_main
 def main():
     # :TODO Add auto-parsing and creation of instruments class instances if
     # found by name
-    parser = ConfigParser(separate=False)
+    separate = False  # hard-code will be changed, after developing
+    parser = ConfigParser(separate=separate)  # will create __call__ later
     song_data = parser.build_song_data()
-    song_data = ConfigParser.build_song_data()
+    if separate:
+        style_data, song_data = song_data
+        exit()  # now next part is not correlated with the changes
+
+    # TO NIKITA: if u want to use new version, change 'separate' to True
     logger_main.debug(f'{type(song_data)=}')
     logger_main.info(repr(song_data))
     render_engine = RenderEngine(44100, 128)

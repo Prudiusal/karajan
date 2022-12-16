@@ -39,6 +39,7 @@ class RenderEngine(dawdreamer.RenderEngine):
 
         rendered_output_path = song_data.output_path + \
             f'demo_{int(time.time())}.wav'
+        logger_render.debug(f'output path is {rendered_output_path}')
         wavfile.write(rendered_output_path, sample_rate, audio.transpose())
         if isfile(rendered_output_path) is not None:
             logger_render.info(

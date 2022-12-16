@@ -1,105 +1,123 @@
 {
-  "HouseTrackDemo": [
-    
-    {
-      "channel_name": "synth1",
-      "plugins": 
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "efx",
-          "pluginPath": "C:/Program Files/VstPlugins/",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
-        }
-      ]
-    },
-    {
-      "channel_name": "synth2",
-      "plugins": 
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "efx",
-          "pluginPath": "C:/Program Files/VstPlugins/",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
-        }
-      ]
-    },
-    {
-      "channel_name": "synth3",
-      "plugins":
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "efx",
-          "pluginPath": "C:/Program Files/VstPlugins/",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presed" 
-        }
-      ]
-    }
-  ],
+  "HouseTrackDemo": {
+    "channels":[
+      {
+        "channel_name": "synth1",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "index": 1,
+            "synthName": "efx",
+            "pluginPath": "C:/Program Files/VstPlugins/",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+          }
+        ]
+      },
+      {
+        "channel_name": "synth2",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "index": 1,
+            "synthName": "efx_not_exists",
+            "pluginPath": "C:/Program Files/VstPluginDirNotExists",
+            "fxpPresetPath": "C:/repo/sshkeys/PresetDirNotExists"
+          }
+        ]
+      },
+      {
+        "channel_name": "synth3",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "index": 1,
+            "synthName": "efx",
+            "pluginPath": "C:/Program Files/VstPlugins/PluginNotExists.wrongExtPlugin",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/PresetNotExists.wrongExtPreset" 
+          }
+        ]
+      }      
+    ]
+  },
 
-  "LoungeDemo": [
-    
-    {
-      "channel_name": "synth1",
-      "plugins": 
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "valhallFreqEcho",
-          "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
-        }
-      ]
-    },
-    {
-      "channel_name": "synth2",
-      "plugins": 
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "valhallaSupermassive",
-          "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/"
-        }
-      ]
-    },
-    {
-      "channel_name": "synth3",
-      "plugins":
-      [
-        { 
-          "synthName": "serum",
-          "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
-        },
-        {
-          "synthName": "efx",
-          "pluginPath": "C:/Program Files/VstPlugins/",
-          "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presed" 
-        }
-      ]
-    }
-  ]
+
+
+
+
+
+
+  
+
+  "TODO_LoungeDemoWrongFormat": {
+    "channels": [
+      {
+        "channel_name": "synth1",
+        "plugins": 
+        [
+          { 
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "synthName": "valhallFreqEcho",
+            "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaFreqEcho.vst3",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+          }
+        ]
+      },
+      {
+        "channel_name": "synth2",
+        "plugins": 
+        [
+          { 
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "synthName": "valhallaSupermassive",
+            "pluginPath": "C:/Program Files/Common Files/VST3/ValhallaDSP/ValhallaSupermassive.vst3",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/"
+          }
+        ]
+      },
+      {
+        "channel_name": "synth3",
+        "plugins":
+        [
+          { 
+            "synthName": "serum",
+            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+          },
+          {
+            "synthName": "efx",
+            "pluginPath": "C:/Program Files/VstPlugins/",
+            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presed" 
+          }
+        ]
+      }
+
+    ]
+  }
 }
+    
