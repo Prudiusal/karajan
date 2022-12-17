@@ -13,6 +13,8 @@ from logger import logger_conf
 class StyleConfig:
     def __init__(self, d):
         self.__dict__ = d
+    # :TODO __repr__, __str__, __slots__
+
 
 class SongConfig:
     def __init__(self, d):
@@ -123,7 +125,7 @@ def check_json(path: Path):
     # :TODO add other cases from the notes
     # :TODO change to pathlib.Path methods
     if isfile(path) is None:
-        logger_conf.error(f'Config file {str(file)} not found!')
+        logger_conf.error(f'Config file {str(path)} not found!')
         raise JsonNotFoundError
     else:
         logger_conf.debug(f'Config file {str(path)} exists.')
