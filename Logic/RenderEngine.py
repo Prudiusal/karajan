@@ -5,12 +5,24 @@ from scipy.io import wavfile
 import dawdreamer
 
 from logger import logger_render
+from channel import channel
 
 
 class RenderEngine(dawdreamer.RenderEngine):
+    def __init__(self, sample_rate=44100, buffer_size=128):
+        self.sample_rate = sample_rate
+        self.buffer_size = buffer_size
+        super().__init__(self.sample_rate, self.buffer_size)
+
     # :TODO Override ___init___(), if you need a custom values for the buffer
     # :size
     # :REPORT We can set it while creation, or I didn't get the idea
+
+    def style_graph(self, style):
+        for channel_data in style.channels:
+            setattr(self, channel_data['channel_name'], channel(channel_data))
+            print()
+        pass
 
     def preconfigure_renderer(self):
         self.engine(self.sample_rate, self.buffer_size)

@@ -12,3 +12,7 @@ logger_midiVST = logging.getLogger('midiVST')
 logger_render = logging.getLogger('renderEngine')
 
 logger_main = logging.getLogger('main')
+
+logger_VST = logging.getLogger('VST')
+
+logger_channel = logging.getLogger('channel')

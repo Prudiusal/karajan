@@ -1,4 +1,16 @@
-from logger import logger_midiVST
+from dawdreamer import PluginProcessor
+
+from logger import logger_VST
+
+
+class VST(PluginProcessor):
+    """Class creates the plugin processor with custom parameters
+    (index, channel, midi=T/F, path to the plugin, path to the preset)
+    """
+    def __init__(self, kwargs):
+        print(type(kwargs))
+        for k in kwargs:
+            print(k)
 
 
 class MidiVST:
@@ -21,7 +33,7 @@ class MidiVST:
         self.plugin_path = plugin_path
         self.preset_path = preset_path
         self.midi_path = midi_path
-        logger_midiVST.debug('midiVST initialized')
+        logger_VST.debug('midiVST initialized')
         # for midi_file in tqdm(self.filelist):
         #     try:
         #         self.process_midi(midi_file)

@@ -10,17 +10,22 @@ from logger import logger_main
 def main():
     # :TODO Add auto-parsing and creation of instruments class instances if
     # found by name
-    separate = False  # hard-code will be changed, after developing
+    separate = True  # hard-code will be changed, after developing
     parser = ConfigParser(separate=separate)  # will create __call__ later
     song_data = parser.build_song_data()
     if separate:
         style_data, song_data = song_data
-        exit()  # now next part is not correlated with the changes
+        # exit()  # now next part is not correlated with the changes
 
     # TO NIKITA: if u want to use new version, change 'separate' to True
     logger_main.debug(f'{type(song_data)=}')
     logger_main.info(repr(song_data))
+    logger_main.info(repr(style_data))
     render_engine = RenderEngine(44100, 128)
+
+    if separate:
+        render_engine.style_graph(style_data)
+        exit()
     serum = MidiVST(song_data.synth_path, song_data.preset_path,
                     song_data.midi_path)
 
