@@ -24,7 +24,12 @@ def main():
     render_engine = RenderEngine(44100, 128)
 
     if separate:
-        render_engine.style_graph(style_data)
+        render_engine.create_channels(style_data)
+        logger_main.info('Channels has been created')
+        render_engine.construct_graph()
+        logger_main.info('Graph has been constructed')
+        logger_main.info(f'{dir(song_data)}')
+        render_engine.process_song(song_data)
         exit()
     serum = MidiVST(song_data.synth_path, song_data.preset_path,
                     song_data.midi_path)

@@ -1,0 +1,19 @@
+{
+  "SongOne": 
+  {
+    "OutputPath": "./WAVs/",
+    "BPM": "120.",
+    "SongLengthInSeconds":  100,
+    "Channels": [
+      {
+        "channel_name": "synth1",
+        "midi_path": "./Resources/MIDI/Minimal Steady Drive.mid"
+
+      },
+      {
+        "channel_name": "synth2",
+        "midi_path": "./Resources/MIDI/CloudyChordsSerum.mid"
+      }
+    ]
+  }
+}

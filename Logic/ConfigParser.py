@@ -31,8 +31,8 @@ class ConfigParser:
         self.style_data_struct = 'json'
         self.config_path = Path('.') / 'Resources' / 'Configs'
         # :TODO change to env
-        self.default_song_config = self.config_path / 'SongsConfig.json'
-        self.default_style_config = self.config_path / 'StylesConfig.json'
+        self.default_song_config = self.config_path / 'TestSongsConfig.json'
+        self.default_style_config = self.config_path / 'TestStylesConfig.json'
         # :TODO change to env
         self.style = "HouseTrackDemo"
         self.song = "SongOne"

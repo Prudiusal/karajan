@@ -1,16 +1,33 @@
-from dawdreamer import PluginProcessor
+# from dawdreamer import PluginProcessor
 
 from logger import logger_VST
 
 
-class VST(PluginProcessor):
-    """Class creates the plugin processor with custom parameters
-    (index, channel, midi=T/F, path to the plugin, path to the preset)
-    """
-    def __init__(self, kwargs):
+class Vst_adder:
+    def init__(self, kwargs):
         print(type(kwargs))
         for k in kwargs:
             print(k)
+        # super().__init__()
+
+
+class VST:
+    """Class creates the plugin processor with custom parameters
+    (index, channel, midi=T/F, path to the plugin, path to the preset)
+    """
+    def __init__(self, func, config, channel_name):
+        self.index = config['index']
+        self.synth_name = config['synthName']
+        self.plugin_path = config['pluginPath']
+        self.preset_path = config['fxpPresetPath']
+        self.channel_name = channel_name
+        self.plugin_name_global = f'{self.channel_name}_{self.synth_name}'
+        for k, v in config.items():
+            logger_VST.debug(f'{k} with {v}')
+        self.plugin = func(self.plugin_name_global, self.plugin_path)
+        logger_VST.debug(self.plugin_path)
+        logger_VST.debug(self.preset_path)
+        self.plugin.load_preset(self.preset_path)
 
 
 class MidiVST:
