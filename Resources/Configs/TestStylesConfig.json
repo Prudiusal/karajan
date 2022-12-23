@@ -1,8 +1,8 @@
 {
   "HouseTrackDemo": {
-    "channels":[
+    "tracks":[
       {
-        "channel_name": "synth1",
+        "track_name": "synth1",
         "plugins": 
         [
           { 
@@ -14,7 +14,7 @@
         ]
       },
       {
-        "channel_name": "synth2",
+        "track_name": "synth2",
         "plugins": 
         [
           { 
@@ -26,7 +26,7 @@
         ]
       },
       {
-        "channel_name": "synth3",
+        "track_name": "synth3",
         "plugins":
         [
           { 
@@ -49,9 +49,9 @@
   
 
   "TODO_LoungeDemoWrongFormat": {
-    "channels": [
+    "tracks": [
       {
-        "channel_name": "synth1",
+        "track_name": "synth1",
         "plugins": 
         [
           { 
@@ -67,7 +67,7 @@
         ]
       },
       {
-        "channel_name": "synth2",
+        "track_name": "synth2",
         "plugins": 
         [
           { 
@@ -83,7 +83,7 @@
         ]
       },
       {
-        "channel_name": "synth3",
+        "track_name": "synth3",
         "plugins":
         [
           { 

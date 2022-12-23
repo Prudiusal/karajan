@@ -1,15 +1,15 @@
 {
   "HouseTrackDemo": {
-    "channels":[
+    "tracks":[
       {
-        "channel_name": "synth1",
+        "track_name": "synth1",
         "plugins": 
         [
           { 
             "index": 0,
             "synthName": "serum",
-            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "Resources/Presets/0_XO.fxp"
           },
           {
             "index": 1,
@@ -20,14 +20,14 @@
         ]
       },
       {
-        "channel_name": "synth2",
+        "track_name": "synth2",
         "plugins": 
         [
           { 
             "index": 0,
             "synthName": "serum",
-            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
-            "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/1_Serum.fxp"
           },
           {
             "index": 1,
@@ -38,13 +38,13 @@
         ]
       },
       {
-        "channel_name": "synth3",
+        "track_name": "synth3",
         "plugins":
         [
           { 
             "index": 0,
             "synthName": "serum",
-            "pluginPath": "C:/Program Files/VstPlugins/XLNXO/XO.dll",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
             "fxpPresetPath": "C:/repo/sshkeys/karajan/Resources/Presets/0_XO.fxp"
           },
           {
@@ -67,9 +67,9 @@
   
 
   "TODO_LoungeDemoWrongFormat": {
-    "channels": [
+    "tracks": [
       {
-        "channel_name": "synth1",
+        "track_name": "synth1",
         "plugins": 
         [
           { 
@@ -85,7 +85,7 @@
         ]
       },
       {
-        "channel_name": "synth2",
+        "track_name": "synth2",
         "plugins": 
         [
           { 
@@ -101,7 +101,7 @@
         ]
       },
       {
-        "channel_name": "synth3",
+        "track_name": "synth3",
         "plugins":
         [
           { 

@@ -4,14 +4,14 @@
     "OutputPath": "./WAVs/",
     "BPM": "120.",
     "SongLengthInSeconds":  100,
-    "Channels": [
+    "Tracks": [
       {
-        "channel_name": "synth1",
+        "track_name": "synth1",
         "midi_path": "./Resources/MIDI/Minimal Steady Drive.mid"
 
       },
       {
-        "channel_name": "synth2",
+        "track_name": "synth2",
         "midi_path": "./Resources/MIDI/CloudyChordsSerum.mid"
       }
     ]

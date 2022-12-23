@@ -15,4 +15,4 @@ logger_main = logging.getLogger('main')
 
 logger_VST = logging.getLogger('VST')
 
-logger_channel = logging.getLogger('channel')
+logger_track = logging.getLogger('channel')
