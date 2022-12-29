@@ -22,68 +22,74 @@ class RenderEngine(dawdreamer.RenderEngine):
 
     def create_tracks(self, style):
         for track_data in style.tracks:
-            print()
-            print()
-            func = self.make_plugin_processor
+            logger_render.debug('\n')
+            # func = self.make_plugin_processor
             track_name = track_data['track_name']
-            self.tracks[track_name] = Track(track_data)
-            self.tracks[track_name].construct(func)
+            self.tracks[track_name] = Track(track_data,
+                                            self.make_plugin_processor,
+                                            self.make_add_processor)
+            # self.tracks[track_name].adder_func = self.make_add_processor
+            # self.tracks[track_name].adder_func = self.make_plugin_processor
+            self.tracks[track_name].construct()
             # self.tracks.append(track)
             # setattr(self, track_data['track_name'],
             #         track.construct(func))
-            print()
+            logger_render.debug('\n')
 
     def construct_graph(self):
         adder_args = []
         for track in self.tracks.values():
-            print()
-            print()
+            logger_render.debug('\n')
             track_tuples, track_output = track.get_track_tuples()
 
             self.graph.extend(track_tuples)
             adder_args.append(track_output)
+        logger_render.debug(f'{len(adder_args)} input channels for Adder')
         add_processor = self.make_add_processor('add_processor',
                                                 [1]*len(adder_args))
         self.graph.append((add_processor, adder_args))
-        print()
-        logger_render.info(self.graph)
-        print()
+        logger_render.debug('\n')
+        # logger_render.info(self.graph)
+        logger_render.debug('\n')
 
     def process_song(self, song_data):
-        logger_render.debug('\nSong processing has started:')
-        BPM = song_data.BPM
-        logger_render.debug(BPM)
-        song_length = song_data.SongLengthInSeconds
-        logger_render.debug(song_length)
-        output_path = song_data.OutputPath
-        logger_render.debug(output_path)
 
+        # BPM = song_data.BPM
+        # logger_render.debug(BPM)
+        # song_length = song_data.SongLengthInSeconds
+        # logger_render.debug(song_length)
+        # output_path = song_data.OutputPath
+        # logger_render.debug(output_path)
+
+        logger_render.info('\nSong processing has started:')
         self.load_midi_into_tracks(song_data.Tracks)
-        logger_render.info('\nMidi files are loaded\n')
-
+        logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
-
-        logger_render.debug('Started Rendering.')
+        logger_render.info('Started Rendering.')
         self.render(song_data.SongLengthInSeconds)
-        logger_render.debug('Finished Rendering.')
-        audio = self.get_audio()
-        logger_render.debug(f'{audio}')
-        logger_render.debug(f'{type(audio)}')
-
-        rendered_output_path = song_data.OutputPath + \
+        self.rendered_output_path = song_data.OutputPath + \
             f'demo_{int(time.time())}.wav'
-        logger_render.info(f'output path is {rendered_output_path}')
-        wavfile.write(rendered_output_path, self.sample_rate,
+        logger_render.debug('Finished Rendering.')
+
+    def save_audio(self):
+        audio = self.get_audio()
+        logger_render.info(f'output path is {self.rendered_output_path}')
+        wavfile.write(self.rendered_output_path, self.sample_rate,
                       audio.transpose())
-        if isfile(rendered_output_path) is not None:
-            logger_render.warning('Problem with output path')
+        if not isfile(self.rendered_output_path):
+            logger_render.error('File is not saved')
 
     def load_midi_into_tracks(self, tracks_data):
-        for ch in tracks_data:
-            ch_name = ch['track_name']
-            midi_path = ch['midi_path']
+        for track_params in tracks_data:
+            track_name = track_params['track_name']
+            midi_path = track_params['midi_path']
+            processors = self.tracks[track_name].processors
+            synth = next(iter(processors.values()))
+            synth.load_midi(midi_path)
+            # vst = next(iter(self.tracks[track_name].plugins))  # select 1st
+            # vst = self.tracks[track_name].plugins.values()[0]
+            logger_render.info(f'{synth=}')
             logger_render.debug(f'midi_path {midi_path}')
-            self.tracks[ch_name].plugins[0].plugin.load_midi(midi_path)
 
     def preconfigure_renderer(self):
         self.engine(self.sample_rate, self.buffer_size)

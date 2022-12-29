@@ -28,8 +28,8 @@ def main():
         logger_main.info('Tracks have been created')
         render_engine.construct_graph()
         logger_main.info('Graph has been constructed')
-        logger_main.info(f'{dir(song_data)}')
         render_engine.process_song(song_data)
+        render_engine.save_audio()
         exit()
     serum = MidiVST(song_data.synth_path, song_data.preset_path,
                     song_data.midi_path)

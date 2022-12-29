@@ -10,6 +10,17 @@ class Vst_adder:
             print(k)
         # super().__init__()
 
+def processor_configured(func, config, track_name):
+    plugin_name = config['pluginName']
+    plugin_path = config['pluginPath']
+    preset_path = config['fxpPresetPath']
+    plugin_name_global = f'{track_name}_{plugin_name}'
+    processor = func(plugin_name_global, plugin_path)
+    logger_VST.debug(preset_path)
+    processor.load_preset(preset_path)  # can be called in function
+    logger_VST.info(f'Uses {processor.get_num_output_channels()}'
+                    ' output channels.')
+    return processor
 
 class VST:
     """Class creates the plugin processor with custom parameters
@@ -17,17 +28,29 @@ class VST:
     """
     def __init__(self, func, config, track_name):
         self.index = config['index']
-        self.synth_name = config['synthName']
-        self.plugin_path = config['pluginPath']
-        self.preset_path = config['fxpPresetPath']
-        self.track_name = track_name
-        self.plugin_name_global = f'{self.track_name}_{self.synth_name}'
-        for k, v in config.items():
-            logger_VST.debug(f'{k} with {v}')
+        self.plugin_name = config['pluginName']  # same in default
+        self.preset_path = config['fxpPresetPath']  # useless
+        self.track_name = track_name  # used only with __init__
+        self.plugin_name_global = f'{self.track_name}_{self.plugin_name}'
+
         self.plugin = func(self.plugin_name_global, self.plugin_path)
-        logger_VST.debug(self.plugin_path)
         logger_VST.debug(self.preset_path)
-        self.plugin.load_preset(self.preset_path)
+        self.plugin.load_preset(self.preset_path)  # can be called in function
+        logger_VST.info(f'Uses {self.plugin.get_num_output_channels()}'
+                        ' output channels.')
+
+        if self.plugin_name == 'ad2':
+            logger_VST.info('AD2 plugin is used')
+            logger_VST.info(f'AD2 uses {self.plugin.get_num_output_channels()}'
+                            ' output channels.')
+            logger_VST.info(f'AD2 uses {self.plugin.get_num_input_channels()}'
+                            ' input channels.')
+            # print(self.plugin.get_plugin_parameters_description())
+            # self.plugin.set_bus(0, 1)
+            logger_VST.info(f'AD2 uses {self.plugin.get_num_output_channels()}'
+                            ' output channels.')
+            logger_VST.info(f'AD2 uses {self.plugin.get_num_input_channels()}'
+                            ' input channels.')
 
 
 class MidiVST:

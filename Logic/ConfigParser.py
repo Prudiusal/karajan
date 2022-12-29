@@ -1,6 +1,7 @@
 import json
 # import logging
 from os.path import isfile
+import os
 from pathlib import Path  # much more usefull, then os
 
 from pretty_midi import pretty_midi
@@ -33,6 +34,7 @@ class ConfigParser:
         # :TODO change to env
         self.default_song_config = self.config_path / 'TestSongsConfig.json'
         self.default_style_config = self.config_path / 'TestStylesConfig.json'
+        # self.default_style_config=self.config_path / 'TestStylesConfig.json'
         # :TODO change to env
         self.style = "HouseTrackDemo"
         self.song = "SongOne"
@@ -49,6 +51,7 @@ class ConfigParser:
 
     def build_style_data(self):
         check_json(self.default_style_config)
+        print(os.getcwd())
         with open(self.default_style_config, 'r') as js:
             data = json.load(js)
         style = StyleConfig(data[self.style])
