@@ -6,6 +6,7 @@ import dawdreamer
 
 from logger import logger_render
 from track import Track
+from pm_tests import check_length
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -16,56 +17,35 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.tracks = {}
         self.graph = []
 
-    # :TODO Override ___init___(), if you need a custom values for the buffer
-    # :size
-    # :REPORT We can set it while creation, or I didn't get the idea
-
     def create_tracks(self, style):
         for track_data in style.tracks:
-            logger_render.debug('\n')
-            # func = self.make_plugin_processor
             track_name = track_data['track_name']
             self.tracks[track_name] = Track(track_data,
                                             self.make_plugin_processor,
                                             self.make_add_processor)
-            # self.tracks[track_name].adder_func = self.make_add_processor
-            # self.tracks[track_name].adder_func = self.make_plugin_processor
             self.tracks[track_name].construct()
-            # self.tracks.append(track)
-            # setattr(self, track_data['track_name'],
-            #         track.construct(func))
-            logger_render.debug('\n')
 
     def construct_graph(self):
         adder_args = []
         for track in self.tracks.values():
-            logger_render.debug('\n')
             track_tuples, track_output = track.get_track_tuples()
-
             self.graph.extend(track_tuples)
             adder_args.append(track_output)
         logger_render.debug(f'{len(adder_args)} input channels for Adder')
         add_processor = self.make_add_processor('add_processor',
                                                 [1]*len(adder_args))
         self.graph.append((add_processor, adder_args))
-        logger_render.debug('\n')
-        # logger_render.info(self.graph)
-        logger_render.debug('\n')
+        logger_render.debug(self.graph)
 
     def process_song(self, song_data):
-
         # BPM = song_data.BPM
-        # logger_render.debug(BPM)
         # song_length = song_data.SongLengthInSeconds
-        # logger_render.debug(song_length)
         # output_path = song_data.OutputPath
-        # logger_render.debug(output_path)
-
         logger_render.info('\nSong processing has started:')
-        self.load_midi_into_tracks(song_data.Tracks)
+        self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
-        logger_render.info('Started Rendering.')
+        logger_render.debug('Started Rendering.')
         self.render(song_data.SongLengthInSeconds)
         self.rendered_output_path = song_data.OutputPath + \
             f'demo_{int(time.time())}.wav'
@@ -79,15 +59,17 @@ class RenderEngine(dawdreamer.RenderEngine):
         if not isfile(self.rendered_output_path):
             logger_render.error('File is not saved')
 
-    def load_midi_into_tracks(self, tracks_data):
-        for track_params in tracks_data:
-            track_name = track_params['track_name']
-            midi_path = track_params['midi_path']
+    def load_midi_into_tracks(self, song_data):
+        for params in song_data.Tracks:
+            track_name = params['track_name']
+            midi_path = params['midi_path']
+            if True:
+                print(song_data.SongLengthInSeconds)
+                print(check_length(midi_path))
+
             processors = self.tracks[track_name].processors
             synth = next(iter(processors.values()))
             synth.load_midi(midi_path)
-            # vst = next(iter(self.tracks[track_name].plugins))  # select 1st
-            # vst = self.tracks[track_name].plugins.values()[0]
             logger_render.info(f'{synth=}')
             logger_render.debug(f'midi_path {midi_path}')
 
