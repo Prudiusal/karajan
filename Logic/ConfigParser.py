@@ -12,17 +12,30 @@ from logger import logger_conf
 
 
 class StyleConfig:
+    """
+        Class for the StyleConfiguration (just for one being used).
+    """
     def __init__(self, d):
         self.__dict__ = d
 
 
 class SongConfig:
+    """
+        Class for the Song Configuration (just for one being used).
+    """
     def __init__(self, d):
         self.__dict__ = d
     # here will be special methods to process the params, like the length check
 
 
 class ConfigParser:
+    """
+    This object consumes the json files and creates requiered song and style
+    config objects.
+
+    *** There were old version, which is not used right not, but during the
+    development we had to save previous functionality.
+    """
     def __init__(self, separate=False):
         # if separate -> two configs with style and midi
         self.separate = separate
@@ -41,6 +54,10 @@ class ConfigParser:
                           f'{str(self.config_path.absolute())}')
 
     def build_midi_data(self):
+        """
+        Consumes the Json config from the file, which is stored in attribute.
+        :return: SongConfig object of a chosen (in attribute) song.
+        """
         check_json(self.default_song_config)
         with open(self.default_song_config, 'r') as js:
             data = json.load(js)
@@ -49,6 +66,10 @@ class ConfigParser:
         return song
 
     def build_style_data(self):
+        """
+        Consumes the Json config from the file, which is stored in attribute.
+        :return: StyleConfig object of a chosen (in attribute) style.
+        """
         check_json(self.default_style_config)
         print(os.getcwd())
         with open(self.default_style_config, 'r') as js:
@@ -57,23 +78,19 @@ class ConfigParser:
         logger_conf.info(f'{self.song} is used')
         return style
 
-    # def build_song_data(self: str = 'HousetrackDemo'):
-    # @staticmethod
-    # def build_song_data(style='HousetrackDemo'):
     def build_song_data(self, style='HousetrackDemo'):
         """
         Parses SongsConfig.json for information about genre chosen,
         instruments and other information.
 
-        TO NIKITA: The functionality is the same, but instead of previosly
+        TO NIKITA: The functionality is the same, but instead of previously
         used 'self' 'style' parameter is used
         """
-        if self.separate:
+        if self.separate:  # this can be estimated as a mark of new version
             style = self.build_style_data()
             midi = self.build_midi_data()
             return style, midi
 
-        # print(self)
         config_path = './Logic/SongsConfig.json'
 
         if isfile(config_path) is None:
@@ -124,6 +141,7 @@ class ConfigParser:
 
 
 def check_json(path: Path):
+
     if not isfile(path):
         logger_conf.error(f'Config file {str(path)} not found!')
         raise JsonNotFoundError

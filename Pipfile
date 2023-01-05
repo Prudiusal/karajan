@@ -7,6 +7,8 @@ name = "pypi"
 scipy = "*"
 dawdreamer = "*"
 python-dotenv = "*"
+pretty-midi = "*"
+coloredlogs = "*"
 
 [dev-packages]
 

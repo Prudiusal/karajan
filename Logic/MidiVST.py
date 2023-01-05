@@ -10,10 +10,19 @@ class Vst_adder:
             print(k)
         # super().__init__()
 
-def processor_configured(func, config, track_name):
+
+def processor_configurator(func, config, track_name):
+    """
+    With configuration from Json creates the plugins for one track
+    :param func: method of RenderEngine, which creates the processor
+    :param config: config for the one processor (VST)
+    :param track_name: track to which processor refers to.
+    :return: instance of dawdreamer.processor class.
+    """
     plugin_name = config['pluginName']
     plugin_path = config['pluginPath']
     preset_path = config['fxpPresetPath']
+
     plugin_name_global = f'{track_name}_{plugin_name}'
     processor = func(plugin_name_global, plugin_path)
     logger_VST.debug(preset_path)
@@ -23,7 +32,10 @@ def processor_configured(func, config, track_name):
     return processor
 
 class VST:
-    """Class creates the plugin processor with custom parameters
+    """
+    not used right now!
+
+    Class creates the plugin processor with custom parameters
     (index, track, midi=T/F, path to the plugin, path to the preset)
     """
     def __init__(self, func, config, track_name):

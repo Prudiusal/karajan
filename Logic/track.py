@@ -1,12 +1,22 @@
 from collections import OrderedDict
 
 from logger import logger_track
-from MidiVST import processor_configured
+from MidiVST import processor_configurator
 
 
-class Track():
+class Track:
+    """
+    Contains all the plugins for one line of the processing.
+    Stores the plugins and other processors.
+    """
 
     def __init__(self, style_data, plugin_func, adder_func):
+        """
+        :param style_data: explains the track
+        (drums, pads, lead etc)
+        :param plugin_func: renderEngine method to create VST
+        :param adder_func: renderEngine method to create adder
+        """
         self.track_name = style_data['track_name']
         self.plugins_data = style_data['plugins']
         self.plugin_func = plugin_func
@@ -15,17 +25,16 @@ class Track():
         self.tuples_track = []
         self.track_output_plug_name = None
 
-    def get_tuples(self):
-        logger_track.info('Tuple is creating')
-
     def construct(self):
-        # :TODO set the automatic method extraction
+        """
+        Creates the instances of plugins and other processors
+        """
         for plug_conf in self.plugins_data:
-            # add, to the attribute
             plugin_name = plug_conf['pluginName']
-            self.processors[plugin_name] = processor_configured(
-                self.plugin_func, plug_conf, self.track_name)
-            if plugin_name == 'ad2':
+            self.processors[plugin_name] = \
+                processor_configurator(self.plugin_func, plug_conf,
+                                       self.track_name)
+            if plugin_name == 'ad2':  # this plugin requires summation
                 logger_track.info('Addictive drum 2 is used')
                 self.processors['ad2_adder'] = self.adder_func('ad2_adder',
                                                                24*[1])

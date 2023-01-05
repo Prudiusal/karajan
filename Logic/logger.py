@@ -17,3 +17,5 @@ logger_main = logging.getLogger('main')
 logger_VST = logging.getLogger('VST')
 
 logger_track = logging.getLogger('channel')
+
+logger_exc = logging.getLogger('exceptions')
