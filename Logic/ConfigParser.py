@@ -36,7 +36,7 @@ class ConfigParser:
     *** There were old version, which is not used right not, but during the
     development we had to save previous functionality.
     """
-    def __init__(self, separate=False):
+    def __init__(self, separate=True):
         # if separate -> two configs with style and midi
         self.separate = separate
         self.song_config_version = 0
