@@ -23,3 +23,7 @@ class JsonNotFoundError(JsonError):
 def validate_plugin_path(path):
     if not path.is_file():
         raise PluginNotFoundError(path.absolute())
+
+
+class SongNotFoundError(JsonError):
+    pass
