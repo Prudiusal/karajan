@@ -7,7 +7,7 @@ import dawdreamer
 
 from logger import logger_render
 from track import Track
-# from pm_tests import check_length
+from pm_tests import get_mid_length
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -29,6 +29,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         are noticed.
         """
         self.style_name = style.name
+        self.bpm = int(style.bpm)
+        self.set_bpm(300.)  # TODO add test to check being unchanged
         for track_data in style.tracks:
             track_name = track_data['track_name']
             self.tracks[track_name] = Track(track_data,
@@ -37,6 +39,11 @@ class RenderEngine(dawdreamer.RenderEngine):
             self.tracks[track_name].construct()  # creates all vst plugins
 
     def construct_graph(self):
+        """
+        Asks each track of the song to create the tuples for the graph.
+        Then combines them in a list.
+        Graph is created in accordance with DawDreamer rules.
+        """
         adder_args = []
         for track in self.tracks.values():
             track_tuples, track_output = track.get_track_tuples()
@@ -49,17 +56,20 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.debug(self.graph)
 
     def process_song(self, song_data):
-        ""
+        """
+        Loads midi files, renders, saves.
+        :param song_data: SongConfig instance with all data for the song.
+        """
         logger_render.info(f'{song_data.Name} processing has started:')
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
-        logger_render.debug('Started Rendering.')
-        self.render(song_data.SongLengthInSeconds)
+        # assert self.bpm == self.get_bpm(), "The bpm has changed"
+        logger_render.info(f'Started Rendering - {self.length_from_midi}.')
+        self.render(self.length_from_midi)
         self.rendered_output_path = song_data.OutputPath + \
-            f'{song_data.Name}_{self.style_name}_' + \
-            f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.wav'
-        #    f'demo_{int(time.time())}.wav'
+            f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
+            f'{song_data.Name}_{self.style_name}.wav'
         logger_render.debug('Finished Rendering.')
         self.save_audio()
 
@@ -78,19 +88,24 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         Loads the midi files from the config to the appropriate synths.
         """
+        midi_times = []
         for params in song_data.Tracks:
             track_name = params['track_name']
             midi_path = params['midi_path']
             processors = self.tracks[track_name].processors
             synth = next(iter(processors.values()))  # take 1st
-            synth.load_midi(midi_path)
-            logger_render.debug(f'{synth=}')
-            logger_render.debug(f'midi_path {midi_path}')
+            if isfile(midi_path):
+                synth.load_midi(midi_path, beats=False)
+                midi_times.append(get_mid_length(midi_path, song_data.BPM, self.bpm))
+            else:
+                logger_render.warning(f'midi file not found {midi_path}')
 
-    def preconfigure_renderer(self):
-        """Not used right now"""
-        self.engine(self.sample_rate, self.buffer_size)
-        self.engine.set_bpm(120.)
+        self.length_from_midi = max(midi_times)
+
+    # def preconfigure_renderer(self):
+    #     """Not used right now"""
+    #     self.engine(self.sample_rate, self.buffer_size)
+    #     self.engine.set_bpm(120.)
 
     def build_graph(self, serum_processor):
         """Not used right now"""
@@ -101,7 +116,7 @@ class RenderEngine(dawdreamer.RenderEngine):
 
     def render_to_file(self, song_data, sample_rate=44100):
         """Not used right now"""
-        logger_render.debug('Started Rendering.')
+        logger_render.info('Started Rendering.')
         self.render(song_data.length)
         audio = self.get_audio()
         # :TODO Add a "if-silent" check (Check if audio has some sound in it)

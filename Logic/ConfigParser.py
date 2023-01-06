@@ -44,12 +44,10 @@ class ConfigParser:
         self.style_data_struct = 'json'
         self.config_path = Path('.') / 'Resources' / 'Configs'
         # :TODO change to env
-        self.default_song_config = self.config_path / 'TestSongsConfig.json'
-        self.default_style_config = self.config_path / 'TestStylesConfig.json'
-        # self.default_style_config=self.config_path / 'TestStylesConfig.json'
-        # :TODO change to env
-        self.style = "HouseTrackDemo"
-        self.song = "SongOne"
+        self.default_song_config = self.config_path / 'DemoSongsConfig.json'
+        self.default_style_config = self.config_path / 'DemoStylesConfig.json'
+        self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
+        self.song = "Bruno"  # 7_Rings/Bruno
         logger_conf.debug('current path for config is: '
                           f'{str(self.config_path.absolute())}')
 
@@ -71,7 +69,6 @@ class ConfigParser:
         :return: StyleConfig object of a chosen (in attribute) style.
         """
         check_json(self.default_style_config)
-        print(os.getcwd())
         with open(self.default_style_config, 'r') as js:
             data = json.load(js)
         style = StyleConfig(data[self.style])

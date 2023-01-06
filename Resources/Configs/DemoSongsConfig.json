@@ -1,0 +1,71 @@
+{
+  "7_Rings": 
+  {
+    "Name": "7_rings",
+    "Artist": "Rihanna",
+    "OutputPath": "./WAVs/",
+    "BPM": 105,
+    "SongLengthInSeconds":  100,
+    "Tracks": [
+      {
+        "track_name": "pad1",
+        "midi_path": "./Resources/MIDI/7_rings/pad1.mid"
+      },
+      {
+        "track_name": "pad2",
+        "midi_path": "./Resources/MIDI/7_rings/pad2.mid"
+      },
+      {
+        "track_name": "pad3",
+        "midi_path": "./Resources/MIDI/7_rings/pad3.mid"
+      },
+      {
+        "track_name": "pad4",
+        "midi_path": "./Resources/MIDI/7_rings/pad4.mid"
+      },
+      {
+        "track_name": "lead",
+        "midi_path": "./Resources/MIDI/7_rings/lead.mid"
+      },
+      {
+        "track_name": "bass1",
+        "midi_path": "./Resources/MIDI/7_rings/pad3.mid"
+      }
+    ]
+  },
+
+  "Bruno": 
+  {
+    "Name": "Bruno",
+    "Artist": "Bruno_Mars",
+    "OutputPath": "./WAVs/",
+    "BPM": 145,
+    "SongLengthInSeconds":  100,
+    "Tracks": [
+      {
+        "track_name": "pad1",
+        "midi_path": "./Resources/MIDI/bruno/pad1.mid"
+      },
+      {
+        "track_name": "pad2",
+        "midi_path": "./Resources/MIDI/bruno/pad2.mid"
+      },
+      {
+        "track_name": "pad3",
+        "midi_path": "./Resources/MIDI/bruno/pad3.mid"
+      },
+      {
+        "track_name": "pad4",
+        "midi_path": "./Resources/MIDI/bruno/pad4.mid"
+      },
+      {
+        "track_name": "lead",
+        "midi_path": "./Resources/MIDI/bruno/lead.mid"
+      },
+      {
+        "track_name": "bass1",
+        "midi_path": "./Resources/MIDI/bruno/pad3.mid"
+      }
+    ]
+  }
+}

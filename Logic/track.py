@@ -60,6 +60,6 @@ class Track:
                 previous_processor = processor.get_name()
                 # previous_processor = vst.plugin_name_global
         self.track_output_plug_name = previous_processor
-        logger_track.info(self.tuples_track)
-        logger_track.info(self.track_output_plug_name)
+        logger_track.debug(self.tuples_track)
+        logger_track.debug(self.track_output_plug_name)
         return self.tuples_track, self.track_output_plug_name

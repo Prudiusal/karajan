@@ -4,6 +4,7 @@ from logger import logger_VST
 
 
 class Vst_adder:
+    "Not used right now"
     def init__(self, kwargs):
         print(type(kwargs))
         for k in kwargs:
@@ -27,7 +28,7 @@ def processor_configurator(func, config, track_name):
     processor = func(plugin_name_global, plugin_path)
     logger_VST.debug(preset_path)
     processor.load_preset(preset_path)  # can be called in function
-    logger_VST.info(f'Uses {processor.get_num_output_channels()}'
+    logger_VST.debug(f'Uses {processor.get_num_output_channels()}'
                     ' output channels.')
     return processor
 

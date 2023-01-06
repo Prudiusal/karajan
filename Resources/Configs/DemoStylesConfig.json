@@ -1,0 +1,213 @@
+{
+  "HouseTrackDemo": {
+    "tracks":[
+      {
+        "track_name": "synth1",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "Resources/Presets/0_XO.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "synth2",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/1_Serum.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "synth3",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/1_Serum.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "drums1",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "ad2",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/AddictiveDrums2.vst",
+            "fxpPresetPath": "./Resources/Presets/ad2_basic.fxb"
+          }
+        ]
+      }    
+    ]
+  },
+
+  "PianoTrack": {
+    "name": "PianoTrack",
+    "bpm": 100,
+    "tracks":[
+      {
+        "track_name": "pad1",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad2",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad3",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad4",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "lead",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "bass1",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      }   
+    ]
+  },
+
+  "OrcheTrack": {
+    "name": "OrcheTrack",
+    "bpm": 140,
+    "tracks":[
+      {
+        "track_name": "pad1",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "Resources/Presets/demo/STRINGS_-_Cello_Staccato_2.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad2",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/MALLET_-_Marimba_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad3",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "pad4",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/STRINGS_-_Duet_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "lead",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/WOODWIND_-_Flute_1_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "bass1",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/demo/BASS_-_Jazz_Slap_.fxp"
+          }
+        ]
+      }   
+    ]
+  } 
+}
+    
