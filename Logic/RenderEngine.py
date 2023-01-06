@@ -7,7 +7,7 @@ import dawdreamer
 
 from logger import logger_render
 from track import Track
-from pm_tests import check_length
+# from pm_tests import check_length
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -28,6 +28,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         each tracks in a style. For each track the plugins and presets
         are noticed.
         """
+        self.style_name = style.name
         for track_data in style.tracks:
             track_name = track_data['track_name']
             self.tracks[track_name] = Track(track_data,
@@ -49,14 +50,15 @@ class RenderEngine(dawdreamer.RenderEngine):
 
     def process_song(self, song_data):
         ""
-        logger_render.info('\nSong processing has started:')
+        logger_render.info(f'{song_data.Name} processing has started:')
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
         logger_render.debug('Started Rendering.')
         self.render(song_data.SongLengthInSeconds)
         self.rendered_output_path = song_data.OutputPath + \
-            f'demo_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+            f'{song_data.Name}_{self.style_name}_' + \
+            f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.wav'
         #    f'demo_{int(time.time())}.wav'
         logger_render.debug('Finished Rendering.')
         self.save_audio()
