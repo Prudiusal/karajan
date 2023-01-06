@@ -1,4 +1,5 @@
 import time
+import datetime
 from os.path import isfile
 
 from scipy.io import wavfile
@@ -55,7 +56,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.debug('Started Rendering.')
         self.render(song_data.SongLengthInSeconds)
         self.rendered_output_path = song_data.OutputPath + \
-            f'demo_{int(time.time())}.wav'
+            f'demo_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+        #    f'demo_{int(time.time())}.wav'
         logger_render.debug('Finished Rendering.')
         self.save_audio()
 
