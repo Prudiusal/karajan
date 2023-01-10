@@ -20,6 +20,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         super().__init__(self.sample_rate, self.buffer_size)
         self.tracks = {}
         self.graph = []
+        self.style_name = None
+        self.bpm = None
 
     def create_tracks(self, style):
         """
@@ -31,11 +33,15 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.style_name = style.name
         self.bpm = int(style.bpm)
         self.set_bpm(300.)  # TODO add test to check being unchanged
+        # here we save and pass the functions to create a processors with
+        # this engine.
+        functions = {'vst': self.make_plugin_processor,
+                     'faust': self.make_faust_processor,
+                     'add': self.make_add_processor}
+
         for track_data in style.tracks:
             track_name = track_data['track_name']
-            self.tracks[track_name] = Track(track_data,
-                                            self.make_plugin_processor,
-                                            self.make_add_processor)
+            self.tracks[track_name] = Track(track_data, functions)
             self.tracks[track_name].construct()  # creates all vst plugins
 
     def construct_graph(self):
