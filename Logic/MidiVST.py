@@ -3,34 +3,72 @@
 from logger import logger_VST
 
 
-class Vst_adder:
-    "Not used right now"
-    def init__(self, kwargs):
-        print(type(kwargs))
-        for k in kwargs:
-            print(k)
-        # super().__init__()
+def delay_creator(func, config, global_name):
+    """
+    This functions covers creation of the Delay processors and initial
+    setup for it.
+    """
+    logger_VST.error('Delay creator not implemented!')
+    pass
 
 
-def processor_configurator(func, config, track_name):
+def faust_creator(func, config, global_name):
+    """
+    This functions covers creation of the Faust processors and initial
+    setup for it.
+    """
+    # TODO: convert to '.get' with default to handle the errors of JSON
+    logger_VST.debug('FAUST IS CREATING')
+    dsp_path = config['dspPath']
+    logger_VST.debug(f'{global_name=}')
+    logger_VST.debug(f'{dsp_path=}')
+    # TODO: check for files, etc...
+    processor = func(global_name)
+    processor.set_dsp(dsp_path)
+    processor.compile()
+    assert(processor.compiled)
+    return processor
+
+
+def vst_creator(func, config, global_name):
+    """
+    This functions covers creation of the VST processors and initial
+    setup for it.
+    """
+    plugin_path = config['pluginPath']
+    preset_path = config['fxpPresetPath']
+    logger_VST.debug(f'{global_name=}')
+    logger_VST.debug(f'{plugin_path=}')
+    logger_VST.debug(f'{preset_path=}')
+    # TODO: check for files, etc...
+    processor = func(global_name, plugin_path)
+    processor.load_preset(preset_path)  # can be called in function
+    return processor
+
+
+def processor_creator(func, config, track_name):
     """
     With configuration from Json creates the plugins for one track
     :param func: method of RenderEngine, which creates the processor
     :param config: config for the one processor (VST)
     :param track_name: track to which processor refers to.
     :return: instance of dawdreamer.processor class.
-    """
-    plugin_name = config['pluginName']
-    plugin_path = config['pluginPath']
-    preset_path = config['fxpPresetPath']
 
-    plugin_name_global = f'{track_name}_{plugin_name}'
-    processor = func(plugin_name_global, plugin_path)
-    logger_VST.debug(preset_path)
-    processor.load_preset(preset_path)  # can be called in function
-    logger_VST.debug(f'Uses {processor.get_num_output_channels()}'
-                    ' output channels.')
-    return processor
+    """
+    # TODO: make it able to choose init in accordance with proc type
+    processor_type = config.get('type', 'vst')
+    processor_name = config['pluginName']
+    name_global = f'{track_name}_{processor_name}'
+
+    if processor_type == 'faust':
+        return faust_creator(func, config, name_global)
+    elif processor_type == 'vst':
+        return vst_creator(func, config, name_global)
+    else:
+        logger_VST.waring(f'Unknown type: {processor_type} for '
+                          f'{processor_name}')
+        return False
+
 
 class VST:
     """

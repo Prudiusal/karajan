@@ -32,7 +32,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         self.style_name = style.name
         self.bpm = int(style.bpm)
-        self.set_bpm(300.)  # TODO add test to check being unchanged
+        self.set_bpm(12000.)  # TODO add test to check being unchanged
         # here we save and pass the functions to create a processors with
         # this engine.
         functions = {'vst': self.make_plugin_processor,
@@ -55,9 +55,10 @@ class RenderEngine(dawdreamer.RenderEngine):
             track_tuples, track_output = track.get_track_tuples()
             self.graph.extend(track_tuples)
             adder_args.append(track_output)
+
         logger_render.debug(f'{len(adder_args)} input channels for Adder')
         add_processor = self.make_add_processor('add_processor',
-                                                [1]*len(adder_args))
+                                                [1] * len(adder_args))
         self.graph.append((add_processor, adder_args))
         logger_render.debug(self.graph)
 
@@ -102,16 +103,16 @@ class RenderEngine(dawdreamer.RenderEngine):
             synth = next(iter(processors.values()))  # take 1st
             if isfile(midi_path):
                 synth.load_midi(midi_path, beats=False)
-                midi_times.append(get_mid_length(midi_path, song_data.BPM, self.bpm))
+                midi_times.append(get_mid_length(midi_path, song_data.BPM,
+                                                 self.bpm))
             else:
-                logger_render.warning(f'midi file not found {midi_path}')
+                logger_render.error(f'midi file not found {midi_path}')
+                try:
+                    synth.load_midi(midi_path, beats=False)
+                except Exception as e:
+                    logger_render.error(f'Exception {e} occured')
 
         self.length_from_midi = max(midi_times)
-
-    # def preconfigure_renderer(self):
-    #     """Not used right now"""
-    #     self.engine(self.sample_rate, self.buffer_size)
-    #     self.engine.set_bpm(120.)
 
     def build_graph(self, serum_processor):
         """Not used right now"""
