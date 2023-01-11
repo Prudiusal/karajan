@@ -1,7 +1,7 @@
 import json
 # import logging
 from os.path import isfile
-import os
+# import os
 from pathlib import Path  # much more usefull, then os
 
 from pretty_midi import pretty_midi
@@ -45,9 +45,9 @@ class ConfigParser:
         self.config_path = Path('.') / 'Resources' / 'Configs'
         # :TODO change to env
         self.default_song_config = self.config_path / 'DemoSongsConfig.json'
-        self.default_style_config = self.config_path / 'DemoStylesConfig.json'
+        self.default_style_config = self.config_path / 'CompStylesConfig.json'
         self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
-        self.song = "Bruno"  # 7_Rings/Bruno
+        self.song = "7_Rings"  # 7_Rings/Bruno
         logger_conf.debug('current path for config is: '
                           f'{str(self.config_path.absolute())}')
 

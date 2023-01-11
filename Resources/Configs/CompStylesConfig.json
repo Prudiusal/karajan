@@ -10,6 +10,13 @@
             "pluginName": "serum",
             "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
             "fxpPresetPath": "Resources/Presets/0_XO.fxp"
+          },
+          {
+            "index": 1,
+            "type": "faust",
+            "sideChain": "synth2",
+            "pluginName": "sidechain",
+            "dspFaust": "Resources/faust_dsp/sidechain.dsp"
           }
         ]
       },
@@ -19,9 +26,9 @@
         [
           { 
             "index": 0,
-            "pluginName": "serum",
-            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
-            "fxpPresetPath": "./Resources/Presets/1_Serum.fxp"
+            "type": "faust",
+            "pluginName": "compressor",
+            "dspPath": "./Resources/faust_dsp/sidechain.dsp"
           }
         ]
       },
@@ -144,6 +151,13 @@
             "pluginName": "serum",
             "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
             "fxpPresetPath": "Resources/Presets/demo/STRINGS_-_Cello_Staccato_2.fxp"
+          },
+          {
+            "index": 1,
+            "type": "faust",
+            "sideChain": "synth2",
+            "pluginName": "sidechain",
+            "dspPath": "Resources/faust_dsp/sidechain.dsp"
           }
         ]
       },
