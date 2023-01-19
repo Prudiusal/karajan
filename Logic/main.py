@@ -1,4 +1,5 @@
-import sys
+# import sys
+import pretty_errors
 
 from ConfigParser import ConfigParser
 from RenderEngine import RenderEngine
@@ -23,4 +24,7 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    # sys.exit(main())
+    main()
+    if False:
+        pretty_errors

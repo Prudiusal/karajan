@@ -68,17 +68,14 @@ class Track:
                 self.sidechains[processor_name] = \
                     processor_conf.get("sideChain")
         # to use by sidechain. Output processor will have a default name
-        # TODO: cover with function
-        final_proc_func = self.proc_funcs.get('faust')
-        final_proc = final_proc_func(self.track_name)
-        final_proc.set_dsp_string('process = _, _;')
-        final_proc.compile()
-        assert(final_proc.compiled)
-        self.processors['final'] = final_proc
+        self.add_final_proc_channel(self.track_name)
         assert self.processors['final'].get_name() == self.track_name
         logger_track.debug('output proc name is '
                            f'{self.processors["final"].get_name()} for '
                            f'{self.track_name}')
+
+    def create_processor(self, f, processor_name):
+        pass
 
     def get_track_tuples(self):
         """Here we have to use the instances inside the track to combine
@@ -97,7 +94,6 @@ class Track:
                 inputs.extend(self.sidechains.get(processor))
                 logger_track.info(f'sidechain input: {inputs}')
             self.check_inputs(inputs)
-            # TODO: assert for the processor type
             self.tuples_track.append((processor, inputs))
             previous_processor = processor.get_name()
         logger_track.debug(self.tuples_track)
@@ -107,3 +103,12 @@ class Track:
     def check_inputs(proc_names_list):
         for proc_name in proc_names_list:
             assert type(proc_name) == str, 'Should be string'
+
+    def add_final_proc_channel(self, name):
+        final_proc_func = self.proc_funcs.get('faust')
+        final_proc = final_proc_func(name)
+        final_proc.set_dsp_string('process = _, _;')
+        final_proc.compile()
+        assert(final_proc.compiled)
+        self.processors['final'] = final_proc
+        # assert self.processors['final'].get_name() == self.track_name
