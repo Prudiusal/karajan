@@ -21,6 +21,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.graph = []
         self.style_name = None
         self.bpm = None
+        rendered_output_path = None
 
     def create_tracks(self, style):
         """
@@ -71,13 +72,15 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
         # assert self.bpm == self.get_bpm(), "The bpm has changed"
-        logger_render.info(f'Started Rendering - {self.length_from_midi}.')
+        logger_render.info(f'Started Rendering - {self.length_from_midi}')
+        time_rendering_start = datetime.datetime.now()
         self.render(self.length_from_midi)
+        time_rendering = datetime.datetime.now() - time_rendering_start
+        logger_render.info(f'Finished Rendering, time: {time_rendering.seconds}')
         self.rendered_output_path = song_data.OutputPath + \
             f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
+            f'{song_data.Artist}' + \
             f'{song_data.Name}_{self.style_name}.wav'
-        logger_render.debug('Finished Rendering.')
-        self.save_audio()
 
     def save_audio(self):
         """

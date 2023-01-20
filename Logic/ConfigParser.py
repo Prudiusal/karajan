@@ -51,11 +51,16 @@ class ConfigParser:
         logger_conf.debug('current path for config is: '
                           f'{str(self.config_path.absolute())}')
 
-    def build_midi_data(self):
+    def build_midi_data(self, song=None):
         """
         Consumes the Json config from the file, which is stored in attribute.
         :return: SongConfig object of a chosen (in attribute) song.
         """
+        print(type(self))
+        if song:
+            self.song = song
+
+
         check_json(self.default_song_config)
         with open(self.default_song_config, 'r') as js:
             data = json.load(js)
@@ -63,11 +68,14 @@ class ConfigParser:
         logger_conf.info(f'{self.style} is used')
         return song
 
-    def build_style_data(self):
+    def build_style_data(self, style=None):
         """
         Consumes the Json config from the file, which is stored in attribute.
         :return: StyleConfig object of a chosen (in attribute) style.
         """
+        if style:
+            self.style = style
+
         check_json(self.default_style_config)
         with open(self.default_style_config, 'r') as js:
             data = json.load(js)

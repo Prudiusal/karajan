@@ -14,13 +14,36 @@ def main():
     Creates the song with this engine.
     """
     parser = ConfigParser()  # will create __call__ later
-    style_data, song_data = parser.build_song_data()
+    style_data = parser.build_style_data('automidi')
     render_engine = RenderEngine(44100, 128)
     render_engine.create_tracks(style_data)
     logger_main.info('Tracks have been created')
     render_engine.construct_graph()
     logger_main.info('Graph has been constructed')
-    render_engine.process_song(song_data)
+
+    songs = ['7-Rings',
+             ]
+    #         'blow_out_my_candle',
+    #         'easy_lover',
+    #         'maybe_youre_the_problem',
+    #         'break_my_soul',
+    #         'sigala',
+    #         'about_damn_time',
+    #         'what_you_were_made_for',
+    #         'what_i_want',
+    #         'where_did_you_go',
+    #         'living_without_you',
+    #         'stay_the_night',
+    #         'sacrifice'
+    #         ]
+
+    for song in songs:
+        logger_main.info(f'{song} is in process')
+        song_data = parser.build_midi_data(song)
+        logger_main.info(f'Midi data build for {song} ')
+        render_engine.process_song(song_data)
+        logger_main.info(f'Song {song} is processed')
+        render_engine.save_audio()
 
 
 if __name__ == '__main__':

@@ -1,11 +1,9 @@
 {
-  "7_Rings": 
-  {
+  "7_Rings": {
     "Name": "7_rings",
-    "Artist": "Rihanna",
+    "Artist": "Ariana_Grande",
     "OutputPath": "./WAVs/",
     "BPM": 105,
-    "SongLengthInSeconds":  100,
     "Tracks": [
       {
         "track_name": "pad1",
@@ -33,14 +31,11 @@
       }
     ]
   },
-
-  "Bruno": 
-  {
+  "Bruno": {
     "Name": "Bruno",
     "Artist": "Bruno_Mars",
     "OutputPath": "./WAVs/",
     "BPM": 145,
-    "SongLengthInSeconds":  100,
     "Tracks": [
       {
         "track_name": "pad1",
@@ -66,6 +61,399 @@
         "track_name": "bass1",
         "midi_path": "./Resources/MIDI/bruno/pad3.mid"
       }
+    ]
+  }, 
+  "7-Rings": {
+    "Name": "7-Rings",
+    "Artist": "Ariana-Grande",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/Ariana-Grande-7-Rings-_guitar.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/Ariana-Grande-7-Rings-_piano.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/Ariana-Grande-7-Rings-_other.mid"
+      },
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/Ariana-Grande-7-Rings-_bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/Ariana-Grande-7-Rings-_drums.mid"
+      }
+    ]
+  }, 
+  "blow_out_my_candle": {
+    "Name": "blow_out_my_candle",
+    "Artist": "betty_who",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/betty_who_-_blow_out_my_candle__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/betty_who_-_blow_out_my_candle__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/betty_who_-_blow_out_my_candle__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/betty_who_-_blow_out_my_candle__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/betty_who_-_blow_out_my_candle__piano.mid"
+      } 
+    ]
+  }, 
+  "easy_lover": {
+    "Name": "easy_lover",
+    "Artist": "ellie_goulding",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/ellie_goulding_-_easy_lover__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/ellie_goulding_-_easy_lover__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/ellie_goulding_-_easy_lover__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/ellie_goulding_-_easy_lover__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/ellie_goulding_-_easy_lover__piano.mid"
+      } 
+    ]
+  }, 
+  "maybe_youre_the_problem": {
+    "Name": "maybe_youre_the_problem",
+    "Artist": "ava_max",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_ava_max_-_maybe_youre_the_problem__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_ava_max_-_maybe_youre_the_problem__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_ava_max_-_maybe_youre_the_problem__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_ava_max_-_maybe_youre_the_problem__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_ava_max_-_maybe_youre_the_problem__piano.mid"
+      } 
+    ]
+  }, 
+  "break_my_soul": {
+    "Name": "break_my_soul",
+    "Artist": "beyonc",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_beyonc_-_break_my_soul__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_beyonc_-_break_my_soul__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_beyonc_-_break_my_soul__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_beyonc_-_break_my_soul__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_beyonc_-_break_my_soul__piano.mid"
+      } 
+    ]
+  }, 
+  "sigala": {
+    "Name": "sigala",
+    "Artist": "melody",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_sigala_-_melody__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_sigala_-_melody__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_sigala_-_melody__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_sigala_-_melody__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/hiti_2022_-_sigala_-_melody__piano.mid"
+      } 
+    ]
+  }, 
+  "about_damn_time": {
+    "Name": "about_damn_time",
+    "Artist": "lizzo",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/lizzo_-_about_damn_time__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/lizzo_-_about_damn_time__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/lizzo_-_about_damn_time__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/lizzo_-_about_damn_time__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/lizzo_-_about_damn_time__piano.mid"
+      } 
+    ]
+  }, 
+  "what_you_were_made_for": {
+    "Name": "what_you_were_made_for",
+    "Artist": "mns_zelmerlw",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/mns_zelmerlw_-_what_you_were_made_for__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/mns_zelmerlw_-_what_you_were_made_for__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/mns_zelmerlw_-_what_you_were_made_for__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/mns_zelmerlw_-_what_you_were_made_for__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/mns_zelmerlw_-_what_you_were_made_for__piano.mid"
+      } 
+    ]
+  }, 
+  "what_i_want": {
+    "Name": "what_i_want",
+    "Artist": "muna",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/muna_-_what_i_want__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/muna_-_what_i_want__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/muna_-_what_i_want__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/muna_-_what_i_want__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/muna_-_what_i_want__piano.mid"
+      } 
+    ]
+  }, 
+  "where_did_you_go": {
+    "Name": "where_did_you_go",
+    "Artist": "jax_jones",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/muzika_v_mashinu_2022_-_jax_jones__mnek_-_where_did_you_go__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/muzika_v_mashinu_2022_-_jax_jones__mnek_-_where_did_you_go__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/muzika_v_mashinu_2022_-_jax_jones__mnek_-_where_did_you_go__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/muzika_v_mashinu_2022_-_jax_jones__mnek_-_where_did_you_go__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/muzika_v_mashinu_2022_-_jax_jones__mnek_-_where_did_you_go__piano.mid"
+      } 
+    ]
+  }, 
+  "living_without_you": {
+    "Name": "living_without_you",
+    "Artist": "sigala",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/sigala__david_guetta__sam_ryder_-_living_without_you__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/sigala__david_guetta__sam_ryder_-_living_without_you__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/sigala__david_guetta__sam_ryder_-_living_without_you__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/sigala__david_guetta__sam_ryder_-_living_without_you__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/sigala__david_guetta__sam_ryder_-_living_without_you__piano.mid"
+      } 
+    ]
+  }, 
+  "stay_the_night": {
+    "Name": "stay_the_night",
+    "Artist": "sigala_ft_talia_mar",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/sigala_ft_talia_mar_-_stay_the_night_dan_heale_remix__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/sigala_ft_talia_mar_-_stay_the_night_dan_heale_remix__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidisigala_ft_talia_mar_-_stay_the_night_dan_heale_remix__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/sigala_ft_talia_mar_-_stay_the_night_dan_heale_remix__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/sigala_ft_talia_mar_-_stay_the_night_dan_heale_remix__piano.mid"
+      } 
+    ]
+  }, 
+  "sacrifice": {
+    "Name": "sacrifice",
+    "Artist": "the_weeknd",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/the_weeknd_-_sacrifice__bass.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/the_weeknd_-_sacrifice__drums.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/the_weeknd_-_sacrifice__guitar.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/the_weeknd_-_sacrifice__other.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/the_weeknd_-_sacrifice__piano.mid"
+      } 
+    ]
+  }
+  , 
+  "pattern": {
+    "Name": "",
+    "Artist": "",
+    "OutputPath": "./WAVs/automidi/",
+    "BPM": 145,
+    "Tracks": [
+      {
+        "track_name": "bass",
+        "midi_path": "./Resources/MIDI/automidi/.mid"
+      },
+      {
+        "track_name": "drums",
+        "midi_path": "./Resources/MIDI/automidi/.mid"
+      },
+      {
+        "track_name": "guitar",
+        "midi_path": "./Resources/MIDI/automidi/.mid"
+      },
+      {
+        "track_name": "other",
+        "midi_path": "./Resources/MIDI/automidi/.mid"
+      },
+      {
+        "track_name": "piano",
+        "midi_path": "./Resources/MIDI/automidi/.mid"
+      } 
     ]
   }
 }

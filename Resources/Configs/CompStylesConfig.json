@@ -157,7 +157,7 @@
             "type": "faust",
             "sideChain": "synth2",
             "pluginName": "sidechain",
-            "dspPath": "Resources/faust_dsp/sidechain.dsp"
+            "dspPath ": "Resources/faust_dsp/sidechain.dsp"
           }
         ]
       },
@@ -222,6 +222,73 @@
         ]
       }   
     ]
-  } 
+  },
+
+  "automidi": {
+    "name": "automidi",
+    "bpm": 120,
+    "tracks":[
+      {
+        "track_name": "piano",
+        "plugins": 
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "Resources/Presets/KEY_-_Hammond_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "guitar",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/GUITAR_-_Guitar_Ez_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "other",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/PD_Slow_Pad.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "bass",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "serum",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+            "fxpPresetPath": "./Resources/Presets/BASS_-_Jazz_Slap_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "drums",
+        "plugins":
+        [
+          { 
+            "index": 0,
+            "pluginName": "ad2",
+            "pluginPath": "/Library/Audio/Plug-Ins/VST/AddictiveDrums2.vst",
+            "fxpPresetPath": "./Resources/Presets/ad2_basic.fxb"
+          }
+        ]
+      }   
+    ]
+  }  
 }
     
