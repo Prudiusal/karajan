@@ -9,6 +9,8 @@ dawdreamer = "*"
 python-dotenv = "*"
 pretty-midi = "*"
 coloredlogs = "*"
+pytest = "*"
+librosa = "*"
 
 [dev-packages]
 
