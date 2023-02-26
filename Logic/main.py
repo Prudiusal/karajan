@@ -1,8 +1,9 @@
 # import sys
+from pathlib import Path
 import pretty_errors
-
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, SongConfig
 from RenderEngine import RenderEngine
+
 
 from logger import logger_main
 
@@ -14,35 +15,32 @@ def main():
     Creates the song with this engine.
     """
     parser = ConfigParser()  # will create __call__ later
-    style_data = parser.build_style_data('automidi')
+    style_data = parser.build_style_data('automidi')  # style from config
     render_engine = RenderEngine(44100, 128)
     render_engine.create_tracks(style_data)
     logger_main.info('Tracks have been created')
     render_engine.construct_graph()
     logger_main.info('Graph has been constructed')
 
-    songs = ['7-Rings',
-             ]
-    #         'blow_out_my_candle',
-    #         'easy_lover',
-    #         'maybe_youre_the_problem',
-    #         'break_my_soul',
-    #         'sigala',
-    #         'about_damn_time',
-    #         'what_you_were_made_for',
-    #         'what_i_want',
-    #         'where_did_you_go',
-    #         'living_without_you',
-    #         'stay_the_night',
-    #         'sacrifice'
-    #         ]
+    drum_midi = './Resources/MIDI/piano_drums/drums/sample1.mid'
+    piano_mids = Path('./Resources/MIDI/piano_drums/piano')
 
-    for song in songs:
-        logger_main.info(f'{song} is in process')
-        song_data = parser.build_midi_data(song)
-        logger_main.info(f'Midi data build for {song} ')
+    for piano_midi in piano_mids.iterdir():
+        # outfile will have the name like a piano and drum midi files
+        name = '_'.join([piano_midi.stem, Path(drum_midi).stem])
+        config = {'Name': name,
+                  'Artist': 'NikitaTikhomirov',
+                  'OutputPath': './WAVs/automidi/',
+                  'BPM': 145,
+                  'Tracks': [{'track_name': 'AD2',  # change
+                              'midi_path': drum_midi},
+                             {'track_name': 'EZkeys',  # change
+                              'midi_path': str(piano_midi)}
+                             ]}
+        logger_main.info(f'{piano_midi.stem} is in process')
+        song_data = SongConfig(config)
         render_engine.process_song(song_data)
-        logger_main.info(f'Song {song} is processed')
+        logger_main.info(f'Song {piano_midi.stem} is processed')
         render_engine.save_audio()
 
 

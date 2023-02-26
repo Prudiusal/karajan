@@ -1,4 +1,31 @@
-{
+{ "PianoDrums": {
+  "tracks":[
+    {
+      "track_name": "EZkeys",
+      "plugins": 
+      [
+        {
+          "index": 0,
+          "pluginName": "EZkeys",
+          "pluginPath": "/Library/Audio/Plug-Ins/VST/Serum.vst",
+          "fxpPresetPath": "Resources/Presets/0_XO.fxp"
+        }
+      ]
+    },
+    {
+      "track_name": "drums",
+      "plugins":
+      [
+        { 
+          "index": 0,
+          "pluginName": "ad2",
+          "pluginPath": "/Library/Audio/Plug-Ins/VST/AddictiveDrums2.vst",
+          "fxpPresetPath": "./Resources/Presets/ad2_basic.fxb"
+        }
+      ]
+    }    
+  ]
+},
   "HouseTrackDemo": {
     "tracks":[
       {

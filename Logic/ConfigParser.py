@@ -60,7 +60,6 @@ class ConfigParser:
         if song:
             self.song = song
 
-
         check_json(self.default_song_config)
         with open(self.default_song_config, 'r') as js:
             data = json.load(js)
