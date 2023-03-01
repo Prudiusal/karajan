@@ -50,6 +50,8 @@ def vst_creator(func, config, global_name):
         index = 0  # index of parameter to change
         value = 'new_value_of_parameter'  # probably will be BPM
         processor.set_parameter(index, value)
+    if 'ezk' in global_name.lower():
+        processor.open_editor()
     return processor
 
 
