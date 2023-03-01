@@ -21,7 +21,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.graph = []
         self.style_name = None
         self.bpm = None
-        rendered_output_path = None
+        self.rendered_output_path = None
 
     def create_tracks(self, style):
         """
@@ -31,8 +31,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         are noticed.
         """
         self.style_name = style.name
-        self.bpm = int(style.bpm)
-        self.set_bpm(12000.)  # TODO add test to check being unchanged
+        self.bpm = getattr(style, 'bpm', None)
+        # self.set_bpm(12000.)  # TODO add test to check being unchanged
         # here we save and pass the functions to create a processors with
         # this engine.
         functions = {'vst': self.make_plugin_processor,
@@ -68,6 +68,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         :param song_data: SongConfig instance with all data for the song.
         """
         logger_render.info(f'{song_data.Name} processing has started:')
+        song_data.duplicate_midi_tmp()
+        # song_data.change_bpm(self.bpm)
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
@@ -76,7 +78,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         time_rendering_start = datetime.datetime.now()
         self.render(self.length_from_midi)
         time_rendering = datetime.datetime.now() - time_rendering_start
-        logger_render.info(f'Finished Rendering, time: {time_rendering.seconds}')
+        logger_render.info('Finished Rendering, time:'
+                           f'{time_rendering.seconds}')
         self.rendered_output_path = song_data.OutputPath + \
             f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
             f'{song_data.Artist}' + \
@@ -104,13 +107,13 @@ class RenderEngine(dawdreamer.RenderEngine):
             processors = self.tracks[track_name].processors
             synth = next(iter(processors.values()))  # take 1st
             if isfile(midi_path):
-                synth.load_midi(midi_path, beats=False)
+                synth.load_midi(midi_path, beats=True)
                 midi_times.append(get_mid_length(midi_path, song_data.BPM,
                                                  self.bpm))
             else:
                 logger_render.error(f'midi file not found {midi_path}')
                 try:
-                    synth.load_midi(midi_path, beats=False)
+                    synth.load_midi(midi_path, beats=True)
                 except Exception as e:
                     logger_render.error(f'Exception {e} occured')
 

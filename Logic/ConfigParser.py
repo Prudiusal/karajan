@@ -3,6 +3,8 @@ import json
 from os.path import isfile
 # import os
 from pathlib import Path  # much more usefull, then os
+import shutil
+from uuid import uuid4
 
 from pretty_midi import pretty_midi
 
@@ -26,6 +28,44 @@ class SongConfig:
     def __init__(self, d):
         self.__dict__ = d
     # here will be special methods to process the params, like the length check
+
+    def create_midi_duplicate_bpm(self, bpm):
+        """
+        Logic: if the bpm is presented in a style configuration, there should x
+        be a self.bpm with a value (None in other case).
+
+        To change the bpm midi file should be changed, so there is a need to
+        save a copy of a midi file without changing the initial one.
+
+        To add simplicity and provide the same workflow for all the cases, all
+        midi file will be duplicated in a ./tmp folder of a project (with the
+        same relative path.
+        """
+        if not bpm:
+            pass
+
+        else:
+            pass
+        return True
+
+    def duplicate_midi_tmp(self):
+        """
+        Creates copy of the song in ./tmp folder
+        """
+        self.tmp_path = Path('.') / 'tmp' / 'midi'
+        for track in self.Tracks:
+            new_name = str(uuid4()) + '.mid'
+            tmp_midi_path = self.tmp_path / new_name
+            print(Path('.').absolute())
+            print(tmp_midi_path.absolute())
+            shutil.copy(track['midi_path'], tmp_midi_path.absolute())
+            logger_conf.debug(f'{track["midi_path"]} copied into '
+                              f'{str(self.tmp_path)} as '
+                              f'{new_name}')
+            track['tmp_midi_path'] = tmp_midi_path.absolute()
+
+    def change_bpm(self):
+        return True
 
 
 class ConfigParser:
