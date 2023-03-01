@@ -43,6 +43,13 @@ def vst_creator(func, config, global_name):
     # TODO: check for files, etc...
     processor = func(global_name, plugin_path)
     processor.load_preset(preset_path)  # can be called in function
+    # make sure the plugin name in CopmStylesConfig contains 'XO'
+    # json: "PianoDrums['Tracks'][idx_of_track]['plugin_name'] = 'XO'
+    if 'XO' in global_name:
+        logger_VST.debug(processor.get_parameters_description())
+        index = 0  # index of parameter to change
+        value = 'new_value_of_parameter'  # probably will be BPM
+        processor.set_parameter(index, value)
     return processor
 
 
