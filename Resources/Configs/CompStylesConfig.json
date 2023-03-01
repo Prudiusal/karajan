@@ -1,4 +1,6 @@
 { "PianoDrums": {
+  "name": "PianoDrums",
+  "bpm": 120,
   "tracks":[
     {
       "track_name": "EZkeys",
@@ -13,7 +15,7 @@
       ]
     },
     {
-      "track_name": "drums",
+      "track_name": "Drums",
       "plugins":
       [
         { 
