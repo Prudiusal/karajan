@@ -15,7 +15,7 @@ def main():
     Creates the song with this engine.
     """
     parser = ConfigParser()  # will create __call__ later
-    style_data = parser.build_style_data('automidi')  # style from config
+    style_data = parser.build_style_data('PianoDrums')  # style from config
     render_engine = RenderEngine(44100, 128)
     render_engine.create_tracks(style_data)
     logger_main.info('Tracks have been created')
@@ -30,9 +30,9 @@ def main():
         name = '_'.join([piano_midi.stem, Path(drum_midi).stem])
         config = {'Name': name,
                   'Artist': 'NikitaTikhomirov',
-                  'OutputPath': './WAVs/automidi/',
+                  'OutputPath': './WAVs/test/',
                   'BPM': 145,
-                  'Tracks': [{'track_name': 'AD2',  # change
+                  'Tracks': [{'track_name': 'Drums',  # change
                               'midi_path': drum_midi},
                              {'track_name': 'EZkeys',  # change
                               'midi_path': str(piano_midi)}
