@@ -5,8 +5,10 @@ from os.path import isfile
 from pathlib import Path  # much more usefull, then os
 import shutil
 from uuid import uuid4
+from itertools import groupby
 
 from pretty_midi import pretty_midi
+from mido import MidiFile, bpm2tempo, tempo2bpm, MetaMessage
 
 from SongData import SongData
 from Exceptions import JsonError, JsonNotFoundError
@@ -29,25 +31,6 @@ class SongConfig:
         self.__dict__ = d
     # here will be special methods to process the params, like the length check
 
-    def create_midi_duplicate_bpm(self, bpm):
-        """
-        Logic: if the bpm is presented in a style configuration, there should x
-        be a self.bpm with a value (None in other case).
-
-        To change the bpm midi file should be changed, so there is a need to
-        save a copy of a midi file without changing the initial one.
-
-        To add simplicity and provide the same workflow for all the cases, all
-        midi file will be duplicated in a ./tmp folder of a project (with the
-        same relative path.
-        """
-        if not bpm:
-            pass
-
-        else:
-            pass
-        return True
-
     def duplicate_midi_tmp(self):
         """
         Creates copy of the song in ./tmp folder
@@ -64,8 +47,108 @@ class SongConfig:
                               f'{new_name}')
             track['tmp_midi_path'] = tmp_midi_path.absolute()
 
-    def change_bpm(self):
+    def set_or_validate_bpm(self, bpm):
+        """
+        Logic: if the bpm is presented in a style configuration, there should x
+        be a self.bpm with a value (None in other case).
+
+        To change the bpm midi file should be changed, so there is a need to
+        save a copy of a midi file without changing the initial one.
+
+        To add simplicity and provide the same workflow for all the cases, all
+        midi file will be duplicated in a ./tmp folder of a project (with the
+        same relative path.
+        """
+        if not bpm:
+            self.get_bpm()
+            logger_conf.info(f'Initial bpm is {self.bpm}')
+            return True
+        else:
+            self.change_bpm(bpm)
+            logger_conf.info(f'Changed bpm is {self.bpm}')
+            return True
+
+    def change_bpm(self, bpm):
+        logger_conf.debug(f'bpm is changing to {bpm}')
+        for track in self.Tracks:
+            midi_file_path = track['tmp_midi_path']
+            self.change_bpm_midifile(midi_file_path, bpm)
+            # TODO: probably unchanged midi track shold be removed
+        self.bpm = bpm
         return True
+
+    def change_bpm_midifile(self, filename, bpm):
+        try:
+            mid = MidiFile(filename)
+        except Exception as e:
+            logger_conf.error(e)
+        tempo = bpm2tempo(bpm)
+        if not self.change_tempo(mid, tempo):  # 'Tempo haven\'t changed'
+            self.add_set_tempo_msg(mid, bpm)
+        mid.save(filename)
+        return True
+
+    @staticmethod
+    def add_set_tempo_msg(mid, bpm):
+        set_tempo_msg = MetaMessage('set_tempo', tempo=bpm2tempo(bpm), time=0)
+        mid.tracks[0].append(set_tempo_msg)
+
+    @staticmethod
+    def change_tempo(mid, new_tempo):
+        flag = False
+        for track in mid.tracks:
+            for msg in track:
+                if msg.type == 'set_tempo':
+                    msg.tempo = new_tempo
+                    flag = True
+        return flag
+
+    def get_bpm(self):
+        logger_conf.debug(f'Getting the bpm')
+        bpms = []
+        for track in self.Tracks:
+            midi_file_path = track['tmp_midi_path']
+            bpm = self.get_bpm_midifile(midi_file_path)
+            if bpm:
+                bpms.append(bpm)
+                # TODO: probably unchanged midi track shold be removed
+        if not bpms:
+            logger_conf.debug('No bpm found for the mid')
+            logger_conf.debug('Default bpm 120 is used')
+            self.bpm = 120
+            return True
+        elif all_equal(bpms):
+            self.bpm = bpm
+            return True
+
+
+    @staticmethod
+    def get_bpm_midifile(filename):
+        try:
+            mid = MidiFile(filename)
+        except Exception as e:
+            logger_conf.error(e)
+        tempos = []
+        for track in mid.tracks:
+            for msg in track:
+                if msg.type == 'set_tempo':
+                    tempos.append(mst.tempo)
+        if not tempos:
+            return 120
+        elif all_equal(tempos):
+            return tempo2bpm(tempos[0])
+        elif not all_equal(tempos):
+            # TODO: if has not changed -> create message or delete midi
+            self.change_tempo(mid, tempo2bpm(tempos[0]))
+            mid.save(filename)
+            return tempo2bpm(tempos[0])
+
+
+
+
+def all_equal(iterable):
+    g = groupby(iterable)
+    return next(g, True) and not next(g, False)
 
 
 class ConfigParser:

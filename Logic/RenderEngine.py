@@ -69,7 +69,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         logger_render.info(f'{song_data.Name} processing has started:')
         song_data.duplicate_midi_tmp()
-        # song_data.change_bpm(self.bpm)
+        song_data.set_or_validate_bpm(self.bpm)
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
