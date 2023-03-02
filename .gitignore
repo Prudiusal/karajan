@@ -3,6 +3,12 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
+# config 
+Resources/Configs/CompStylesConfig.json
+
+# tmp midi files 
+tmp/midi/*
+
 # Node artifact files
 node_modules/
 dist/
