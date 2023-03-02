@@ -6,7 +6,7 @@ import dawdreamer
 
 from logger import logger_render
 from track import Track
-from pm_tests import get_mid_length
+# from pm_tests import get_mid_length
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -70,6 +70,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info(f'{song_data.Name} processing has started:')
         song_data.duplicate_midi_tmp()
         song_data.set_or_validate_bpm(self.bpm)
+        song_data.set_length_attribute()
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
         self.load_graph(self.graph)
@@ -103,18 +104,15 @@ class RenderEngine(dawdreamer.RenderEngine):
         midi_times = []
         for params in song_data.Tracks:
             track_name = params['track_name']
-            midi_path = params['midi_path']
+            midi_path = params['tmp_midi_path']
             processors = self.tracks[track_name].processors
             synth = next(iter(processors.values()))  # take 1st
-            if isfile(midi_path):
-                synth.load_midi(midi_path, beats=True)
-                midi_times.append(get_mid_length(midi_path, song_data.BPM,
-                                                 self.bpm))
-            else:
-                logger_render.error(f'midi file not found {midi_path}')
+            if midi_path.exists():
                 try:
-                    synth.load_midi(midi_path, beats=True)
+                    synth.load_midi(str(midi_path), beats=True)
                 except Exception as e:
                     logger_render.error(f'Exception {e} occured')
-
-        self.length_from_midi = max(midi_times)
+            else:
+                logger_render.error(f'midi file not found {midi_path}')
+        logger_render.debug(midi_times)
+        self.length_from_midi = song_data.Length

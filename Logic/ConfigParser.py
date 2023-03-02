@@ -7,7 +7,7 @@ import shutil
 from uuid import uuid4
 from itertools import groupby
 
-from pretty_midi import pretty_midi
+# from pretty_midi import pretty_midi
 from mido import MidiFile, bpm2tempo, tempo2bpm, MetaMessage
 
 from SongData import SongData
@@ -30,6 +30,21 @@ class SongConfig:
     def __init__(self, d):
         self.__dict__ = d
     # here will be special methods to process the params, like the length check
+    def set_length_attribute(self):
+        times = []
+        for track in self.Tracks:
+            path = track.get('tmp_midi_path', track.get('midi_path'))
+            try:
+                mid = MidiFile(str(path))
+            except Exception as e:
+                logger_conf.error(e)
+                logger_conf.info('length of 100 seconds is used')
+                times.append(100)
+                continue
+            times.append(mid.length)
+        self.Length = max(times)
+        return True
+
 
     def duplicate_midi_tmp(self):
         """
@@ -276,11 +291,11 @@ def check_json(path: Path):
         logger_conf.debug(f'Config file {str(path)} exists.')
 
 
-def get_length_to_render(song_data: SongData):
-    if song_data.length is None:
-        midi_data = pretty_midi.PrettyMIDI(song_data.midi_path)
-        logger_conf.info(f'midi conf loaded from {song_data.midi_path}')
-        return midi_data.instruments[0].get_end_time()
-    else:
-        logger_conf.warning(f'end time not found, length: {song_data.length}')
-        return song_data.length
+# def get_length_to_render(song_data: SongData):
+#     if song_data.length is None:
+#         midi_data = pretty_midi.PrettyMIDI(song_data.midi_path)
+#         logger_conf.info(f'midi conf loaded from {song_data.midi_path}')
+#         return midi_data.instruments[0].get_end_time()
+#     else:
+#         logger_conf.warning(f'end time not found, length: {song_data.length}')
+#         return song_data.length
