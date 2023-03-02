@@ -11,6 +11,7 @@ pretty-midi = "*"
 coloredlogs = "*"
 pytest = "*"
 librosa = "*"
+numpy = "*"
 
 [dev-packages]
 
