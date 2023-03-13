@@ -21,6 +21,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.graph = []
         self.style_name = None
         self.bpm = None
+        self.bpm_from_song = None
         self.rendered_output_path = None
 
     def create_tracks(self, style):
@@ -31,8 +32,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         are noticed.
         """
         self.style_name = style.name
-        self.bpm = getattr(style, 'bpm', None)
-        # self.set_bpm(12000.)  # TODO add test to check being unchanged
+        # self.bpm = getattr(style, 'bpm', None)
         # here we save and pass the functions to create a processors with
         # this engine.
         functions = {'vst': self.make_plugin_processor,
@@ -69,15 +69,17 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         logger_render.info(f'{song_data.Name} processing has started:')
         song_data.duplicate_midi_tmp()
-        song_data.set_or_validate_bpm(self.bpm)
-        song_data.set_length_attribute()
+        # TODO: save initial bpm (from set_tempo msgs)
+        song_data.delete_tempo_msgs()
+        song_length = song_data.calculate_length()
+
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
+        self.set_bpm(song_data.BPM)
         self.load_graph(self.graph)
-        # assert self.bpm == self.get_bpm(), "The bpm has changed"
-        logger_render.info(f'Started Rendering - {self.length_from_midi}')
+        logger_render.info(f'Started Rendering - {song_length}')
         time_rendering_start = datetime.datetime.now()
-        self.render(self.length_from_midi)
+        self.render(song_length)
         time_rendering = datetime.datetime.now() - time_rendering_start
         logger_render.info('Finished Rendering, time:'
                            f'{time_rendering.seconds}')
@@ -101,7 +103,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         Loads the midi files from the config to the appropriate synths.
         """
-        midi_times = []
+        # midi_times = []
         for params in song_data.Tracks:
             track_name = params['track_name']
             midi_path = params['tmp_midi_path']
@@ -114,5 +116,6 @@ class RenderEngine(dawdreamer.RenderEngine):
                     logger_render.error(f'Exception {e} occured')
             else:
                 logger_render.error(f'midi file not found {midi_path}')
-        logger_render.debug(midi_times)
-        self.length_from_midi = song_data.Length
+        # logger_render.debug(midi_times)
+        # self.length_from_midi = song_data.Length
+        # self.bpm_from_song = song_data.__dict__.get('BPM', None)

@@ -30,21 +30,37 @@ class SongConfig:
     def __init__(self, d):
         self.__dict__ = d
     # here will be special methods to process the params, like the length check
-    def set_length_attribute(self):
+
+    def calculate_length(self):
+        bpm = self.__dict__.get('BPM', 120)
+        if bpm == 120:
+            logger_conf.info('Standart bmp 120 is used')
+            self.BPM = 120
+        else:
+            logger_conf.info(f'Bmp {self.BPM} is used')
         times = []
+        # TODO: change to the max of all the files except the Drums
         for track in self.Tracks:
             path = track.get('tmp_midi_path', track.get('midi_path'))
             try:
                 mid = MidiFile(str(path))
             except Exception as e:
                 logger_conf.error(e)
-                logger_conf.info('length of 100 seconds is used')
-                times.append(100)
                 continue
             times.append(mid.length)
-        self.Length = max(times)
-        return True
+        length = min(times)
+        k = 120 / bpm  # default tempo corresponds to bpm=120
+        return k * length
 
+    def delete_tempo_msgs(self):
+        for song_track in self.Tracks:
+            midi_file = song_track['tmp_midi_path']
+            mid = MidiFile(midi_file)
+            for i, track in enumerate(mid.tracks):
+                track_filtered = [msg for msg in track
+                                  if msg.type != 'set_tempo']
+                mid.tracks[i] = track_filtered
+            mid.save(midi_file)
 
     def duplicate_midi_tmp(self):
         """
@@ -62,6 +78,22 @@ class SongConfig:
                               f'{new_name}')
             track['tmp_midi_path'] = tmp_midi_path.absolute()
 
+    def set_length_attribute(self):
+        """NOT USED"""
+        times = []
+        for track in self.Tracks:
+            path = track.get('tmp_midi_path', track.get('midi_path'))
+            try:
+                mid = MidiFile(str(path))
+            except Exception as e:
+                logger_conf.error(e)
+                logger_conf.info('length of 100 seconds is used')
+                times.append(100)
+                continue
+            times.append(mid.length)
+        self.Length = min(times)
+        return True
+
     def set_or_validate_bpm(self, bpm):
         """
         Logic: if the bpm is presented in a style configuration, there should x
@@ -75,10 +107,12 @@ class SongConfig:
         same relative path.
         """
         if not bpm:
+            return False
             self.get_bpm()
             logger_conf.info(f'Initial bpm is {self.bpm}')
             return True
         else:
+            return False
             self.change_bpm(bpm)
             logger_conf.info(f'Changed bpm is {self.bpm}')
             return True
@@ -119,7 +153,7 @@ class SongConfig:
         return flag
 
     def get_bpm(self):
-        logger_conf.debug(f'Getting the bpm')
+        logger_conf.debug('Getting the bpm')
         bpms = []
         for track in self.Tracks:
             midi_file_path = track['tmp_midi_path']
@@ -136,7 +170,6 @@ class SongConfig:
             self.bpm = bpm
             return True
 
-
     @staticmethod
     def get_bpm_midifile(filename):
         try:
@@ -147,18 +180,16 @@ class SongConfig:
         for track in mid.tracks:
             for msg in track:
                 if msg.type == 'set_tempo':
-                    tempos.append(mst.tempo)
+                    tempos.append(msg.tempo)
         if not tempos:
             return 120
         elif all_equal(tempos):
             return tempo2bpm(tempos[0])
         elif not all_equal(tempos):
             # TODO: if has not changed -> create message or delete midi
-            self.change_tempo(mid, tempo2bpm(tempos[0]))
+            # self.change_tempo(mid, tempo2bpm(tempos[0]))
             mid.save(filename)
             return tempo2bpm(tempos[0])
-
-
 
 
 def all_equal(iterable):
@@ -273,7 +304,7 @@ class ConfigParser:
                 song_data.preset_path = i['fxpPresetPath']
                 song_data.midi_path = i['midiPath']
 
-                song_data.length = get_length_to_render(song_data)
+                # song_data.length = get_length_to_render(song_data)
                 # TODO print in color
                 logger_conf.info(f'synthPath: {song_data.synth_path}')
                 logger_conf.info(f'fxpPresetPath: {song_data.preset_path}')
@@ -297,5 +328,5 @@ def check_json(path: Path):
 #         logger_conf.info(f'midi conf loaded from {song_data.midi_path}')
 #         return midi_data.instruments[0].get_end_time()
 #     else:
-#         logger_conf.warning(f'end time not found, length: {song_data.length}')
+#         logger_conf.warning(f'end time not found, length:{song_data.length}')
 #         return song_data.length
