@@ -31,10 +31,10 @@ def main():
         config = {'Name': name,
                   'Artist': 'NikitaTikhomirov',
                   'OutputPath': './WAVs/test/',
-                  'BPM': 145,
+                  'BPM': 75,
                   'Tracks': [{'track_name': 'Drums',  # change
                               'midi_path': drum_midi},
-                             {'track_name': 'EZkeys',  # change
+                             {'track_name': 'Serum',  # change
                               'midi_path': str(piano_midi)}
                              ]}
         logger_main.info(f'{piano_midi.stem} is in process')

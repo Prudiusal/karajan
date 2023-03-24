@@ -12,6 +12,7 @@ coloredlogs = "*"
 pytest = "*"
 librosa = "*"
 numpy = "*"
+pretty-errors = "*"
 
 [dev-packages]
 
