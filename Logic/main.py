@@ -23,9 +23,12 @@ def main():
     logger_main.info('Graph has been constructed')
 
     drum_midi = './Resources/MIDI/piano_drums/drums/sample1.mid'
-    piano_mids = Path('./Resources/MIDI/piano_drums/piano')
+    piano_mids_path = Path('./Resources/MIDI/piano_drums/piano')
+    strings_mids_path = Path('./Resources/MIDI/piano_drums/strings')
+    piano_midi_files = sorted(piano_mids_path.iterdir())
+    strings_midi_files = sorted(strings_mids_path.iterdir())
 
-    for piano_midi in piano_mids.iterdir():
+    for piano_midi, strings_midi in zip(piano_midi_files, strings_midi_files):
         # outfile will have the name like a piano and drum midi files
         name = '_'.join([piano_midi.stem, Path(drum_midi).stem])
         config = {'Name': name,
@@ -34,8 +37,10 @@ def main():
                   'BPM': 75,
                   'Tracks': [{'track_name': 'Drums',  # change
                               'midi_path': drum_midi},
-                             {'track_name': 'Serum',  # change
-                              'midi_path': str(piano_midi)}
+                             {'track_name': 'Piano',  # change
+                              'midi_path': str(piano_midi)},
+                             {'track_name': 'Strings',  # change
+                              'midi_path': str(strings_midi)}
                              ]}
         logger_main.info(f'{piano_midi.stem} is in process')
         song_data = SongConfig(config)
