@@ -8,6 +8,9 @@ class Track:
     """
     Contains all the plugins for one line of the processing.
     Stores the plugins and other processors.
+    Creates the processors with help of related to RenderEngine
+    methods. 
+    
     """
 
     def __init__(self, style_data, proc_funcs):
@@ -37,8 +40,19 @@ class Track:
             5. If processor is not created -> ignore him
             6. If synth is not created -> ignore channel
         """
+
+        # plugins_data is a part of 'StyleConfig.json', which 
+        # describes the plugin (processor) and its preset.
+        # Generally, there can be multiple types of processors.
+        # In addition to VST, sidechain compression is implemented
+        # with Faust processor. Creation of the different types 
+        # of processors requires different methods of the RenderEngine,
+        # which are stored in a self.proc_funcs.
+
         for processor_conf in self.plugins_data:
             processor_name = processor_conf['pluginName']
+            # we suppose, that 'standart' type is vst, so for other 
+            # types of processors there is a need of 'type' field in config.
             processor_type = processor_conf.get('type', 'vst')
             logger_track.debug(f'{processor_type =}')
 
@@ -50,12 +64,13 @@ class Track:
             else:
                 logger_track.warning(f'Processor {processor_name} not created')
                 if not len(self.processors):
+                    # remark: synth is the first plugin in a json.
                     logger_track.error(f'Track {self.track} name has no synth'
                                        ' and its will not be used')
                     # TODO: exit it synth is not created, handle the midi
                     # loading
                 continue
-
+            
             if processor_name == 'ad2':  # this plugin requires summation
                 logger_track.info('Addictive drum 2 is used')
                 adder_func = self.proc_funcs.get('add')
@@ -67,7 +82,9 @@ class Track:
                                   f'{processor_conf.get("sideChain")} is used')
                 self.sidechains[processor_name] = \
                     processor_conf.get("sideChain")
-        # to use by sidechain. Output processor will have a default name
+        # to use by sidechain. 
+        # The output processor will have a default name and implemented as 
+        # an faust gate.
         self.add_final_proc_channel(self.track_name)
         assert self.processors['final'].get_name() == self.track_name
         logger_track.debug('output proc name is '
@@ -105,6 +122,9 @@ class Track:
             assert type(proc_name) == str, 'Should be string'
 
     def add_final_proc_channel(self, name):
+        # to simplify managing of the 'end' of track, on
+        # the end of each plugins line an empty faust
+        # processor is added.
         final_proc_func = self.proc_funcs.get('faust')
         final_proc = final_proc_func(name)
         final_proc.set_dsp_string('process = _, _;')

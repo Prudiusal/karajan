@@ -11,6 +11,16 @@ from track import Track
 
 class RenderEngine(dawdreamer.RenderEngine):
     """
+    Main class of the project, it implements the functionality
+    of a DAW. Configuration is set by 'style_config', which 
+    is created in a ConfigParser.py
+
+    Configured object of this class can render multiple midi 
+    tracks as one song. For each track midi file is loaded. 
+
+    Additional configuration of the BPM is allowed through 
+    the setting in 'song_data'.
+
     Creates engine, stores tracks configuration for the style.
     """
     def __init__(self, sample_rate=44100, buffer_size=128):
