@@ -27,23 +27,26 @@ def main():
     drum_midi = './Resources/MIDI/piano_drums/drums/sample1.mid'
     piano_mids_path = Path('./Resources/MIDI/piano_drums/piano')
     strings_mids_path = Path('./Resources/MIDI/piano_drums/strings')
-    piano_midi_files = sorted(piano_mids_path.iterdir())
-    strings_midi_files = sorted(strings_mids_path.iterdir())
+    piano_midi_files = sorted([p for p in piano_mids_path.iterdir()
+                               if not str(p.stem).startswith('.')])
+    strings_midi_files = sorted([p for p in strings_mids_path.iterdir()
+                                 if not str(p.stem).startswith('.')])
 
     # we are zipping the lists of file in order to iterate over multiple files
     for piano_midi, strings_midi in zip(piano_midi_files, strings_midi_files):
         # outfile will have the name like a piano and drum midi files
+        logger_main.warning(f'{str(piano_midi)}, {str(strings_midi)}')
         name = '_'.join([piano_midi.stem, Path(drum_midi).stem])
         # creation of the config (json-style) for the track
         config = {'Name': name,
-                  'Artist': 'NikitaTikhomirov',
+                  'Artist': 'NoBPM',
                   'OutputPath': './WAVs/test/',
-                  'BPM': 75,
-                  'Tracks': [{'track_name': 'Drums',   
+                  # 'BPM': 75,
+                  'Tracks': [{'track_name': 'Drums',
                               'midi_path': drum_midi},
-                             {'track_name': 'Piano', 
+                             {'track_name': 'Piano',
                               'midi_path': str(piano_midi)},
-                             {'track_name': 'Strings',  
+                             {'track_name': 'Strings',
                               'midi_path': str(strings_midi)}
                              ]}
         logger_main.info(f'{piano_midi.stem} is in process')

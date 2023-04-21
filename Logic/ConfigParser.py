@@ -65,7 +65,7 @@ class SongConfig:
     def duplicate_midi_tmp(self):
         """
         Creates copy of the song in ./tmp folder
-        This allows to change the midi files while 
+        This allows to change the midi files while
         the processing, without changing the original file
         """
         self.tmp_path = Path('.') / 'tmp' / 'midi'
