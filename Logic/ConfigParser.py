@@ -13,6 +13,7 @@ from mido import MidiFile, bpm2tempo, tempo2bpm, MetaMessage
 from SongData import SongData
 from Exceptions import JsonError, JsonNotFoundError
 from logger import logger_conf
+from colors import red
 
 
 class StyleConfig:
@@ -32,12 +33,8 @@ class SongConfig:
     # here will be special methods to process the params, like the length check
 
     def calculate_length(self):
-        bpm = self.__dict__.get('BPM', 120)
-        if bpm == 120:
-            logger_conf.info('Standart bmp 120 is used')
-            self.BPM = 120
-        else:
-            logger_conf.info(f'Bmp {self.BPM} is used')
+        bpm = self.__dict__.get('BPM', '989999999')
+        logger_conf.info(f'Bmp {self.BPM} is used')
         times = []
         # TODO: change to the max of all the files except the Drums
         for track in self.Tracks:
@@ -61,6 +58,29 @@ class SongConfig:
                                   if msg.type != 'set_tempo']
                 mid.tracks[i] = track_filtered
             mid.save(midi_file)
+
+    def get_bpm_from_msgs(self):
+        for song_track in self.Tracks:
+            midi_file = song_track['tmp_midi_path']
+            mid = MidiFile(midi_file)
+            bpms = []
+            for i, track in enumerate(mid.tracks):
+                print
+                bpms.extend([tempo2bpm(msg.tempo) for msg in track
+                             if msg.type == 'set_tempo'])
+                ms = [msg.type for msg in track
+                      if msg.type not in ['note_on', 'note_off']]
+                print(red(str(ms)))
+            if not len(bpms):
+                logger_conf.error('Tempo messages not found!')
+                return 120
+            elif len(bpms) == 1 or len(set(bpms)) == 1:
+                logger_conf.info(f'Tempo {bpms[0]} found')
+                return bpms[0]
+            else:
+                logger_conf.error(f'FOUND {len(set(bpms))} : {set(bpms)}')
+                logger_conf.error(f'{bpms[0]} is used')
+                return bpms[0]
 
     def duplicate_midi_tmp(self):
         """

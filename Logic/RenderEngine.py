@@ -1,8 +1,11 @@
 import datetime
 from os.path import isfile
+# from os import remove
 
 from scipy.io import wavfile
 import dawdreamer
+# import audiofile as af
+# from pydub import AudioSegment
 
 from logger import logger_render
 from track import Track
@@ -12,13 +15,13 @@ from track import Track
 class RenderEngine(dawdreamer.RenderEngine):
     """
     Main class of the project, it implements the functionality
-    of a DAW. Configuration is set by 'style_config', which 
+    of a DAW. Configuration is set by 'style_config', which
     is created in a ConfigParser.py
 
-    Configured object of this class can render multiple midi 
-    tracks as one song. For each track midi file is loaded. 
+    Configured object of this class can render multiple midi
+    tracks as one song. For each track midi file is loaded.
 
-    Additional configuration of the BPM is allowed through 
+    Additional configuration of the BPM is allowed through
     the setting in 'song_data'.
 
     Creates engine, stores tracks configuration for the style.
@@ -80,12 +83,16 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info(f'{song_data.Name} processing has started:')
         song_data.duplicate_midi_tmp()
         # TODO: save initial bpm (from set_tempo msgs)
+        # bpm_from_midi = song_data.get_bpm_from_msgs()
+        # if no BPM specified, it is taken from a midi file
+        if not hasattr(song_data, 'BPM'):
+            song_data.BPM = song_data.get_bpm_from_msgs()
         song_data.delete_tempo_msgs()
         song_length = song_data.calculate_length()
+        self.set_bpm(song_data.BPM)
 
         self.load_midi_into_tracks(song_data)
         logger_render.debug('Midi files are loaded\n')
-        self.set_bpm(song_data.BPM)
         self.load_graph(self.graph)
         logger_render.info(f'Started Rendering - {song_length}')
         time_rendering_start = datetime.datetime.now()
@@ -94,9 +101,10 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info('Finished Rendering, time:'
                            f'{time_rendering.seconds}')
         self.rendered_output_path = song_data.OutputPath + \
-            f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
-            f'{song_data.Artist}' + \
-            f'{song_data.Name}_{self.style_name}.wav'
+            f'{song_data.Artist}_' + \
+            '.style_name.wav'
+        # f'{song_data.Name}_{self.style_name}.wav'
+        # f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
 
     def save_audio(self):
         """
@@ -106,6 +114,17 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info(f'output path is {self.rendered_output_path}')
         wavfile.write(self.rendered_output_path, self.sample_rate,
                       audio.transpose())
+
+        # path_mp3 = '.'.join(self.rendered_output_path.split('.')[:-1])
+        # with af.AudioFile(self.rendered_output_path) as f:
+        #     audio_data = f.read()
+
+        # with af.AudioFile(path_mp3, 'w', af.Format('mp3', 'pcm')) as f:
+        #     f.write(audio_data)
+        # wav_file = AudioSegment.from_wav(self.rendered_output_path)
+        # wav_file.export(path_mp3, format='mp3')
+        # remove(self.rendered_output_path_mp3)
+
         if not isfile(self.rendered_output_path):
             logger_render.error('File is not saved')
 
