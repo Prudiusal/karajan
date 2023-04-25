@@ -13,6 +13,8 @@ pytest = "*"
 librosa = "*"
 numpy = "*"
 pretty-errors = "*"
+pydub = "*"
+audiofile = "*"
 
 [dev-packages]
 
