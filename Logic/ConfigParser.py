@@ -34,7 +34,7 @@ class SongConfig:
 
     def calculate_length(self):
         bpm = self.__dict__.get('BPM', '989999999')
-        logger_conf.info(f'Bmp {self.BPM} is used')
+        logger_conf.warning(red(f'Bmp {self.BPM} is used'))
         times = []
         # TODO: change to the max of all the files except the Drums
         for track in self.Tracks:

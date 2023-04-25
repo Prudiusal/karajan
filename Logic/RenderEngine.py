@@ -101,8 +101,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info('Finished Rendering, time:'
                            f'{time_rendering.seconds}')
         self.rendered_output_path = song_data.OutputPath + \
-            f'{song_data.Artist}_' + \
-            '.style_name.wav'
+            f'{song_data.Name}_' + \
+            '.wav'
         # f'{song_data.Name}_{self.style_name}.wav'
         # f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
 

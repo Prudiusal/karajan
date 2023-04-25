@@ -2,7 +2,7 @@ import logging
 
 # import coloredlogs
 
-logging.basicConfig(level=logging.WARNING,
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s'
                     ' %(message)s')
 
