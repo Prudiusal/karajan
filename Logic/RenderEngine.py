@@ -31,6 +31,7 @@ class RenderEngine(dawdreamer.RenderEngine):
         self.buffer_size = buffer_size
         super().__init__(self.sample_rate, self.buffer_size)
         self.tracks = {}
+        self.master = None  # Track instance
         self.graph = []
         self.style_name = None
         self.bpm = None
@@ -57,6 +58,10 @@ class RenderEngine(dawdreamer.RenderEngine):
             self.tracks[track_name] = Track(track_data, functions)
             self.tracks[track_name].construct()  # creates all vst plugins
 
+        if hasattr(style, 'master'):
+            self.master = Track(style.master, functions)
+            self.master.construct()
+
     def construct_graph(self):
         """
         Asks each track of the song to create the tuples for the graph.
@@ -65,14 +70,20 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         adder_args = []
         for track in self.tracks.values():
-            track_tuples, track_output = track.get_track_tuples()
-            self.graph.extend(track_tuples)
-            adder_args.append(track_output)
+            track_tuples, track_output = track.get_track_tuples()  # no init
+            self.graph.extend(track_tuples)  # tuples of processors
+            adder_args.append(track_output)  # we are adding the last to adder
 
         logger_render.debug(f'{len(adder_args)} input channels for Adder')
-        add_processor = self.make_add_processor('add_processor',
+        adder_name = 'add_proc'
+        add_processor = self.make_add_processor(adder_name,
                                                 [1] * len(adder_args))
         self.graph.append((add_processor, adder_args))
+
+        if self.master:
+            tuples, output = self.master.get_track_tuples(adder_name)
+            self.graph.extend(track)  # tuples of processors
+
         logger_render.debug(self.graph)
 
     def process_song(self, song_data):
