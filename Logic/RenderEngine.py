@@ -1,11 +1,11 @@
 import datetime
 from os.path import isfile
-# from os import remove
+import os
 
 from scipy.io import wavfile
 import dawdreamer
 # import audiofile as af
-# from pydub import AudioSegment
+from pydub import AudioSegment
 
 from logger import logger_render
 from track import Track
@@ -125,18 +125,20 @@ class RenderEngine(dawdreamer.RenderEngine):
         logger_render.info(f'output path is {self.rendered_output_path}')
         wavfile.write(self.rendered_output_path, self.sample_rate,
                       audio.transpose())
+        if not isfile(self.rendered_output_path):
+            logger_render.error('File is not saved')
 
-        # path_mp3 = '.'.join(self.rendered_output_path.split('.')[:-1])
+        path_mp3 = '.'.join(self.rendered_output_path.split('.')[:-1]) + '.mp3'
         # with af.AudioFile(self.rendered_output_path) as f:
         #     audio_data = f.read()
 
         # with af.AudioFile(path_mp3, 'w', af.Format('mp3', 'pcm')) as f:
         #     f.write(audio_data)
-        # wav_file = AudioSegment.from_wav(self.rendered_output_path)
-        # wav_file.export(path_mp3, format='mp3')
-        # remove(self.rendered_output_path_mp3)
+        wav_file = AudioSegment.from_wav(self.rendered_output_path)
+        wav_file.export(path_mp3, format='mp3')
+        os.remove(self.rendered_output_path)
 
-        if not isfile(self.rendered_output_path):
+        if not isfile(path_mp3):
             logger_render.error('File is not saved')
 
     def load_midi_into_tracks(self, song_data):
