@@ -82,7 +82,7 @@ class RenderEngine(dawdreamer.RenderEngine):
 
         if self.master:
             tuples, output = self.master.get_track_tuples(adder_name)
-            self.graph.extend(track)  # tuples of processors
+            self.graph.extend(tuples)  # tuples of processors
 
         logger_render.debug(self.graph)
 
