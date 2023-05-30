@@ -1,11 +1,11 @@
-# import sys
+from Logic import ConfigParser, SongConfig, RenderEngine, logger_main
 from pathlib import Path
 import pretty_errors
-from ConfigParser import ConfigParser, SongConfig
-from RenderEngine import RenderEngine
+# from ConfigParser import ConfigParser, SongConfig
+# from RenderEngine import RenderEngine
 
 
-from logger import logger_main
+# from logger import
 
 
 def main():
@@ -25,9 +25,9 @@ def main():
     # The song_data object is created on a base of dictionary
     # Here the dicts are created with the midi files of the folders.
     # drum_midi = './Resources/MIDI/piano_drums/drums/sample1.mid'
-    piano_mids_path = Path('./Resources/MIDI/bpm_test/piano')
-    strings_mids_path = Path('./Resources/MIDI/bpm_test/strings')
-    drums_mids_path = Path('./Resources/MIDI/bpm_test/drums')
+    piano_mids_path = Path('Resources/MIDI/bpm_test/piano')
+    strings_mids_path = Path('Resources/MIDI/bpm_test/strings')
+    drums_mids_path = Path('Resources/MIDI/bpm_test/drums')
     piano_midi_files = sorted([p for p in piano_mids_path.iterdir()
                                if not str(p.stem).startswith('.')],
                               key=lambda x: x.name)
@@ -67,6 +67,8 @@ def main():
 
 
 if __name__ == '__main__':
+    import sys
+    print(sys.path)
     # sys.exit(main())
     main()
     if False:

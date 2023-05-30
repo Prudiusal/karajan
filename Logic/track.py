@@ -1,7 +1,10 @@
 from collections import OrderedDict
 
 from logger import logger_track
-from MidiVST import processor_creator
+from processor_creators import processor_creator
+
+from Exceptions import WrongDawDreamerProcessor
+from Exceptions import TrackFinalFaustProcessorError
 
 
 class Track:
@@ -54,7 +57,10 @@ class Track:
             # we suppose, that 'standart' type is vst, so for other
             # types of processors there is a need of 'type' field in config.
             processor_type = processor_conf.get('type', 'vst')
-            logger_track.debug(f'{processor_type =}')
+            if not self.proc_funcs.get(processor_type):
+                raise WrongDawDreamerProcessor('Type should match the '
+                                               'processors')
+            # logger_track.debug(f'{processor_type =}')
 
             f = self.proc_funcs.get(processor_type)
             # TODO: convert to method (to use with Ad2 etc)
@@ -65,7 +71,7 @@ class Track:
                 logger_track.warning(f'Processor {processor_name} not created')
                 if not len(self.processors):
                     # remark: synth is the first plugin in a json.
-                    logger_track.error(f'Track {self.track} name has no synth'
+                    logger_track.error(f'Track {self.track_name} has no synth'
                                        ' and its will not be used')
                     # TODO: exit it synth is not created, handle the midi
                     # loading
@@ -85,14 +91,16 @@ class Track:
         # to use by sidechain.
         # The output processor will have a default name and implemented as
         # an faust gate.
-        self.add_final_proc_channel(self.track_name)
+        try:
+            final_proc = self.create_final_proc_channel(self.track_name)
+        except Exception as e:
+            logger_track.error(f'{e}\n Final processor of the has not created')
+            raise TrackFinalFaustProcessorError
+        self.processors['final'] = final_proc
         assert self.processors['final'].get_name() == self.track_name
         logger_track.debug('output proc name is '
                            f'{self.processors["final"].get_name()} for '
                            f'{self.track_name}')
-
-    def create_processor(self, f, processor_name):
-        pass
 
     def get_track_tuples(self, previous_processor=None):
         """Here we have to use the instances inside the track to combine
@@ -120,7 +128,7 @@ class Track:
         for proc_name in proc_names_list:
             assert type(proc_name) == str, 'Should be string'
 
-    def add_final_proc_channel(self, name):
+    def create_final_proc_channel(self, name):
         # to simplify managing of the 'end' of track, on
         # the end of each plugins line an empty faust
         # processor is added.
@@ -129,5 +137,5 @@ class Track:
         final_proc.set_dsp_string('process = _, _;')
         final_proc.compile()
         assert(final_proc.compiled)
-        self.processors['final'] = final_proc
+        return final_proc
         # assert self.processors['final'].get_name() == self.track_name

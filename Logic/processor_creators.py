@@ -1,6 +1,10 @@
 # from dawdreamer import PluginProcessor
-
+from pathlib import Path
+from Exceptions import WrongDawDreamerProcessor  # DSPNotFoundError
+from Exceptions import DSPNotFoundError, PluginNotFoundError, \
+    PresetNotFoundError
 from logger import logger_VST
+# from helpers import red
 
 
 def delay_creator(func, config, global_name):
@@ -20,6 +24,7 @@ def faust_creator(func, config, global_name):
     # TODO: convert to '.get' with default to handle the errors of JSON
     logger_VST.debug('FAUST IS CREATING')
     dsp_path = config['dspPath']
+    check_dsp_path(dsp_path)
     logger_VST.debug(f'{global_name=}')
     logger_VST.debug(f'{dsp_path=}')
     # TODO: check for files, etc...
@@ -30,6 +35,30 @@ def faust_creator(func, config, global_name):
     return processor
 
 
+def check_dsp_path(path):
+    p = Path(path)
+    if not p.exists():
+        raise DSPNotFoundError(f'DSP Preset doesn\'t exist:{path}')
+
+
+# def check_dsp_path(path):
+#     p = Path(path)
+#     if not p.exists():
+#         raise FileNotFoundError(f'DSP Preset doesn\'t exist:{path}')
+
+
+def check_plugin_path(path):
+    p = Path(path)
+    if not p.exists():
+        raise PluginNotFoundError(f'Plugin path doesn\'t exist:{path}')
+
+
+def check_preset_path(path):
+    p = Path(path)
+    if not p.exists():
+        raise PresetNotFoundError(f'Plugin preset doesn\'t exist:{path}')
+
+
 def vst_creator(func, config, global_name):
     """
     This functions covers creation of the VST processors and initial
@@ -37,6 +66,8 @@ def vst_creator(func, config, global_name):
     """
     plugin_path = config['pluginPath']
     preset_path = config['fxpPresetPath']
+    check_plugin_path(plugin_path)
+    check_preset_path(preset_path)
     logger_VST.debug(f'{global_name=}')
     logger_VST.debug(f'{plugin_path=}')
     logger_VST.debug(f'{preset_path=}')
@@ -64,82 +95,94 @@ def processor_creator(func, config, track_name):
     :return: instance of dawdreamer.processor class.
 
     """
-    # TODO: make it able to choose init in accordance with proc type
     processor_type = config.get('type', 'vst')
     processor_name = config['pluginName']
     name_global = f'{track_name}_{processor_name}'
 
     if processor_type == 'faust':
-        return faust_creator(func, config, name_global)
+        try:
+            return faust_creator(func, config, name_global)
+        except DSPNotFoundError as dspe:
+            logger_VST.error(dspe)
+            return False
+
     elif processor_type == 'vst':
-        return vst_creator(func, config, name_global)
+        try:
+            return vst_creator(func, config, name_global)
+        except PluginNotFoundError as ple:
+            logger_VST.error(ple)
+            return False
+        except PresetNotFoundError as pre:
+            logger_VST.error(pre)
+            return False
     else:
         logger_VST.waring(f'Unknown type: {processor_type} for '
                           f'{processor_name}')
+        raise WrongDawDreamerProcessor
         return False
 
 
-class VST:
-    """
-    not used right now!
+# class VST:
+#     """
+#     not used right now!
+#
+#     Class creates the plugin processor with custom parameters
+#     (index, track, midi=T/F, path to the plugin, path to the preset)
+#     """
+#     def __init__(self, func, config, track_name):
+#         self.index = config['index']
+#         self.plugin_name = config['pluginName']  # same in default
+#         self.preset_path = config['fxpPresetPath']  # useless
+#         self.track_name = track_name  # used only with __init__
+#         self.plugin_name_global = f'{self.track_name}_{self.plugin_name}'
+#
+#         self.plugin = func(self.plugin_name_global, self.plugin_path)
+#         logger_VST.debug(self.preset_path)
+#         self.plugin.load_preset(self.preset_path)  # can be called in functio
+#         logger_VST.info(f'Uses {self.plugin.get_num_output_channels()}'
+#                         ' output channels.')
+#
+#         if self.plugin_name == 'ad2':
+#             logger_VST.info('AD2 plugin is used')
+#             logger_VST.info(f'AD2 uses {self.plugin.get_num_output_chanls()}'
+#                             ' output channels.')
+#             logger_VST.info(f'AD2 uses {self.plugin.get_num_input_chanels()}'
+#                             ' input channels.')
+#             # print(self.plugin.get_plugin_parameters_description())
+#             # self.plugin.set_bus(0, 1)
+#             logger_VST.info(f'AD2 uses {self.plugin.get_num_output_chaels()}'
+#                             ' output channels.')
+#             logger_VST.info(f'AD2 uses {self.plugin.get_num_input_chanels()}'
+#                             ' input channels.')
 
-    Class creates the plugin processor with custom parameters
-    (index, track, midi=T/F, path to the plugin, path to the preset)
-    """
-    def __init__(self, func, config, track_name):
-        self.index = config['index']
-        self.plugin_name = config['pluginName']  # same in default
-        self.preset_path = config['fxpPresetPath']  # useless
-        self.track_name = track_name  # used only with __init__
-        self.plugin_name_global = f'{self.track_name}_{self.plugin_name}'
 
-        self.plugin = func(self.plugin_name_global, self.plugin_path)
-        logger_VST.debug(self.preset_path)
-        self.plugin.load_preset(self.preset_path)  # can be called in function
-        logger_VST.info(f'Uses {self.plugin.get_num_output_channels()}'
-                        ' output channels.')
-
-        if self.plugin_name == 'ad2':
-            logger_VST.info('AD2 plugin is used')
-            logger_VST.info(f'AD2 uses {self.plugin.get_num_output_channels()}'
-                            ' output channels.')
-            logger_VST.info(f'AD2 uses {self.plugin.get_num_input_channels()}'
-                            ' input channels.')
-            # print(self.plugin.get_plugin_parameters_description())
-            # self.plugin.set_bus(0, 1)
-            logger_VST.info(f'AD2 uses {self.plugin.get_num_output_channels()}'
-                            ' output channels.')
-            logger_VST.info(f'AD2 uses {self.plugin.get_num_input_channels()}'
-                            ' input channels.')
-
-
-class MidiVST:
-
-    def __init__(self, plugin_path, preset_path, midi_path) -> None:
-        """
-        Class which represents MidiVST plugin object. Contains properties
-        parsed from SongConfig.json
-
-        Args:
-            plugin_path (Path): Path to the VST .component file
-            (usually under /Library/Audio/Plug-Ins/Components/ on OSX)
-            preset_path (Path): Path to the VST preset .fxp file
-            midi_path (Path): Path to the midi file
-
-        Methods:
-            __init__(): property initialization
-            _init_synth(self):
-        """
-        self.plugin_path = plugin_path
-        self.preset_path = preset_path
-        self.midi_path = midi_path
-        logger_VST.debug('midiVST initialized')
-        # for midi_file in tqdm(self.filelist):
-        #     try:
-        #         self.process_midi(midi_file)
-        #     except Exception as e:
-        #         print(e)
-        #         continue
+# class MidiVST:
+#
+#     def __init__(self, plugin_path, preset_path, midi_path) -> None:
+#         """
+#         Class which represents MidiVST plugin object. Contains properties
+#         parsed from SongConfig.json
+#
+#         Args:
+#             plugin_path (Path): Path to the VST .component file
+#             (usually under /Library/Audio/Plug-Ins/Components/ on OSX)
+#             preset_path (Path): Path to the VST preset .fxp file
+#             midi_path (Path): Path to the midi file
+#
+#         Methods:
+#             __init__(): property initialization
+#             _init_synth(self):
+#         """
+#         self.plugin_path = plugin_path
+#         self.preset_path = preset_path
+#         self.midi_path = midi_path
+#         logger_VST.debug('midiVST initialized')
+#         # for midi_file in tqdm(self.filelist):
+#         #     try:
+#         #         self.process_midi(midi_file)
+#         #     except Exception as e:
+#         #         print(e)
+#         #         continue
 
 
 # class SerumSynth(MidiVST):
@@ -178,4 +221,4 @@ class MidiVST:
 #         temp_path = os.path.join(os.path.dirname(self.synth_preset),
 #                                   'kontakt_def.nkm')
 #         shutil.copy(src_path, temp_path)
-#         shutil.copy(temp_path, default_dir)
+#

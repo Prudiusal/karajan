@@ -4,12 +4,14 @@ import os
 
 from scipy.io import wavfile
 import dawdreamer
-# import audiofile as af
 from pydub import AudioSegment
 
 from logger import logger_render
 from track import Track
-# from pm_tests import get_mid_length
+
+from style_config import StyleConfig
+
+from Exceptions import WrongStyleType
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -45,6 +47,10 @@ class RenderEngine(dawdreamer.RenderEngine):
         each tracks in a style. For each track the plugins and presets
         are noticed.
         """
+        if not isinstance(style, StyleConfig):
+            raise WrongStyleType(f' instead of {type(style)} should be '
+                                 ' StyleConfig')
+
         self.style_name = style.name
         # self.bpm = getattr(style, 'bpm', None)
         # here we save and pass the functions to create a processors with
