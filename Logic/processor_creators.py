@@ -31,7 +31,6 @@ def faust_creator(func, config, global_name):
     processor = func(global_name)
     processor.set_dsp(dsp_path)
     processor.compile()
-    assert(processor.compiled)
     return processor
 
 
@@ -39,12 +38,6 @@ def check_dsp_path(path):
     p = Path(path)
     if not p.exists():
         raise DSPNotFoundError(f'DSP Preset doesn\'t exist:{path}')
-
-
-# def check_dsp_path(path):
-#     p = Path(path)
-#     if not p.exists():
-#         raise FileNotFoundError(f'DSP Preset doesn\'t exist:{path}')
 
 
 def check_plugin_path(path):
@@ -73,16 +66,19 @@ def vst_creator(func, config, global_name):
     logger_VST.debug(f'{preset_path=}')
     # TODO: check for files, etc...
     processor = func(global_name, plugin_path)
-    processor.load_preset(preset_path)  # can be called in function
+    if 'vst3' in str(plugin_path):
+        processor.load_vst3_preset(preset_path)
+    else:
+        processor.load_preset(preset_path)  # can be called in function
     # make sure the plugin name in CopmStylesConfig contains 'XO'
     # json: "PianoDrums['Tracks'][idx_of_track]['plugin_name'] = 'XO'
-    if 'XO' in global_name:
-        logger_VST.debug(processor.get_parameters_description())
-        index = 0  # index of parameter to change
-        value = 'new_value_of_parameter'  # probably will be BPM
-        processor.set_parameter(index, value)
-    if 'ezk' in global_name.lower():
-        processor.open_editor()
+    # if 'XO' in global_name:
+    #     logger_VST.debug(processor.get_parameters_description())
+    #     index = 0  # index of parameter to change
+    #     value = 'new_value_of_parameter'  # probably will be BPM
+    #     processor.set_parameter(index, value)
+    # if 'ezk' in global_name.lower():
+    #     processor.open_editor()
     return processor
 
 
@@ -118,7 +114,7 @@ def processor_creator(func, config, track_name):
     else:
         logger_VST.waring(f'Unknown type: {processor_type} for '
                           f'{processor_name}')
-        raise WrongDawDreamerProcessor
+        # raise WrongDawDreamerProcessor
         return False
 
 

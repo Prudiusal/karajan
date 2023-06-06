@@ -4,7 +4,7 @@ from logger import logger_track
 from processor_creators import processor_creator
 
 from Exceptions import WrongDawDreamerProcessor
-from Exceptions import TrackFinalFaustProcessorError
+from Exceptions import TrackFinalFaustProcessorError, FaustProcessorNotFound
 
 
 class Track:
@@ -43,7 +43,6 @@ class Track:
             5. If processor is not created -> ignore him
             6. If synth is not created -> ignore channel
         """
-
         # plugins_data is a part of 'StyleConfig.json', which
         # describes the plugin (processor) and its preset.
         # Generally, there can be multiple types of processors.
@@ -73,8 +72,7 @@ class Track:
                     # remark: synth is the first plugin in a json.
                     logger_track.error(f'Track {self.track_name} has no synth'
                                        ' and its will not be used')
-                    # TODO: exit it synth is not created, handle the midi
-                    # loading
+                    # TODO: exit it synth is not created, handle the midi load
                 continue
 
             if processor_name == 'ad2':  # this plugin requires summation
@@ -117,10 +115,11 @@ class Track:
             if self.sidechains.get(processor):
                 inputs.extend(self.sidechains.get(processor))
                 logger_track.info(f'sidechain input: {inputs}')
-            self.check_inputs(inputs)
+            self. check_inputs(inputs)
             self.tuples_track.append((processor, inputs))
             previous_processor = processor.get_name()
         logger_track.debug(self.tuples_track)
+        logger_track.debug(self.track_output_name)
         return self.tuples_track, self.track_output_name
 
     @staticmethod
@@ -132,10 +131,17 @@ class Track:
         # to simplify managing of the 'end' of track, on
         # the end of each plugins line an empty faust
         # processor is added.
-        final_proc_func = self.proc_funcs.get('faust')
+        print('inside')
+        print(self.proc_funcs)
+
+        final_proc_func = self.proc_funcs.get('faust', False)
+        if not final_proc_func:
+            raise FaustProcessorNotFound
+
         final_proc = final_proc_func(name)
         final_proc.set_dsp_string('process = _, _;')
         final_proc.compile()
-        assert(final_proc.compiled)
+        if not final_proc.compiled:
+            raise TrackFinalFaustProcessorError
         return final_proc
-        # assert self.processors['final'].get_name() == self.track_name
+        # final_proc.get_name() == self.track_name

@@ -16,6 +16,10 @@ class JsonNotFoundError(JsonError):
     pass
 
 
+class TracksNotFoundError(ValueError):
+    pass
+
+
 def validate_plugin_path(path):
     if not path.is_file():
         raise PluginNotFoundError(path.absolute())
@@ -82,4 +86,20 @@ class PresetNotFoundError(FileNotFoundError):
 
 
 class TrackFinalFaustProcessorError(Exception):
+    pass
+
+
+class CSVNotFoundError(FileNotFoundError):
+    pass
+
+
+class MidiNotFoundError(FileNotFoundError):
+    pass
+
+
+class BPMNotFoundError(ValueError):
+    pass
+
+
+class FaustProcessorNotFound(ValueError):
     pass

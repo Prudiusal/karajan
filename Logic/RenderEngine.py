@@ -1,5 +1,6 @@
 import datetime
 from os.path import isfile
+from pathlib import Path
 import os
 
 from scipy.io import wavfile
@@ -11,7 +12,9 @@ from track import Track
 
 from style_config import StyleConfig
 
-from Exceptions import WrongStyleType
+from Exceptions import WrongStyleType, TracksNotFoundError, BPMNotFoundError
+
+from colors import red
 
 
 class RenderEngine(dawdreamer.RenderEngine):
@@ -29,6 +32,7 @@ class RenderEngine(dawdreamer.RenderEngine):
     Creates engine, stores tracks configuration for the style.
     """
     def __init__(self, sample_rate=44100, buffer_size=128):
+        self.song_length = None
         self.sample_rate = sample_rate
         self.buffer_size = buffer_size
         super().__init__(self.sample_rate, self.buffer_size)
@@ -75,6 +79,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         Graph is created in accordance with DawDreamer rules.
         """
         adder_args = []
+        if not self.tracks:
+            raise TracksNotFoundError
         for track in self.tracks.values():
             track_tuples, track_output = track.get_track_tuples()  # no init
             self.graph.extend(track_tuples)  # tuples of processors
@@ -92,57 +98,59 @@ class RenderEngine(dawdreamer.RenderEngine):
 
         logger_render.debug(self.graph)
 
+    # def set_up_engine(self, song_data):
+    #     """
+    #             Loads midi files, renders, saves.
+    #             :param song_data: SongConfig instance with all data for the song.
+    #             """
+
     def process_song(self, song_data):
         """
-        Loads midi files, renders, saves.
+        renders, saves.
         :param song_data: SongConfig instance with all data for the song.
         """
         logger_render.info(f'{song_data.Name} processing has started:')
-        song_data.duplicate_midi_tmp()
+        # song_data.duplicate_midi_tmp()
         # TODO: save initial bpm (from set_tempo msgs)
-        # bpm_from_midi = song_data.get_bpm_from_msgs()
-        # if no BPM specified, it is taken from a midi file
         if not hasattr(song_data, 'BPM'):
-            song_data.BPM = song_data.get_bpm_from_msgs()
-        song_data.delete_tempo_msgs()
-        song_length = song_data.calculate_length()
+            raise BPMNotFoundError
         self.set_bpm(song_data.BPM)
-
         self.load_midi_into_tracks(song_data)
+        self.song_length = song_data.song_length
         logger_render.debug('Midi files are loaded\n')
+
         self.load_graph(self.graph)
-        logger_render.info(f'Started Rendering - {song_length}')
+        logger_render.info(f'Started Rendering - {song_data.song_length}')
         time_rendering_start = datetime.datetime.now()
-        self.render(song_length)
+        self.render(song_data.song_length)
         time_rendering = datetime.datetime.now() - time_rendering_start
         logger_render.info('Finished Rendering, time:'
                            f'{time_rendering.seconds}')
-        self.rendered_output_path = song_data.OutputPath + \
-            f'{song_data.Name}_' + \
-            '.wav'
+
+
         # f'{song_data.Name}_{self.style_name}.wav'
         # f'{datetime.datetime.now().strftime("%m-%d_%H-%M-%S")}_' + \
 
-    def save_audio(self):
+    def save_audio(self, rendered_output_path):
         """
         Saves audio file ( now in a ./WAVs folder)
         """
         audio = self.get_audio()
-        logger_render.info(f'output path is {self.rendered_output_path}')
-        wavfile.write(self.rendered_output_path, self.sample_rate,
+
+        logger_render.info(f'output path is {rendered_output_path}')
+        wavfile.write(rendered_output_path, self.sample_rate,
                       audio.transpose())
-        if not isfile(self.rendered_output_path):
+        if not isfile(rendered_output_path):
             logger_render.error('File is not saved')
 
-        path_mp3 = '.'.join(self.rendered_output_path.split('.')[:-1]) + '.mp3'
+        path_mp3 = '.'.join(rendered_output_path.split('.')[:-1]) + '.mp3'
         # with af.AudioFile(self.rendered_output_path) as f:
         #     audio_data = f.read()
-
         # with af.AudioFile(path_mp3, 'w', af.Format('mp3', 'pcm')) as f:
         #     f.write(audio_data)
-        wav_file = AudioSegment.from_wav(self.rendered_output_path)
+        wav_file = AudioSegment.from_wav(rendered_output_path)
         wav_file.export(path_mp3, format='mp3')
-        os.remove(self.rendered_output_path)
+        os.remove(rendered_output_path)
 
         if not isfile(path_mp3):
             logger_render.error('File is not saved')
@@ -155,7 +163,11 @@ class RenderEngine(dawdreamer.RenderEngine):
         for params in song_data.Tracks:
             track_name = params['track_name']
             midi_path = params['tmp_midi_path']
-            processors = self.tracks[track_name].processors
+            try:
+                processors = self.tracks[track_name].processors
+            except KeyError:
+                logger_render.error('Track is not found for the midi')
+
             synth = next(iter(processors.values()))  # take 1st
             if midi_path.exists():
                 try:
@@ -164,6 +176,3 @@ class RenderEngine(dawdreamer.RenderEngine):
                     logger_render.error(f'Exception {e} occured')
             else:
                 logger_render.error(f'midi file not found {midi_path}')
-        # logger_render.debug(midi_times)
-        # self.length_from_midi = song_data.Length
-        # self.bpm_from_song = song_data.__dict__.get('BPM', None)

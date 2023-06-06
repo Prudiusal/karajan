@@ -7,6 +7,8 @@ class StyleConfig:
         Class for the StyleConfiguration (just for one being used).
     """
     def __init__(self, d):
+        self.name = None
+        self.tracks = None
         if not isinstance(d, dict):
             raise WrongJsonFormatError
         self.__dict__ = d
@@ -27,7 +29,8 @@ class StyleConfig:
                 raise StyleTracksConfigError
             if not track.get('plugins'):
                 raise StyleTracksConfigError
-            plugins = track.get('plugins')
+
+            plugins = track['plugins']
 
             if not isinstance(plugins, list):
                 raise PluginConfigError
@@ -35,3 +38,4 @@ class StyleConfig:
             for plug in plugins:
                 if not plug.get('pluginName'):
                     raise PluginConfigError
+        return True

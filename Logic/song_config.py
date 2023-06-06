@@ -2,49 +2,94 @@ from pathlib import Path
 import shutil
 from uuid import uuid4
 
-from Exceptions import WrongJsonFormatError
+from Exceptions import WrongJsonFormatError, CSVNotFoundError, MidiNotFoundError, \
+    BPMNotFoundError
 from itertools import groupby
 
 from logger import logger_conf
 from mido import MidiFile, bpm2tempo, tempo2bpm, MetaMessage
 from colors import red
+import csv
+
+# import settings as cfg
+
 
 class SongConfig:
     """
         Class for the Song Configuration (just for one being used).
     """
     def __init__(self, d):
+        self.Tracks = None
+        self.Artist = None
+        self.Name = None
+        self.BPM = None
+        self.OutputPath = None
+        self.song_length = None
+        self.rendered_output_path = None
         if not isinstance(d, dict):
             raise WrongJsonFormatError
         self.__dict__ = d
-    # here will be special methods to process the params, like the length check
+
+    def load_csv(self, csv_path):
+        if not Path(csv_path).is_file():
+            raise CSVNotFoundError
+        with open(csv_path, 'r' ) as f:
+            file = csv.reader(f)
+            for artist, song, bpm in file:
+                song = ' '.join(song.split(' ')).lower()
+
+                if song in self.Name.lower():
+                    logger_conf.info(f'BPM is set to {bpm}')
+                    self.BPM = int(bpm)
+                    return
+
+        logger_conf.error(f'BPM NOT FOUND IN CSV for {self.Name}')
+        return
+
+    def prepare(self):
+        self.duplicate_midi_tmp()
+        if not hasattr(self, 'BPM'):
+            self.BPM = self.get_bpm_from_msgs()
+            # logger_render.warning(red(str(song_data.get_bpm_from_msgs())))
+        self.delete_tempo_msgs()
+        self.song_length = self.calculate_length()
+        Path(self.OutputPath).mkdir(exist_ok=True)
+        self.rendered_output_path = self.OutputPath + \
+                                    f'{self.Name}_' + '.wav'
+        return True
 
     def calculate_length(self):
-        bpm = self.__dict__.get('BPM', '989999999')
+        if not hasattr(self, 'BPM') or not self.BPM:
+            raise BPMNotFoundError
         logger_conf.warning(red(f'Bmp {self.BPM} is used'))
         times = []
-        # TODO: change to the max of all the files except the Drums
         for track in self.Tracks:
-            path = track.get('tmp_midi_path', track.get('midi_path'))
+            # path = track.get('tmp_midi_path', track.get('midi_path'))
+            path = track['tmp_midi_path']
             try:
                 mid = MidiFile(str(path))
             except Exception as e:
                 logger_conf.error(e)
                 continue
             times.append(mid.length)
-        length = min(times)
-        k = 120 / bpm  # default tempo corresponds to bpm=120
-        return k * length
+        length = max(times) + 1
+        k = 120 / self.BPM  # default tempo corresponds to bpm=120
+        return int(k * length)
 
     def delete_tempo_msgs(self):
+        flag = False
         for song_track in self.Tracks:
             midi_file = song_track['tmp_midi_path']
+            # TODO: look for the mido exceptions
             mid = MidiFile(midi_file)
             for i, track in enumerate(mid.tracks):
                 track_filtered = [msg for msg in track
                                   if msg.type != 'set_tempo']
+                if len(track_filtered) != len(track):
+                    flag = True
                 mid.tracks[i] = track_filtered
             mid.save(midi_file)
+        return flag
 
     def get_bpm_from_msgs(self):
         for song_track in self.Tracks:
@@ -52,12 +97,12 @@ class SongConfig:
             mid = MidiFile(midi_file)
             bpms = []
             for i, track in enumerate(mid.tracks):
-                print
-                bpms.extend([tempo2bpm(msg.tempo) for msg in track
+                bpms.extend([int(tempo2bpm(msg.tempo)) for msg in track
                              if msg.type == 'set_tempo'])
-                ms = [msg.type for msg in track
-                      if msg.type not in ['note_on', 'note_off']]
-                print(red(str(ms)))
+                # ms = [msg.type for msg in track
+                #       if msg.type not in ['note_on', 'note_off']]
+                # # print(red(str(bpms)))
+                # # print(red(str(ms)))
             if not len(bpms):
                 logger_conf.error('Tempo messages not found!')
                 return 120
@@ -76,11 +121,12 @@ class SongConfig:
         the processing, without changing the original file
         """
         self.tmp_path = Path('.') / 'tmp' / 'midi'
+        # self.tmp_path = Path(cfg.TMP_MIDI_PATH)
         for track in self.Tracks:
             new_name = str(uuid4()) + '.mid'
             tmp_midi_path = self.tmp_path / new_name
-            print(Path('.').absolute())
-            print(tmp_midi_path.absolute())
+            if not Path(track['midi_path']).exists():
+                raise MidiNotFoundError
             shutil.copy(track['midi_path'], tmp_midi_path.absolute())
             logger_conf.debug(f'{track["midi_path"]} copied into '
                               f'{str(self.tmp_path)} as '
@@ -103,8 +149,10 @@ class SongConfig:
         self.Length = min(times)
         return True
 
+    # Next methods are not used currently
     def set_or_validate_bpm(self, bpm):
         """
+        NOT USED
         Logic: if the bpm is presented in a style configuration, there should x
         be a self.bpm with a value (None in other case).
 
@@ -127,6 +175,7 @@ class SongConfig:
             return True
 
     def change_bpm(self, bpm):
+        """NOT USED"""
         logger_conf.debug(f'bpm is changing to {bpm}')
         for track in self.Tracks:
             midi_file_path = track['tmp_midi_path']
@@ -136,6 +185,7 @@ class SongConfig:
         return True
 
     def change_bpm_midifile(self, filename, bpm):
+        """NOT USED"""
         try:
             mid = MidiFile(filename)
         except Exception as e:
@@ -148,11 +198,13 @@ class SongConfig:
 
     @staticmethod
     def add_set_tempo_msg(mid, bpm):
+        """NOT USED"""
         set_tempo_msg = MetaMessage('set_tempo', tempo=bpm2tempo(bpm), time=0)
         mid.tracks[0].append(set_tempo_msg)
 
     @staticmethod
     def change_tempo(mid, new_tempo):
+        """NOT USED"""
         flag: bool = False
         for track in mid.tracks:
             for msg in track:
@@ -162,6 +214,7 @@ class SongConfig:
         return flag
 
     def get_bpm(self):
+        """NOT USED"""
         logger_conf.debug('Getting the bpm')
         bpms = []
         for track in self.Tracks:
@@ -181,6 +234,7 @@ class SongConfig:
 
     @staticmethod
     def get_bpm_midifile(filename):
+        """NOT USED"""
         try:
             mid = MidiFile(filename)
         except Exception as e:
