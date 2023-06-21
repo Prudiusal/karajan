@@ -143,17 +143,17 @@ class RenderEngine(dawdreamer.RenderEngine):
         if not isfile(rendered_output_path):
             logger_render.error('File is not saved')
 
-        path_mp3 = '.'.join(rendered_output_path.split('.')[:-1]) + '.mp3'
-        # with af.AudioFile(self.rendered_output_path) as f:
-        #     audio_data = f.read()
-        # with af.AudioFile(path_mp3, 'w', af.Format('mp3', 'pcm')) as f:
-        #     f.write(audio_data)
-        wav_file = AudioSegment.from_wav(rendered_output_path)
-        wav_file.export(path_mp3, format='mp3')
-        os.remove(rendered_output_path)
-
-        if not isfile(path_mp3):
-            logger_render.error('File is not saved')
+        # path_mp3 = '.'.join(rendered_output_path.split('.')[:-1]) + '.mp3'
+        # # with af.AudioFile(self.rendered_output_path) as f:
+        # #     audio_data = f.read()
+        # # with af.AudioFile(path_mp3, 'w', af.Format('mp3', 'pcm')) as f:
+        # #     f.write(audio_data)
+        # # wav_file = AudioSegment.from_wav(rendered_output_path)
+        # # wav_file.export(path_mp3, format='mp3')
+        # # os.remove(rendered_output_path)
+        #
+        # if not isfile(path_mp3):
+        #     logger_render.error('File is not saved')
 
     def load_midi_into_tracks(self, song_data):
         """
@@ -163,16 +163,22 @@ class RenderEngine(dawdreamer.RenderEngine):
         for params in song_data.Tracks:
             track_name = params['track_name']
             midi_path = params['tmp_midi_path']
+
             try:
                 processors = self.tracks[track_name].processors
             except KeyError:
-                logger_render.error('Track is not found for the midi')
+                logger_render.error(f'Track {track_name} is not found for the midi {midi_path} ({params["midi_path"]}')
+                continue
 
-            synth = next(iter(processors.values()))  # take 1st
+            synth = next(iter(processors.values()))  # take 1st plug in of the track
+
             if midi_path.exists():
                 try:
                     synth.load_midi(str(midi_path), beats=True)
+                    logger_render.debug(f'{midi_path} ({params["midi_path"]}) is loaded into {track_name}')
                 except Exception as e:
-                    logger_render.error(f'Exception {e} occured')
+                    logger_render.error(f'Exception {e} occured during the load of the midi {midi_path} '
+                                        f'into the track {track_name}')
             else:
                 logger_render.error(f'midi file not found {midi_path}')
+

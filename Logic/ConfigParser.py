@@ -24,19 +24,24 @@ class ConfigParser:
     development we had to save previous functionality.
     """
     def __init__(self):
-        self.song_config_version = 0
+        # self.song_config_version = 0
         self.song_data_struct = 'json'
         self.style_data_struct = 'json'
-        self.config_path = Path('.') / 'Resources' / 'Configs'
+        # self.config_path = Path('.') / 'Resources' / 'Configs'
 
-        self.default_song_config = self.config_path / 'DemoSongsConfig.json'
+        # self.default_song_config = self.config_path / 'DemoSongsConfig.json'
         # :TODO change to env
-        # self.default_style_config = cfg.STYLE_CONFIG_PATH
-        self.default_style_config = self.config_path / 'CompStylesConfig.json'
+        self.default_style_config = cfg.STYLE_CONFIG_PATH
+        
+        # self.default_style_config = self.config_path / 'CompStylesConfig.json'
         self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
         self.song = "7_Rings"  # 7_Rings/Bruno
-        logger_conf.debug('current path for config is: '
-                          f'{str(self.config_path.absolute())}')
+        # logger_conf.debug('current path for config is: '
+        #                   f'{str(self.config_path.absolute())}')
+        logger_conf.debug('current path for STYLE config is: '
+                          f'{self.default_style_config}')
+
+
 
     def build_midi_data(self, song=None):
         """
@@ -69,8 +74,8 @@ class ConfigParser:
         if not data.get(self.style):
             raise StyleNotFoundError
         style = StyleConfig(data[self.style])
-        style.validate()
-        logger_conf.info(f'{self.song} is used')
+        # style.validate()
+        # logger_conf.info(f'{self.song} is used')
         return style
 
     @staticmethod

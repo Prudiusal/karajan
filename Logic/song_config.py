@@ -53,9 +53,8 @@ class SongConfig:
             # logger_render.warning(red(str(song_data.get_bpm_from_msgs())))
         self.delete_tempo_msgs()
         self.song_length = self.calculate_length()
-        Path(self.OutputPath).mkdir(exist_ok=True)
-        self.rendered_output_path = self.OutputPath + \
-                                    f'{self.Name}_' + '.wav'
+        Path(self.OutputPath).mkdir(exist_ok=True, parents=True)
+        self.rendered_output_path = self.OutputPath + f'{self.Name}_' + '.wav'
         return True
 
     def calculate_length(self):
@@ -121,6 +120,8 @@ class SongConfig:
         the processing, without changing the original file
         """
         self.tmp_path = Path('.') / 'tmp' / 'midi'
+        print(self.tmp_path.absolute())
+        self.tmp_path.mkdir(parents=True, exist_ok=True)
         # self.tmp_path = Path(cfg.TMP_MIDI_PATH)
         for track in self.Tracks:
             new_name = str(uuid4()) + '.mid'

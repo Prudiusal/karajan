@@ -71,15 +71,20 @@ class Track:
                 if not len(self.processors):
                     # remark: synth is the first plugin in a json.
                     logger_track.error(f'Track {self.track_name} has no synth'
-                                       ' and its will not be used')
+                                       ' and it won\'t be used')
                     # TODO: exit it synth is not created, handle the midi load
                 continue
 
-            if processor_name == 'ad2':  # this plugin requires summation
-                logger_track.info('Addictive drum 2 is used')
+            if 'ad2' in processor_name.lower():  # this plugin requires summation
+                logger_track.debug('Summatıon for Addictive Drums 2 is used')
                 adder_func = self.proc_funcs.get('add')
                 self.processors['ad2_adder'] = adder_func('ad2_adder',
-                                                          24 * [1])
+                                                          18 * [1])
+            elif 'kontakt' in processor_name.lower():  # this plugin requires summation
+                logger_track.debug('Summation for KONTAKT is used')
+                adder_func = self.proc_funcs.get('add')
+                self.processors['kontakt_adder'] = adder_func('kontakt_adder',
+                                                          64 * [1])
 
             if processor_conf.get('sideChain'):
                 logger_track.info('SideChain from'
@@ -131,8 +136,6 @@ class Track:
         # to simplify managing of the 'end' of track, on
         # the end of each plugins line an empty faust
         # processor is added.
-        print('inside')
-        print(self.proc_funcs)
 
         final_proc_func = self.proc_funcs.get('faust', False)
         if not final_proc_func:

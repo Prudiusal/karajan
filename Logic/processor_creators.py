@@ -60,16 +60,23 @@ def vst_creator(func, config, global_name):
     plugin_path = config['pluginPath']
     preset_path = config['fxpPresetPath']
     check_plugin_path(plugin_path)
-    check_preset_path(preset_path)
+    # check_preset_path(preset_path)
     logger_VST.debug(f'{global_name=}')
-    logger_VST.debug(f'{plugin_path=}')
-    logger_VST.debug(f'{preset_path=}')
-    # TODO: check for files, etc...
+    logger_VST.info(f'{plugin_path=}')
+    # logger_VST.debug(f'{preset_path=}')
     processor = func(global_name, plugin_path)
-    if 'vst3' in str(plugin_path):
-        processor.load_vst3_preset(preset_path)
-    else:
-        processor.load_preset(preset_path)  # can be called in function
+    processor.open_editor()
+    logger_VST.debug('Processor has created')
+    return processor
+
+    # if any(part in str(plugin_path).lower() for part in ['abp', 'drum',]):
+    # elif any(part in str(plugin_path).lower() for part in ['kon', ]):
+    #     pass
+    # elif any(part in str(plugin_path).lower() for part in ['vst3', ]):
+    #     processor.load_vst3_preset(preset_path)
+    # else:
+    #     processor.load_preset(preset_path)
+
     # make sure the plugin name in CopmStylesConfig contains 'XO'
     # json: "PianoDrums['Tracks'][idx_of_track]['plugin_name'] = 'XO'
     # if 'XO' in global_name:
@@ -79,7 +86,6 @@ def vst_creator(func, config, global_name):
     #     processor.set_parameter(index, value)
     # if 'ezk' in global_name.lower():
     #     processor.open_editor()
-    return processor
 
 
 def processor_creator(func, config, track_name):
