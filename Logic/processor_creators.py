@@ -79,8 +79,8 @@ def vst_creator(func, config, global_name):
                 logger_VST.info(f'VST2 preset loaded instead of VST3')
             except Exception as e2:
                 logger_VST.error(f'Error during VST2 preset load {e2}')
-                raise PresetLoadError(f'BAD LOAD OF THE PRESET: \n\t{e1}, \n\t{e2}') 
-        processor.open_editor()
+                raise PresetLoadError(f'BAD LOAD OF THE PRESET: \n\t{e1}, \n\t{e2}')
+        # processor.open_editor()
     # logger_VST.debug('Processor has created')
     return processor
 
