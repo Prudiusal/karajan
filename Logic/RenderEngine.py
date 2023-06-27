@@ -16,7 +16,6 @@ from Exceptions import WrongStyleType, TracksNotFoundError, BPMNotFoundError
 
 from colors import red
 
-
 class RenderEngine(dawdreamer.RenderEngine):
     """
     Main class of the project, it implements the functionality

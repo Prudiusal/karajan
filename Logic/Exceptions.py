@@ -103,3 +103,7 @@ class BPMNotFoundError(ValueError):
 
 class FaustProcessorNotFound(ValueError):
     pass
+
+
+class PresetLoadError(Exception):
+    pass

@@ -2,7 +2,7 @@
 from pathlib import Path
 from Exceptions import WrongDawDreamerProcessor  # DSPNotFoundError
 from Exceptions import DSPNotFoundError, PluginNotFoundError, \
-    PresetNotFoundError
+    PresetNotFoundError, PresetLoadError
 from logger import logger_VST
 # from helpers import red
 
@@ -58,15 +58,30 @@ def vst_creator(func, config, global_name):
     setup for it.
     """
     plugin_path = config['pluginPath']
-    preset_path = config['fxpPresetPath']
+    plugin_name = config['pluginName']
     check_plugin_path(plugin_path)
-    # check_preset_path(preset_path)
     logger_VST.debug(f'{global_name=}')
     logger_VST.info(f'{plugin_path=}')
-    # logger_VST.debug(f'{preset_path=}')
     processor = func(global_name, plugin_path)
-    processor.open_editor()
-    logger_VST.debug('Processor has created')
+    if any([s in plugin_name.lower() for s in ['ample', 'kontakt', 'ad2', 'ak']]):
+        processor.open_editor()
+    else:
+        preset_path = config['fxpPresetPath']
+        check_preset_path(preset_path)
+        logger_VST.debug(f'{preset_path=}')
+        try:
+            processor.load_vst3_preset(preset_path)
+            logger_VST.info(f'VST3 preset loaded')
+        except Exception as e1:
+            logger_VST.error(f'Error during VST3 preset load {e1}')
+            try:
+                processor.load_preset(preset_path)
+                logger_VST.info(f'VST2 preset loaded instead of VST3')
+            except Exception as e2:
+                logger_VST.error(f'Error during VST2 preset load {e2}')
+                raise PresetLoadError(f'BAD LOAD OF THE PRESET: \n\t{e1}, \n\t{e2}') 
+        processor.open_editor()
+    # logger_VST.debug('Processor has created')
     return processor
 
     # if any(part in str(plugin_path).lower() for part in ['abp', 'drum',]):
@@ -116,6 +131,9 @@ def processor_creator(func, config, track_name):
             return False
         except PresetNotFoundError as pre:
             logger_VST.error(pre)
+            return False
+        except PresetLoadError as preset_load:
+            logger_VST.error(preset_load)
             return False
     else:
         logger_VST.waring(f'Unknown type: {processor_type} for '
