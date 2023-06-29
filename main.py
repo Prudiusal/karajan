@@ -1,31 +1,38 @@
+import os
+
 from Logic import ConfigParser, SongConfig, RenderEngine, logger_main
 from pathlib import Path
 import settings as cfg
+
 import datetime
 
 import multiprocessing
 from functools import partial
-import pretty_errors
 
 
-def get_chunks(files, n):
+def get_chunks(files, n=multiprocessing.cpu_count()):
     return [files[i::n] for i in range(n)]
 
 
+def multiengines_process_batch():
+    engines = []
+    for i in range(multiprocessing.cpu_count):
+        engines.append()
+
+
 def multiprocess_song_datas(render_engine, song_datas):
-
+    # DEPRECATED
     num_cores = multiprocessing.cpu_count()
-
     chunks = get_chunks(song_datas, num_cores)
     with multiprocessing.get_context('spawn').Pool(processes=num_cores) as pool:
         # L = pool.starmap(func, chunks)
         # M = pool.starmap(func, zip(chunks, repeat(render_engine)))
         # pool.map(process_song_datas, (chunks, render_engine))
-        pool.map(partial(process_song_datas, render_engine=render_engine),
+        pool.map(partial(process_songs, render_engine=render_engine),
                  chunks)
 
 
-def prepare_song_datas(configs, cfg):
+def prepare_song_configs(configs):
     song_datas = []
     csv_path = cfg.CSV_PATH
     for config in configs:
@@ -82,13 +89,15 @@ def get_configs(midi_sets):
     return configs
 
 
-def process_song_datas(render_engine, song_datas):
-    for song_data in song_datas:
-        logger_main.info(f'Song {song_data.Name} is in the processing')
-        render_engine.process_song(song_data)
-        # logger_main.info(f'Song {piano_midi.stem} has processed')
-        logger_main.info(f'Song {song_data.Name} has processed')
-        render_engine.save_audio(song_data.rendered_output_path)
+def process_songs(render_engine, song_configs):
+
+    logger_main.info(f'{len(song_configs)} is in the {os.getpid()}')
+    for config in song_configs:
+        logger_main.info(f'Song {config.Name} is in the processing in {os.getpid()}')
+        render_engine.process_song(config)
+        logger_main.info(f'Song {config.Name} has processed in {os.getpid()}')
+        render_engine.save_audio(config.rendered_output_path)
+    return True
 
 
 def get_list_midi(path: Path):
@@ -103,29 +112,102 @@ def main():
     """
     parser = ConfigParser()  # will create __call__ later
     style_data = parser.build_style_data(cfg.STYLE)  # style from config
+    logger_main.info(f'Style {cfg.STYLE} is used.')
     render_engine = RenderEngine(cfg.SAMPLE_RATE, cfg.BUFFER_SIZE)
     render_engine.create_tracks(style_data)
     logger_main.info('Tracks have been created')
     render_engine.construct_graph()
     logger_main.info('Graph has been constructed')
 
-    configs = get_configs(get_midi_paths_zip())
-    song_datas = prepare_song_datas(configs, cfg)
+    song_configs = get_configs(get_midi_paths_zip())
+    song_configs = prepare_song_configs(song_configs, cfg)
 
     rendering_start = datetime.datetime.now()
-    # process_song_datas(render_engine, song_datas)
-    multiprocess_song_datas(render_engine, song_datas)
+    process_songs(render_engine, song_configs)
+    # multiprocess_song_datas(render_engine, song_datas)
     rendering = datetime.datetime.now() - rendering_start
     logger_main.error('Finished Rendering, time [minutes]: '
                       f'{rendering.seconds // 60 + 1}.')
 
 
+
+
+
+def create_song_config_batches():
+    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
+
+def main_parallel():
+    engines = create_engines()
+    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
+    batches = get_chunks(song_configs)
+    input()
+
+    assert len(batches) == len(engines)
+
+    processes = []
+    for engine, batch in zip(engines, batches):
+        p = multiprocessing.Process(target=process_songs, args=(engine, batch, ))
+        processes.append(p)
+
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+def create_engines():
+    style = cfg.STYLE
+    logger_main.info(f'Style {cfg.STYLE} is used.')
+
+    engines = []
+
+    parser = ConfigParser()  # will create __call__ later
+    style_data = parser.build_style_data(style)  # style from config
+
+    for _ in range(multiprocessing.cpu_count()):
+        render_engine = RenderEngine(cfg.SAMPLE_RATE, cfg.BUFFER_SIZE)
+        render_engine.create_tracks(style_data)
+        render_engine.construct_graph()
+        engines.append(render_engine)
+    return engines
+
+def create_and_process(song_configs):
+    style = cfg.STYLE
+    logger_main.info(f'Style {cfg.STYLE} is used.')
+    logger_main.info(f'{len(song_configs)} is in the {os.getpid()}')
+
+    parser = ConfigParser()  # will create __call__ later
+    style_data = parser.build_style_data(style)  # style from config
+    render_engine = RenderEngine(cfg.SAMPLE_RATE, cfg.BUFFER_SIZE)
+    render_engine.create_tracks(style_data)
+    render_engine.construct_graph()
+
+    rendering_start = datetime.datetime.now()
+
+    # multiprocess_song_datas(render_engine, song_datas)
+
+    for config in song_configs:
+        logger_main.info(f'Song {config.Name} is in the processing in {os.getpid()}')
+        render_engine.process_song(config)
+        logger_main.info(f'Song {config.Name} has processed in {os.getpid()}')
+        render_engine.save_audio(config.rendered_output_path)
+
+    rendering = datetime.datetime.now() - rendering_start
+    logger_main.error('Finished Rendering, time [minutes]: '
+                      f'{rendering.seconds // 60 + 1}.')
+
+
+def main_pool():
+    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
+    batches = get_chunks(song_configs)
+
+    with multiprocessing.Pool() as pool:
+        pool.map(create_and_process, batches)
+
+
+
+
 if __name__ == '__main__':
-    import sys
-    print(sys.path)
     # sys.exit(main())
+    main_pool()
 
-    main()
-
-    if False:
-        pretty_errors
