@@ -71,7 +71,7 @@ def get_midi_paths_zip():
 def get_configs(midi_sets):
     configs = []
     for piano_midi, strings_midi, bass_midi, drums_midi in midi_sets:
-        name = piano_midi.stem.lower()
+        name = piano_midi.stem.replace(' - Piano', '')
         config = {'Name': name,
                   'Artist': '',
                   'OutputPath': './WAVs/test_mp/',

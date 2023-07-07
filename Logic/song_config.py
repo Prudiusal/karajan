@@ -54,7 +54,7 @@ class SongConfig:
         self.delete_tempo_msgs()
         self.song_length = self.calculate_length()
         Path(self.OutputPath).mkdir(exist_ok=True, parents=True)
-        self.rendered_output_path = self.OutputPath + f'{self.Name}_' + '.wav'
+        self.rendered_output_path = self.OutputPath + f'{self.Name}' + '.wav'
         return True
 
     def calculate_length(self):

@@ -1,12 +1,15 @@
 import logging
 import coloredlogs
+import datetime as dt
+from pathlib import Path
 
 
-# import coloredlogs
+path_log = Path('.') / 'logs'
+file_log = path_log / f'log_{dt.datetime.now().strftime("%d-%m-%y %H:%M:%S")}'
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s'
-                    ' %(message)s')
+                    ' %(message)s', filename=file_log)
 
 level_styles = {
     'debug': {'color': 'white'},
@@ -14,10 +17,11 @@ level_styles = {
     'warning': {'color': 'yellow'},
     'error': {'color': 'red'},
     'critical': {'color': 'red', 'bold': True}
-}
+    }
 coloredlogs.install(level=logging.DEBUG, level_styles=level_styles,
                     format='%(asctime)s - %(name)s - %(levelname)s'
                     ' %(message)s')
+
 # coloredlogs.install(level=logging.INFO)
 # coloredlogs.install(level=logging.WARNING)
 
@@ -34,3 +38,4 @@ logger_VST = logging.getLogger('VST')
 logger_track = logging.getLogger('Track')
 
 logger_exc = logging.getLogger('exceptions')
+
