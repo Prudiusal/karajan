@@ -5,11 +5,12 @@ from pathlib import Path
 
 
 path_log = Path('.') / 'logs'
-file_log = path_log / f'log_{dt.datetime.now().strftime("%d-%m-%y %H:%M:%S")}'
+file_log = path_log / f'log_{dt.datetime.now().strftime("%d-%m-%y_%H:%M:%S")}.log'
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s'
-                    ' %(message)s', filename=file_log)
+                    ' %(message)s')
+                    # ' %(message)s', filename=file_log)
 
 level_styles = {
     'debug': {'color': 'white'},

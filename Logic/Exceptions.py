@@ -109,5 +109,5 @@ class PresetLoadError(Exception):
     pass
 
 
-class MidiConsitencyError(ValueError):
+class MidiConsistencyError(ValueError):
     pass

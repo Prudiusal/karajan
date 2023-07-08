@@ -56,16 +56,21 @@ def get_midi_paths_zip():
 def get_configs(midi_sets):
 
     def get_config(piano_midi, strings_midi, bass_midi, drums_midi):
-        name = piano_midi.stem.replace(' - Piano', '')
-        bass_name = piano_midi.stem.replace(' - Bass', '')
-        piano_name = bass_midi.stem.replace(' - Strings', '')
-        if not name == bass_name == piano_name:
-            raise MidiConsistencyError('Wrong midi file')
-        elif re.sub(' - Drums\d', '', drums_midi.stem) not in name:
-            raise MidiConsistencyError('Wrong drums midi file')
-        now = dt.datetime.now().strftime("%d-%m-%y %H:%M:%S")
-        output_path = f'.WAVs/rendering_{now}/'
-        config = {'Name': name,
+        piano_name = piano_midi.stem.replace(' - Piano', '')
+        bass_name = bass_midi.stem.replace(' - Bass', '')
+        strings_name = strings_midi.stem.replace(' - Strings', '')
+        drums_name = re.sub(' - Drums_\d', '', drums_midi.stem) 
+        # Currently there is a problem with naming of version's keys (they are different
+        # event the shift is equal
+        # if not bool(piano_name == bass_name == strings_name):
+        #     logger_main.debug(f'ERROR: {piano_name}, {bass_name}, {strings_name}')
+        #     raise MidiConsistencyError('Wrong midi file')
+        # if drums_name not in piano_name:
+        #     logger_main.debug(f'ERROR: {piano_name}, {drums_name}')
+        #     raise MidiConsistencyError('Wrong drums midi file')
+        now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
+        output_path = f'./WAVs/rendering_{now}/'
+        config = {'Name': piano_name,
                   'Artist': '',
                   'OutputPath': output_path,
                   'Tracks': [{'track_name': 'Drums',
@@ -85,7 +90,7 @@ def get_configs(midi_sets):
             config = get_config(piano_mid, strings_mid, bass_mid, drums_mid)
             configs.append(config)
         except MidiConsistencyError:
-            logger_main.error(f'{piano_mid.stem.replace(" - Piano")} has'
+            logger_main.error(f'{piano_mid.stem.replace(" - Piano", "")} has'
                               'different tracks, SKIPPED')
     return configs
 
@@ -161,6 +166,8 @@ def create_and_process(song_configs):
 def main_pool():
     song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
     batches = get_chunks(song_configs)
+    print(len(song_configs))
+    exit()
 
     with multiprocessing.Pool() as pool:
         pool.map(create_and_process, batches)
