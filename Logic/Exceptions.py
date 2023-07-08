@@ -107,3 +107,7 @@ class FaustProcessorNotFound(ValueError):
 
 class PresetLoadError(Exception):
     pass
+
+
+class MidiConsitencyError(ValueError):
+    pass

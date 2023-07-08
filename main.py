@@ -3,33 +3,18 @@ import os
 from Logic import ConfigParser, SongConfig, RenderEngine, logger_main
 from pathlib import Path
 import settings as cfg
+from Exceptions import MidiConsistencyError
 
-import datetime
+import datetime as dt
 
 import multiprocessing
-from functools import partial
+# from functools import partial
+
+import re
 
 
 def get_chunks(files, n=multiprocessing.cpu_count()):
     return [files[i::n] for i in range(n)]
-
-
-def multiengines_process_batch():
-    engines = []
-    for i in range(multiprocessing.cpu_count):
-        engines.append()
-
-
-def multiprocess_song_datas(render_engine, song_datas):
-    # DEPRECATED
-    num_cores = multiprocessing.cpu_count()
-    chunks = get_chunks(song_datas, num_cores)
-    with multiprocessing.get_context('spawn').Pool(processes=num_cores) as pool:
-        # L = pool.starmap(func, chunks)
-        # M = pool.starmap(func, zip(chunks, repeat(render_engine)))
-        # pool.map(process_song_datas, (chunks, render_engine))
-        pool.map(partial(process_songs, render_engine=render_engine),
-                 chunks)
 
 
 def prepare_song_configs(configs):
@@ -69,12 +54,20 @@ def get_midi_paths_zip():
 
 
 def get_configs(midi_sets):
-    configs = []
-    for piano_midi, strings_midi, bass_midi, drums_midi in midi_sets:
+
+    def get_config(piano_midi, strings_midi, bass_midi, drums_midi):
         name = piano_midi.stem.replace(' - Piano', '')
+        bass_name = piano_midi.stem.replace(' - Bass', '')
+        piano_name = bass_midi.stem.replace(' - Strings', '')
+        if not name == bass_name == piano_name:
+            raise MidiConsistencyError('Wrong midi file')
+        elif re.sub(' - Drums\d', '', drums_midi.stem) not in name:
+            raise MidiConsistencyError('Wrong drums midi file')
+        now = dt.datetime.now().strftime("%d-%m-%y %H:%M:%S")
+        output_path = f'.WAVs/rendering_{now}/'
         config = {'Name': name,
                   'Artist': '',
-                  'OutputPath': './WAVs/test_mp/',
+                  'OutputPath': output_path,
                   'Tracks': [{'track_name': 'Drums',
                               'midi_path': str(drums_midi)},
                              {'track_name': 'Piano',
@@ -84,8 +77,16 @@ def get_configs(midi_sets):
                              {'track_name': 'Bass',
                               'midi_path': str(bass_midi)},
                              ]}
+        return config
 
-        configs.append(config)
+    configs = []
+    for piano_mid, strings_mid, bass_mid, drums_mid in midi_sets:
+        try:
+            config = get_config(piano_mid, strings_mid, bass_mid, drums_mid)
+            configs.append(config)
+        except MidiConsistencyError:
+            logger_main.error(f'{piano_mid.stem.replace(" - Piano")} has'
+                              'different tracks, SKIPPED')
     return configs
 
 
@@ -93,7 +94,7 @@ def process_songs(render_engine, song_configs):
 
     logger_main.info(f'{len(song_configs)} is in the {os.getpid()}')
     for config in song_configs:
-        logger_main.info(f'Song {config.Name} is in the processing in {os.getpid()}')
+        logger_main.info(f'Song {config.Name} is in {os.getpid()}')
         render_engine.process_song(config)
         logger_main.info(f'Song {config.Name} has processed in {os.getpid()}')
         render_engine.save_audio(config.rendered_output_path)
@@ -102,7 +103,8 @@ def process_songs(render_engine, song_configs):
 
 def get_list_midi(path: Path):
     return sorted([p for p in path.iterdir()
-                               if str(p).endswith('.mid')], key=lambda x: x.name)
+                  if str(p).endswith('.mid')], key=lambda x: x.name)
+
 
 def main():
     """
@@ -122,54 +124,13 @@ def main():
     song_configs = get_configs(get_midi_paths_zip())
     song_configs = prepare_song_configs(song_configs, cfg)
 
-    rendering_start = datetime.datetime.now()
+    rendering_start = dt.datetime.now()
     process_songs(render_engine, song_configs)
     # multiprocess_song_datas(render_engine, song_datas)
-    rendering = datetime.datetime.now() - rendering_start
+    rendering = dt.datetime.now() - rendering_start
     logger_main.error('Finished Rendering, time [minutes]: '
                       f'{rendering.seconds // 60 + 1}.')
 
-
-
-
-
-def create_song_config_batches():
-    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
-
-def main_parallel():
-    engines = create_engines()
-    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
-    batches = get_chunks(song_configs)
-    input()
-
-    assert len(batches) == len(engines)
-
-    processes = []
-    for engine, batch in zip(engines, batches):
-        p = multiprocessing.Process(target=process_songs, args=(engine, batch, ))
-        processes.append(p)
-
-    for p in processes:
-        p.start()
-
-    for p in processes:
-        p.join()
-
-def create_engines():
-    style = cfg.STYLE
-    logger_main.info(f'Style {cfg.STYLE} is used.')
-
-    engines = []
-
-    parser = ConfigParser()  # will create __call__ later
-    style_data = parser.build_style_data(style)  # style from config
-
-    for _ in range(multiprocessing.cpu_count()):
-        render_engine = RenderEngine(cfg.SAMPLE_RATE, cfg.BUFFER_SIZE)
-        render_engine.create_tracks(style_data)
-        render_engine.construct_graph()
-        engines.append(render_engine)
-    return engines
 
 def create_and_process(song_configs):
     style = cfg.STYLE
@@ -182,17 +143,17 @@ def create_and_process(song_configs):
     render_engine.create_tracks(style_data)
     render_engine.construct_graph()
 
-    rendering_start = datetime.datetime.now()
+    rendering_start = dt.datetime.now()
 
     # multiprocess_song_datas(render_engine, song_datas)
 
     for config in song_configs:
-        logger_main.info(f'Song {config.Name} is in the processing in {os.getpid()}')
+        logger_main.info(f'Song {config.Name} is in the {os.getpid()}')
         render_engine.process_song(config)
         logger_main.info(f'Song {config.Name} has processed in {os.getpid()}')
         render_engine.save_audio(config.rendered_output_path)
 
-    rendering = datetime.datetime.now() - rendering_start
+    rendering = dt.datetime.now() - rendering_start
     logger_main.error('Finished Rendering, time [minutes]: '
                       f'{rendering.seconds // 60 + 1}.')
 
@@ -205,9 +166,6 @@ def main_pool():
         pool.map(create_and_process, batches)
 
 
-
-
 if __name__ == '__main__':
     # sys.exit(main())
     main_pool()
-
