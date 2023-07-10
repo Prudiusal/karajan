@@ -53,8 +53,11 @@ class SongConfig:
             # logger_render.warning(red(str(song_data.get_bpm_from_msgs())))
         self.delete_tempo_msgs()
         self.song_length = self.calculate_length()
-        Path(self.OutputPath).mkdir(exist_ok=True, parents=True)
-        self.rendered_output_path = self.OutputPath + f'{self.Name}' + '.wav'
+        base_path = Path(self.OutputPath).mkdir(exist_ok=True, parents=True)
+        song_dir_path = base_path / self.Name
+        song_dir_path.mkdir(exist_ok=True, parents=True)
+        song_full_path = song_dir_path / f'{self.Name}' + '.wav'
+        self.rendered_output_path = song_full_path.absolute()
         return True
 
     def calculate_length(self):
