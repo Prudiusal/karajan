@@ -165,14 +165,19 @@ def create_and_process(song_configs):
 
 def main_pool():
     song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
-    batches = get_chunks(song_configs)
+    batches = get_chunks(song_configs, n=1)
     print(len(song_configs))
-    exit()
 
     with multiprocessing.Pool() as pool:
         pool.map(create_and_process, batches)
 
+def main_test_as_pool():
+    song_configs = prepare_song_configs(get_configs(get_midi_paths_zip()))
+    create_and_process(song_configs)
+
 
 if __name__ == '__main__':
     # sys.exit(main())
-    main_pool()
+    main_test_as_pool()
+    # main_pool()
+
