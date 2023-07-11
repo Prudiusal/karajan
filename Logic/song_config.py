@@ -57,7 +57,7 @@ class SongConfig:
         base_path.mkdir(exist_ok=True, parents=True)
         song_dir_path = base_path / self.Name
         song_dir_path.mkdir(exist_ok=True, parents=True)
-        song_full_path = song_dir_path / f'{self.Name}' + '.wav'
+        song_full_path = song_dir_path / f'{self.Name}.wav'
         self.rendered_output_path = song_full_path.absolute()
         return True
 
