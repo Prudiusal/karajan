@@ -66,6 +66,7 @@ def vst_creator(func, config, global_name):
     if any([s in plugin_name.lower() for s in ['ample', 'kontakt', 'ad2', 'ak']]):
         processor.open_editor()
     else:
+        processor.open_editor()
         preset_path = config['fxpPresetPath']
         check_preset_path(preset_path)
         logger_VST.debug(f'{preset_path=}')
@@ -80,7 +81,7 @@ def vst_creator(func, config, global_name):
             except Exception as e2:
                 logger_VST.error(f'Error during VST2 preset load {e2}')
                 raise PresetLoadError(f'BAD LOAD OF THE PRESET: \n\t{e1}, \n\t{e2}')
-        # processor.open_editor()
+        processor.open_editor()
     # logger_VST.debug('Processor has created')
     return processor
 
