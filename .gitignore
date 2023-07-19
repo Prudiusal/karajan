@@ -4,7 +4,10 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # config 
-Resources/Configs/CompStylesConfig.json
+# Resources/Configs/CompStylesConfig.json
+
+# vscode
+.vscode/*
 
 # tmp midi files 
 tmp/midi/*

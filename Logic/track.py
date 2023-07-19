@@ -36,12 +36,12 @@ class Track:
         Creates the instances of plugins and other processors
 
         TODO:
-            1. Creation of FAUST processors
-            2. Sidechain case for the FAUST/VST
-            3. Rename plugins -> processors in JSON
-            4. Add 'type' to the JSON (vst/faust)
-            5. If processor is not created -> ignore him
-            6. If synth is not created -> ignore channel
+            1. Creation of FAUST processors [Done]
+            2. Sidechain case for the FAUST/VST [Done]
+            3. Rename plugins -> processors in JSON 
+            4. Add 'type' to the JSON (vst/faust) [Done]
+            5. If processor is not created -> ignore him [Done]
+            6. If synth is not created -> ignore channel [Done]
         """
         # plugins_data is a part of 'StyleConfig.json', which
         # describes the plugin (processor) and its preset.

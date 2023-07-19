@@ -15,6 +15,7 @@ numpy = "*"
 pretty-errors = "*"
 pydub = "*"
 audiofile = "*"
+mutagen = "*"
 
 [dev-packages]
 

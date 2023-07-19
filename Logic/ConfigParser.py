@@ -32,7 +32,7 @@ class ConfigParser:
         # self.default_song_config = self.config_path / 'DemoSongsConfig.json'
         # :TODO change to env
         self.default_style_config = cfg.STYLE_CONFIG_PATH
-        
+
         # self.default_style_config = self.config_path / 'CompStylesConfig.json'
         self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
         self.song = "7_Rings"  # 7_Rings/Bruno
@@ -67,12 +67,15 @@ class ConfigParser:
         """
         if style:
             self.style = style
+        else:
+            logger_conf.warning(f'Default {self.style} is used')
+
 
         self.check_json(self.default_style_config)
         with open(self.default_style_config, 'r') as js:
             data = json.load(js)
         if not data.get(self.style):
-            raise StyleNotFoundError
+            raise StyleNotFoundError(self.style)
         style = StyleConfig(data[self.style])
         # style.validate()
         # logger_conf.info(f'{self.song} is used')

@@ -5,12 +5,13 @@ from pathlib import Path
 
 
 path_log = Path('.') / 'logs'
+path_log.mkdir(exist_ok=True, parents=True)
 file_log = path_log / f'log_{dt.datetime.now().strftime("%d-%m-%y_%H:%M:%S")}.log'
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s'
-                    ' %(message)s')
-                    # ' %(message)s', filename=file_log)
+                    ' %(message)s', filename=file_log)
+                    # ' %(message)s')
 
 level_styles = {
     'debug': {'color': 'white'},
@@ -40,3 +41,4 @@ logger_track = logging.getLogger('Track')
 
 logger_exc = logging.getLogger('exceptions')
 
+logger_sel = logging.getLogger('selector')
