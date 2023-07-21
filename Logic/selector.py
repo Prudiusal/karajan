@@ -3,6 +3,8 @@ import math
 from pathlib import Path
 from logger import logger_sel
 
+from Exceptions import StemsNotDeletedError, StemsDeletionError
+
 
 class Selector:
     names_to_delete = ['Bell', 'Castanets', 'Timpani', 'Maracas', 'clap',
@@ -13,46 +15,46 @@ class Selector:
         pass
 
     def __call__(self, config):
-        # orig = len(config.get('Tracks'))
         logger_sel.debug(f'{config.get("Name")} - Config is in processing')
 
         config = self.add_times(config)
         config, _ = self.clear_empty(config)
-        # empt = len(config.get('Tracks'))
+        if len(config.get('Tracks')) == 1:
+            raise StemsNotDeletedError(f'{config.get("Name")} has only 1 not '
+                                       f'empty stem')
 
         num_tracks_to_remove = math.floor(len(config['Tracks']) * 0.3)
-        # order = self.tracks_time_ordered(config)
-        # logger_sel.debug('INIT: \n'
-        #                  f'{list(zip(*self.tracks_time_ordered(config)))[0]}')
+        if num_tracks_to_remove == 0:
+            num_tracks_to_remove = 1
+
         logger_sel.debug('INIT: \n'
                          f'{self.tracks_time_ordered(config)}')
         logger_sel.debug(f'{num_tracks_to_remove=}')
-        # config['original_tracks'] = len(config['Tracks'])
         config, num_cleared = self.clear_names(config)
-        # names = len(config.get('Tracks'))
 
         num_tracks_to_remove -= num_cleared
+
         order = self.tracks_time_ordered(config)
         config, _ = self.remove_shortest(config, order, num_tracks_to_remove)
-        # final = len(config.get('Tracks'))
-
-        # logger_sel.debug('FINAL: \n'
-        #                  f'{list(zip(*self.tracks_time_ordered(config)))[0]}')
         logger_sel.debug('FINAL: \n'
                          f'{self.tracks_time_ordered(config)}')
 
-        # print(f'{final=}, {names=}, {empt=}, {orig=}')
-        # input()
+        if len(config.get('Tracks')) == 0:
+            raise StemsDeletionError(f'{config.get("Name")} has 0 stems after '
+                                     f'selection, Skipped')
+
         return config
 
-    def clear_empty(self, config):
+    @staticmethod
+    def clear_empty(config):
         orig = len(config.get('Tracks'))
         tracks = [t for t in config['Tracks'] if t['total_time'] > 1]
         config['Tracks'] = tracks
         final = len(config.get('Tracks'))
         return config, orig - final
 
-    def remove_shortest(self, config, order, num_to_remove):
+    @staticmethod
+    def remove_shortest(config, order, num_to_remove):
         orig = len(config.get('Tracks'))
         if num_to_remove < 1:
             return config, 0
@@ -77,7 +79,8 @@ class Selector:
         final = len(config.get('Tracks'))
         return config, orig - final
 
-    def add_times(self, config):
+    @staticmethod
+    def add_times(config):
         name = config.get('Name')
         for track in config.get('Tracks'):
             if not Path(track.get('steps_path')).exists():
@@ -100,7 +103,8 @@ class Selector:
                 track['total_time'] = round(time, 1)
         return config
 
-    def tracks_time_ordered(self, config):
+    @staticmethod
+    def tracks_time_ordered(config):
         times = [(track.get('stem_name'), track.get('total_time')) for track in
                  config.get('Tracks')]
         times.sort(key=lambda x: x[1], reverse=False)

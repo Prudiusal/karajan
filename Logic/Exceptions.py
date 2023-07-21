@@ -111,3 +111,23 @@ class PresetLoadError(Exception):
 
 class MidiConsistencyError(ValueError):
     pass
+
+
+class MP3NotFoundError(FileNotFoundError):
+    pass
+
+
+class StepsNotFoundError(FileNotFoundError):
+    pass
+
+
+class StemsNotDeletedError(Exception):
+    pass
+
+
+class StemsDeletionError(Exception):
+    pass
+
+
+class MP3NotSuiteStepsJsonError(Exception):
+    pass

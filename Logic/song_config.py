@@ -1,16 +1,17 @@
-from pathlib import Path
+import csv
 import shutil
 from uuid import uuid4
-from mutagen.mp3 import MP3
+from pathlib import Path
 
+from mutagen.mp3 import MP3
+from mido import MidiFile, tempo2bpm
+
+from colors import red
+from logger import logger_conf
 from Exceptions import WrongJsonFormatError, CSVNotFoundError, \
     MidiNotFoundError, BPMNotFoundError
 # from itertools import groupby
 
-from logger import logger_conf
-from mido import MidiFile, tempo2bpm
-from colors import red
-import csv
 
 # import settings as cfg
 
@@ -33,7 +34,8 @@ class SongConfig:
 
     def load_csv(self, csv_path):
         if not Path(csv_path).is_file():
-            raise CSVNotFoundError(f'File {csv_path} doesn\'t exist')
+            raise CSVNotFoundError(f'File {csv_path} doesn\'t exist '
+                                   f'{self.Name}')
         with open(csv_path, 'r') as f:
             file = csv.reader(f)
             for artist, song, bpm in file:
@@ -83,7 +85,8 @@ class SongConfig:
                     return length
 
         if not hasattr(self, 'BPM') or not self.BPM:
-            logger_conf.fatal('BPM NOT FOUND IN CONFIG, check init config '
+            logger_conf.fatal(f'{self.Name} - {self.Artist}: '
+                              'BPM NOT FOUND IN CONFIG, check init config '
                               '(dict). Make sure you have "get_bpm_from_msgs" '
                               'method of song_config. If the Playback is used,'
                               ' looks as "calculate_length" not found an mp3')

@@ -2,16 +2,20 @@ import logging
 import coloredlogs
 import datetime as dt
 from pathlib import Path
+import settings as cfg
 
 
-path_log = Path('.') / 'logs'
+LEVEL = logging.INFO
+
+# path_log = Path('.') / 'logs'
+path_log = Path(cfg.LOG_PATH)
 path_log.mkdir(exist_ok=True, parents=True)
-file_log = path_log / f'log_{dt.datetime.now().strftime("%d-%m-%y_%H:%M:%S")}.log'
+file_log_name = f'log_{dt.datetime.now().strftime("%d-%m-%y_%H:%M:%S")}.log'
+file_log = path_log / file_log_name
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=LEVEL,
                     format='%(asctime)s - %(name)s - %(levelname)s'
                     ' %(message)s', filename=file_log)
-                    # ' %(message)s')
 
 level_styles = {
     'debug': {'color': 'white'},
@@ -20,7 +24,7 @@ level_styles = {
     'error': {'color': 'red'},
     'critical': {'color': 'red', 'bold': True}
     }
-coloredlogs.install(level=logging.DEBUG, level_styles=level_styles,
+coloredlogs.install(level=LEVEL, level_styles=level_styles,
                     format='%(asctime)s - %(name)s - %(levelname)s'
                     ' %(message)s')
 

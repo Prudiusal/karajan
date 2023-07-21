@@ -22,6 +22,7 @@ DRUMS_MIDI_PATH = environ.get('DRUMS_MIDI_PATH')
 # path parameters, used in a project
 CSV_PATH = environ.get('CSV_PATH')
 TMP_MIDI_PATH = environ.get('TMP_MIDI_PATH')
+LOG_PATH = environ.get('LOG_PATH')
 
 # stems to connect together
 if platform.system() == 'Windows':
@@ -32,4 +33,3 @@ else:
     STEMS_ROOT_PATH = environ.get('STEMS_ROOT_PATH_MAC')
     STYLE_CONFIG_PATH = environ.get('STYLE_CONFIG_PATH_MAC')
     OUTPUT_PATH = environ.get('OUTPUT_PATH_MAC')
-

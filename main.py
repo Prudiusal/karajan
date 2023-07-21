@@ -8,7 +8,10 @@ import datetime as dt
 # from functools import partial
 from Logic import ConfigParser, SongConfig, RenderEngine, logger_main
 from Logic import Selector
-from Exceptions import MidiConsistencyError, CSVNotFoundError
+
+from Logic import MidiConsistencyError, CSVNotFoundError, \
+    MP3NotFoundError, StepsNotFoundError, StemsDeletionError, \
+    StemsNotDeletedError, MP3NotSuiteStepsJsonError
 
 import multiprocessing
 from itertools import zip_longest
@@ -79,21 +82,26 @@ def get_configs_stem(paths):
 
     def get_config_mp3(files_mp3, files_steps, name, artist):
         now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
-        output_path = f'./WAVs/stem_rendering_{now}/'
+        # output_path = f'./WAVs/stem_rendering_{now}/'
+        output_path = Path(cfg.OUTPUT_PATH) / f'stem_rendering_{now}'
         name = name.replace(artist, '').rstrip()
         config = {'Name': name,
                   'Artist': artist,
-                  'OutputPath': output_path,
+                  'OutputPath': str(output_path.absolute()),
                   'Tracks': []}
+        if not files_mp3:
+            raise MP3NotFoundError(f'{name} doesn\'t have MP3 files, skipped')
+        if not files_steps:
+            raise StepsNotFoundError(f'{name} doesn\'t have STEPS json '
+                                     'files, skipped')
+
         if len(files_mp3) != len(files_steps):
-            logger_main.debug('Different number of steps and mp3 for the track'
+            raise MP3NotSuiteStepsJsonError('Different number of steps and mp3 for the track'
                               f'{name}: {len(files_mp3)=} and '
                               f'{len(files_steps)=}')
-            files_steps = [False]
-            input()
+
         for i, files in enumerate(zip_longest(files_mp3, files_steps)):
             mp3, steps = files
-            # probably there is no need in "type" field
             stem_name = mp3.stem.replace(name, '').rstrip()
             stem_name = stem_name.replace(artist, '').rstrip()
             stem_name = stem_name.replace('--', '').rstrip()
@@ -106,16 +114,50 @@ def get_configs_stem(paths):
 
     configs = []
     for song_dir in paths:
+
         files_mp3 = [f.absolute() for f in song_dir.iterdir()
                      if f.suffix == '.mp3']
         files_steps = [f.absolute() for f in song_dir.iterdir()
                        if f.suffix == '.json' and f.stem.endswith('steps')]
+
         song_name = song_dir.name
         artist_name = str(song_dir.absolute()).split(os.sep)[-2]
-        config = get_config_mp3(files_mp3, files_steps, song_name, artist_name)
+        try:
+            config = get_config_mp3(files_mp3, files_steps, song_name,
+                                    artist_name)
+        except MP3NotFoundError as mp3error:
+            logger_main.error(mp3error)
+            logger_main.error(f'File {song_name} has skipped')
+            continue
+        except StepsNotFoundError as steps_error:
+            logger_main.error(steps_error)
+            logger_main.error(f'File {song_name} has skipped')
+            continue
+        except MP3NotSuiteStepsJsonError as mp3_steps:
+            logger_main.error(mp3_steps)
+            logger_main.error(f'File {song_name} has skipped')
+            continue
+
 
         if cfg.APPLY_SELECTION:
-            config = selector(config)
+            if song_name == '100 Suns':
+                print()
+            num_tracks_init = len(config.get('Tracks'))
+            try:
+                config = selector(config)
+            except StemsDeletionError as sde:
+                logger_main.error(sde)
+                continue
+            except StemsNotDeletedError as snde:
+                logger_main.error(snde)
+                continue
+
+            num_tracks_new = len(config.get('Tracks'))
+            if num_tracks_init == num_tracks_new:
+                logger_main.error(f'{config.get("Name")}: The same amount of '
+                                  'tracks after selection')
+                logger_main.error(f'File {song_name} has skipped')
+                continue
         configs.append(config)
 
     return configs
