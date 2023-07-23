@@ -154,7 +154,7 @@ class RenderEngine(dawdreamer.RenderEngine):
 
         logger_render.info(f'output path is {rendered_output_path}')
         wavfile.write(rendered_output_path, self.sample_rate,
-                      audio.transpose())
+                      audio.transpose().astype(np.int16))
         if not isfile(rendered_output_path):
             logger_render.error('File is not saved')
 
@@ -206,6 +206,7 @@ class RenderEngine(dawdreamer.RenderEngine):
                     logger_render.error(f'Exception {e} occured during the '
                                         f'load of the midi {midi_path} '
                                         f'into the track {track_name}')
+
             elif mp3_path and Path(mp3_path).exists():
                 try:
                     data = self.get_audio_data(mp3_path)
@@ -226,6 +227,7 @@ class RenderEngine(dawdreamer.RenderEngine):
                 empty_data = np.zeros([2, 1], dtype='float32')
                 processor.set_data(empty_data)
 
-    def get_audio_data(self, mp3_path):
+    @staticmethod
+    def get_audio_data(mp3_path):
         sig, rate = librosa.load(mp3_path, mono=False, sr=cfg.SAMPLE_RATE)
         return sig
