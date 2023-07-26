@@ -10,5 +10,6 @@ from style_config import StyleConfig
 from selector import Selector
 from track import Track
 from Exceptions import *
-__all__ = ['Exceptions', 'ConfigParser', 'SongConfig', ]
+from json_config_creator import JsonConfigCreator
+__all__ = ['logger_main', 'ConfigParser', 'RenderEngine', 'JsonConfigCreator', ]
 # __path__ = './Logic/'

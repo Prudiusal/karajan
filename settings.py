@@ -29,7 +29,11 @@ if platform.system() == 'Windows':
     STEMS_ROOT_PATH = environ.get('STEMS_ROOT_PATH')
     STYLE_CONFIG_PATH = environ.get('STYLE_CONFIG_PATH')
     OUTPUT_PATH = environ.get('OUTPUT_PATH')
+    EXCEL_SHEET_PATH = environ.get('EXCEL_SHEET_PATH')
+    STEMS_CSV_PATH = environ.get('STEMS_CSV_PATH')
 else:
     STEMS_ROOT_PATH = environ.get('STEMS_ROOT_PATH_MAC')
     STYLE_CONFIG_PATH = environ.get('STYLE_CONFIG_PATH_MAC')
     OUTPUT_PATH = environ.get('OUTPUT_PATH_MAC')
+    EXCEL_SHEET_PATH = environ.get('EXCEL_SHEET_PATH_MAC')
+    STEMS_CSV_PATH = environ.get('STEMS_CSV_PATH_MAC')

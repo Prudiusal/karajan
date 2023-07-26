@@ -27,21 +27,14 @@ class ConfigParser:
         # self.song_config_version = 0
         self.song_data_struct = 'json'
         self.style_data_struct = 'json'
-        # self.config_path = Path('.') / 'Resources' / 'Configs'
 
-        # self.default_song_config = self.config_path / 'DemoSongsConfig.json'
-        # :TODO change to env
         self.default_style_config = cfg.STYLE_CONFIG_PATH
-
-        # self.default_style_config = self.config_path / 'CompStylesConfig.json'
         self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
         self.song = "7_Rings"  # 7_Rings/Bruno
         # logger_conf.debug('current path for config is: '
         #                   f'{str(self.config_path.absolute())}')
         logger_conf.debug('current path for STYLE config is: '
                           f'{self.default_style_config}')
-
-
 
     def build_midi_data(self, song=None):
         """
@@ -69,7 +62,6 @@ class ConfigParser:
             self.style = style
         else:
             logger_conf.warning(f'Default {self.style} is used')
-
 
         self.check_json(self.default_style_config)
         with open(self.default_style_config, 'r') as js:

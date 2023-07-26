@@ -1,210 +1,13 @@
 import os
-
-from pathlib import Path
-import settings as cfg
-
 import datetime as dt
-
-# from functools import partial
-from Logic import ConfigParser, SongConfig, RenderEngine, logger_main
-from Logic import Selector
-
-from Logic import MidiConsistencyError, CSVNotFoundError, \
-    MP3NotFoundError, StepsNotFoundError, StemsDeletionError, \
-    StemsNotDeletedError, MP3NotSuiteStepsJsonError
-
 import multiprocessing
-from itertools import zip_longest
-# import re
+
+import settings as cfg
+from Logic import ConfigParser, JsonConfigCreator, RenderEngine, logger_main
 
 
 def get_chunks(files, n=multiprocessing.cpu_count()):
     return [files[i::n] for i in range(n)]
-
-
-def prepare_song_configs(configs: dict):
-    song_datas = []
-    csv_path = cfg.CSV_PATH
-    for config in configs:
-        song_data = SongConfig(config)
-        try:
-            song_data.load_csv(csv_path)
-        except CSVNotFoundError as e:
-            if not song_data.check_if_playback():
-                logger_main.error(e)
-            logger_main.warning(e)
-        song_data.prepare()
-        song_datas.append(song_data)
-    return song_datas
-
-
-def get_midi_paths_zip():
-
-    piano_mids_path = Path(cfg.PIANO_MIDI_PATH)
-    strings_mids_path = Path(cfg.STRINGS_MIDI_PATH)
-    drums_mids_path = Path(cfg.DRUMS_MIDI_PATH)
-    bass_mids_path = Path(cfg.BASS_MIDI_PATH)
-
-    piano_midi_files = sorted([p for p in piano_mids_path.iterdir()
-                               if str(p).endswith('.mid')],
-                              key=lambda x: x.name)
-    strings_midi_files = sorted([p for p in strings_mids_path.iterdir()
-                                 if str(p).endswith('.mid')],
-                                key=lambda x: x.name)
-    bass_midi_files = sorted([p for p in bass_mids_path.iterdir()
-                              if str(p).endswith('.mid')],
-                             key=lambda x: x.name)
-    drums_midi_files = sorted([p for p in drums_mids_path.iterdir()
-                               if str(p).endswith('.mid')],
-                              key=lambda x: x.name)
-
-    return zip(piano_midi_files,
-               strings_midi_files,
-               bass_midi_files,
-               drums_midi_files)
-
-
-def get_stem_paths():
-    stem_dir = Path(cfg.STEMS_ROOT_PATH)
-    artist_dirs = [d for d in stem_dir.iterdir() if d.is_dir()]
-    song_dirs = []
-    for song_dir in artist_dirs:
-        song_dirs.extend([d for d in song_dir.iterdir() if d.is_dir()])
-        # song_dirs.extend(= [list(d.iterdir()) for d in artist_dirs if
-        # d.is_dir()]
-    if not song_dirs:
-        raise ValueError('Directory with stems is empty')
-    return song_dirs
-
-
-def get_configs_stem(paths):
-    selector = Selector()
-
-    def get_config_mp3(files_mp3, files_steps, name, artist):
-        now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
-        # output_path = f'./WAVs/stem_rendering_{now}/'
-        output_path = Path(cfg.OUTPUT_PATH) / f'stem_rendering_{now}'
-        name = name.replace(artist, '').rstrip()
-        config = {'Name': name,
-                  'Artist': artist,
-                  'OutputPath': str(output_path.absolute()),
-                  'Tracks': []}
-        if not files_mp3:
-            raise MP3NotFoundError(f'{name} doesn\'t have MP3 files, skipped')
-        if not files_steps:
-            raise StepsNotFoundError(f'{name} doesn\'t have STEPS json '
-                                     'files, skipped')
-
-        if len(files_mp3) != len(files_steps):
-            raise MP3NotSuiteStepsJsonError('Different number of steps and mp3 for the track'
-                              f'{name}: {len(files_mp3)=} and '
-                              f'{len(files_steps)=}')
-
-        for i, files in enumerate(zip_longest(files_mp3, files_steps)):
-            mp3, steps = files
-            stem_name = mp3.stem.replace(name, '').rstrip()
-            stem_name = stem_name.replace(artist, '').rstrip()
-            stem_name = stem_name.replace('--', '').rstrip()
-            config['Tracks'].append({'track_name': f'instrument_{i}',
-                                     'mp3_path': mp3,
-                                     'steps_path': steps,
-                                     'stem_name': stem_name
-                                     })
-        return config
-
-    configs = []
-    for song_dir in paths:
-
-        files_mp3 = [f.absolute() for f in song_dir.iterdir()
-                     if f.suffix == '.mp3']
-        files_steps = [f.absolute() for f in song_dir.iterdir()
-                       if f.suffix == '.json' and f.stem.endswith('steps')]
-
-        song_name = song_dir.name
-        artist_name = str(song_dir.absolute()).split(os.sep)[-2]
-        try:
-            config = get_config_mp3(files_mp3, files_steps, song_name,
-                                    artist_name)
-        except MP3NotFoundError as mp3error:
-            logger_main.error(mp3error)
-            logger_main.error(f'File {song_name} has skipped')
-            continue
-        except StepsNotFoundError as steps_error:
-            logger_main.error(steps_error)
-            logger_main.error(f'File {song_name} has skipped')
-            continue
-        except MP3NotSuiteStepsJsonError as mp3_steps:
-            logger_main.error(mp3_steps)
-            logger_main.error(f'File {song_name} has skipped')
-            continue
-
-
-        if cfg.APPLY_SELECTION:
-            if song_name == '100 Suns':
-                print()
-            num_tracks_init = len(config.get('Tracks'))
-            try:
-                config = selector(config)
-            except StemsDeletionError as sde:
-                logger_main.error(sde)
-                continue
-            except StemsNotDeletedError as snde:
-                logger_main.error(snde)
-                continue
-
-            num_tracks_new = len(config.get('Tracks'))
-            if num_tracks_init == num_tracks_new:
-                logger_main.error(f'{config.get("Name")}: The same amount of '
-                                  'tracks after selection')
-                logger_main.error(f'File {song_name} has skipped')
-                continue
-        configs.append(config)
-
-    return configs
-
-
-def get_configs_midi(midi_sets):
-
-    def get_config_midi(piano_midi, strings_midi, bass_midi, drums_midi):
-        piano_name = piano_midi.stem.replace(' - Piano', '')
-        # bass_name = bass_midi.stem.replace(' - Bass', '')
-        # strings_name = strings_midi.stem.replace(' - Strings', '')
-        # drums_name = re.sub(' - Drums_\d', '', drums_midi.stem)
-        # Currently there is a problem with naming of version's keys (they are
-        # different event the shift is equal
-        # if not bool(piano_name == bass_name == strings_name):
-        #     logger_main.debug(f'ERROR: {piano_name}, {bass_name},
-        # {strings_name}')
-        #     raise MidiConsistencyError('Wrong midi file')
-        # if drums_name not in piano_name:
-        #     logger_main.debug(f'ERROR: {piano_name}, {drums_name}')
-        #     raise MidiConsistencyError('Wrong drums midi file')
-        now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
-        output_path = f'./WAVs/rendering_{now}/'
-        config = {'Name': piano_name,
-                  'Artist': '',
-                  'OutputPath': output_path,
-                  'Tracks': [{'track_name': 'Drums',
-                              'midi_path': str(drums_midi)},
-                             {'track_name': 'Piano',
-                              'midi_path': str(piano_midi)},
-                             {'track_name': 'Strings',
-                              'midi_path': str(strings_midi)},
-                             {'track_name': 'Bass',
-                              'midi_path': str(bass_midi)},
-                             ]}
-        return config
-
-    configs = []
-    for piano_mid, strings_mid, bass_mid, drums_mid in midi_sets:
-        try:
-            config = get_config_midi(piano_mid, strings_mid, bass_mid,
-                                     drums_mid)
-            configs.append(config)
-        except MidiConsistencyError:
-            logger_main.error(f'{piano_mid.stem.replace(" - Piano", "")} has'
-                              'different tracks, SKIPPED')
-    return configs
 
 
 def process_songs(render_engine, song_configs):
@@ -233,8 +36,10 @@ def main():
     render_engine.construct_graph()
     logger_main.info('Graph has been constructed')
 
-    song_configs = get_configs_midi(get_midi_paths_zip())
-    song_configs = prepare_song_configs(song_configs, cfg)
+    configs_creator = JsonConfigCreator()
+    midis = configs_creator.get_midi_paths_zip()
+    song_configs = configs_creator.get_configs_midi(midis)
+    song_configs = configs_creator.prepare_song_configs(song_configs)
 
     rendering_start = dt.datetime.now()
     process_songs(render_engine, song_configs)
@@ -273,36 +78,44 @@ def create_and_process(song_configs):
 
 
 def main_pool():
-    #
-    # if cfg.WAv_MODE:
-    #     one type of configs
-    # else:
-    #     another type of configs
 
-    song_configs = prepare_song_configs(get_configs_midi(get_midi_paths_zip()))
+    configs_creator = JsonConfigCreator()
+    midis = configs_creator.get_midi_paths_zip()
+    song_configs = configs_creator.get_configs_midi(midis)
+    song_configs = configs_creator.prepare_song_configs(song_configs)
 
     batches = get_chunks(song_configs)
-    print(len(song_configs))
 
     with multiprocessing.Pool() as pool:
         pool.map(create_and_process, batches)
 
 
 def main_pool_wav():
-    configs = prepare_song_configs(get_configs_stem(get_stem_paths()))
-    batches = get_chunks(configs)
+
+    configs_creator = JsonConfigCreator()
+    song_dirs = configs_creator.get_stem_paths()
+    song_configs = configs_creator.get_configs_stem(song_dirs)
+    song_configs = configs_creator.prepare_song_configs(song_configs)
+
+    batches = get_chunks(song_configs)
 
     with multiprocessing.Pool() as pool:
         pool.map(create_and_process, batches)
 
 
 def main_test_as_pool():
-    song_configs = prepare_song_configs(get_configs_midi(get_midi_paths_zip()))
+    configs_creator = JsonConfigCreator()
+    midis = configs_creator.get_midi_paths_zip()
+    song_configs = configs_creator.get_configs_midi(midis)
+    song_configs = configs_creator.prepare_song_configs(song_configs)
     create_and_process(song_configs)
 
 
 def main_test_as_pool_wav():
-    song_configs = prepare_song_configs(get_configs_stem(get_stem_paths()))
+    configs_creator = JsonConfigCreator()
+    song_dirs = configs_creator.get_stem_paths()
+    song_configs = configs_creator.get_configs_stem(song_dirs)
+    song_configs = configs_creator.prepare_song_configs(song_configs)
     create_and_process(song_configs)
 
 

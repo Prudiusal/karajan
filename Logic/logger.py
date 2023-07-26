@@ -46,3 +46,5 @@ logger_track = logging.getLogger('Track')
 logger_exc = logging.getLogger('exceptions')
 
 logger_sel = logging.getLogger('selector')
+
+logger_json = logging.getLogger('json')

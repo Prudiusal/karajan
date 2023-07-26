@@ -131,3 +131,7 @@ class StemsDeletionError(Exception):
 
 class MP3NotSuiteStepsJsonError(Exception):
     pass
+
+
+class StemsCSVNotFoundError(FileNotFoundError):
+    pass

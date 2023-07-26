@@ -1,3 +1,4 @@
+import re
 import csv
 import shutil
 from uuid import uuid4
@@ -8,10 +9,10 @@ from mido import MidiFile, tempo2bpm
 
 from colors import red
 from logger import logger_conf
+# TODO: import from Logic
 from Exceptions import WrongJsonFormatError, CSVNotFoundError, \
     MidiNotFoundError, BPMNotFoundError
 # from itertools import groupby
-
 
 # import settings as cfg
 
@@ -55,22 +56,35 @@ class SongConfig:
                 return True
         return False
 
+    # def check_artist_excel(self):
+    #     # if 'Song' in self.Artist.lower():
+    #     if bool(re.match('Song\d', self.Artist)):
+    #         logger_conf.error(f'Bad name of the artist {self.Artist}, '
+    #                           f'{self.Name}')
+
     def prepare(self):
+        # self.check_artist_excel()
         self.duplicate_midi_tmp()
         # only used for pure midi configs without BPM specified
         if not (hasattr(self, 'BPM') and self.check_if_playback):
             self.BPM = self.get_bpm_from_msgs()
-            # logger_render.warning(red(str(song_data.get_bpm_from_msgs())))
-
         self.delete_tempo_msgs()
         # Length should be calculated only for the pure midi files
         self.song_length = self.calculate_length()
 
         base_path = Path(self.OutputPath)
         base_path.mkdir(exist_ok=True, parents=True)
-        song_dir_path = base_path / self.Name
+        if self.check_if_playback():
+            song_dir_path = base_path
+            if self.Artist:
+                song_full_path = song_dir_path / f'{self.Artist} -' \
+                                                 f' {self.Name}.wav'
+            else:
+                song_full_path = song_dir_path / f'{self.Name}.wav'
+        else:
+            song_dir_path = base_path / self.Name
+            song_full_path = song_dir_path / f'{self.Name}.wav'
         song_dir_path.mkdir(exist_ok=True, parents=True)
-        song_full_path = song_dir_path / f'{self.Name}.wav'
         self.rendered_output_path = song_full_path.absolute()
         return True
 
