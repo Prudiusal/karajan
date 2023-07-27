@@ -4,6 +4,7 @@ import multiprocessing
 
 import settings as cfg
 from Logic import ConfigParser, JsonConfigCreator, RenderEngine, logger_main
+from Logic import SongConfig
 
 
 def get_chunks(files, n=multiprocessing.cpu_count()):
@@ -65,6 +66,9 @@ def create_and_process(song_configs):
     # multiprocess_song_datas(render_engine, song_datas)
 
     for config in song_configs:
+        if not isinstance(config, SongConfig):
+            logger_main.error(f'Wrong config type: {config}')
+            continue
         logger_main.info(f'Song {config.Name} is in the {os.getpid()}')
         # Change process song -> wav or midi
         # config.setup_engine(render_engine)
@@ -114,8 +118,8 @@ def main_test_as_pool():
 def main_test_as_pool_wav():
     configs_creator = JsonConfigCreator()
     song_dirs = configs_creator.get_stem_paths()
-    song_configs = configs_creator.get_configs_stem(song_dirs)
-    song_configs = configs_creator.prepare_song_configs(song_configs)
+    song_configs_dict = configs_creator.get_configs_stem(song_dirs)
+    song_configs = configs_creator.prepare_song_configs(song_configs_dict)
     create_and_process(song_configs)
 
 

@@ -129,7 +129,6 @@ class JsonConfigCreator:
                     logger_json.error(f'File {song_name} has skipped')
                     continue
             configs.append(config)
-
         self.check_artist_names(configs)
         return configs
 
@@ -154,7 +153,7 @@ class JsonConfigCreator:
         stems_csv_path = cfg.STEMS_CSV_PATH
         if not Path(stems_csv_path).exists():
             raise StemsCSVNotFoundError
-        with open(stems_csv_path, 'r') as f:
+        with open(stems_csv_path, 'r', encoding='utf-8') as f:
             file = csv.reader(f)
             mapper = {}
             for raw_row in file:
@@ -174,7 +173,7 @@ class JsonConfigCreator:
 
     @staticmethod
     def prepare_song_configs(configs: dict):
-        # song_datas = []
+        song_datas = []
         csv_path = cfg.CSV_PATH
         for config in configs:
             song_data = SongConfig(config)
@@ -185,6 +184,8 @@ class JsonConfigCreator:
                     logger_json.error(e)
                 logger_json.warning(e)
             song_data.prepare()
+            song_datas.append(song_data)
+        return song_datas
 
     @staticmethod
     def get_config_midi(self, piano_midi, strings_midi, bass_midi, drums_midi):
