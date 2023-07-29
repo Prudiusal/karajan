@@ -3,13 +3,13 @@ import datetime
 import platform
 from pathlib import Path
 from os.path import isfile
-from pydub import AudioSegment
 
 import librosa
 import dawdreamer
 import numpy as np
-from scipy.io import wavfile
-# from pydub import AudioSegment
+# from scipy.io import wavfile
+import soundfile as sf
+from pydub import AudioSegment
 
 import settings as cfg
 from track import Track
@@ -151,10 +151,10 @@ class RenderEngine(dawdreamer.RenderEngine):
         Saves audio file ( now in a ./WAVs folder)
         """
         audio = self.get_audio()
+        transposed = audio.transpose()
 
         logger_render.info(f'output path is {rendered_output_path}')
-        wavfile.write(rendered_output_path, self.sample_rate,
-                      audio.transpose().astype(np.int16))
+        sf.write('test1.wav', transposed, samplerate=44100, subtype='PCM_16')
         if not isfile(rendered_output_path):
             logger_render.error('File is not saved')
 
