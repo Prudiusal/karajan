@@ -92,7 +92,7 @@ def pb_creator(func, config, global_name):
     """
     Creates PlayBack processor
     """
-    empty_data = np.zeros([2, 5], dtype='float32')
+    empty_data = np.zeros([2, 1], dtype='float32')
     processor = func(global_name, empty_data)
     # processor.set_options(
     #     daw.PlaybackWarpProcessor.option.OptionTransientsSmooth |

@@ -5,7 +5,7 @@ from pathlib import Path
 import settings as cfg
 
 
-LEVEL = logging.INFO
+LEVEL = logging.DEBUG
 
 # path_log = Path('.') / 'logs'
 path_log = Path(cfg.LOG_PATH)

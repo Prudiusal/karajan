@@ -154,7 +154,8 @@ class RenderEngine(dawdreamer.RenderEngine):
         transposed = audio.transpose()
 
         logger_render.info(f'output path is {rendered_output_path}')
-        sf.write('test1.wav', transposed, samplerate=44100, subtype='PCM_16')
+        sf.write(rendered_output_path, transposed, samplerate=44100,
+                 subtype='PCM_16')
         if not isfile(rendered_output_path):
             logger_render.error('File is not saved')
 

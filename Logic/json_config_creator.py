@@ -13,7 +13,7 @@ from logger import logger_json
 from selector import Selector
 from Exceptions import MP3NotFoundError, StepsNotFoundError, CSVNotFoundError,\
     MP3NotSuiteStepsJsonError, StemsDeletionError, StemsNotDeletedError, \
-    MidiConsistencyError, StemsCSVNotFoundError
+    MidiConsistencyError, StemsCSVNotFoundError, UnableToDeleteStemsError
 
 
 class JsonConfigCreator:
@@ -111,23 +111,23 @@ class JsonConfigCreator:
             except (MP3NotFoundError, StepsNotFoundError,
                     MP3NotSuiteStepsJsonError) as e:
                 logger_json.error(e)
-                logger_json.error(f'File {song_name} has skipped')
+                # logger_json.error(f'File {song_name} has skipped')
                 continue
 
             if cfg.APPLY_SELECTION:
-                num_tracks_init = len(config.get('Tracks'))
                 try:
                     config = selector(config)
-                except (StemsDeletionError, StemsNotDeletedError) as e:
-                    logger_json.error(e)
+                except (StemsDeletionError, StemsNotDeletedError,
+                        UnableToDeleteStemsError) as e:
+                    logger_json.critical(e)
+                    # logger_json.error(f'File {song_name} has skipped')
                     continue
 
-                num_tracks_new = len(config.get('Tracks'))
-                if num_tracks_init == num_tracks_new:
-                    logger_json.error(f'{config.get("Name")}: The same amount'
-                                      'of tracks after selection')
-                    logger_json.error(f'File {song_name} has skipped')
-                    continue
+                # if num_tracks_init == num_tracks_new:
+                #    logger_json.error(f'{config.get("Name")}: The same amount'
+                #                       'of tracks after selection')
+                #     logger_json.error(f'File {song_name} has skipped')
+                #     continue
             configs.append(config)
         self.check_artist_names(configs)
         return configs
