@@ -48,3 +48,7 @@ logger_exc = logging.getLogger('exceptions')
 logger_sel = logging.getLogger('selector')
 
 logger_json = logging.getLogger('json')
+
+logger_server = logging.getLogger('server_renderEngine')
+
+logger_api = logging.getLogger('server_api')

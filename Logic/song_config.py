@@ -62,6 +62,16 @@ class SongConfig:
     #         logger_conf.error(f'Bad name of the artist {self.Artist}, '
     #                           f'{self.Name}')
 
+    def prepare_api(self):
+        self.delete_tempo_msgs()
+        # Length should be calculated only for the pure midi files
+        self.song_length = self.calculate_length()
+        base_path = Path(self.OutputPath)
+        versions_dir_path = base_path / self.Name
+        versions_dir_path.mkdir(exist_ok=True, parents=True)
+        song_full_path = versions_dir_path / f'{self.Name}.wav'
+        self.rendered_output_path = song_full_path.absolute()
+
     def prepare(self):
         # self.check_artist_excel()
         self.duplicate_midi_tmp()
@@ -105,7 +115,7 @@ class SongConfig:
                               'method of song_config. If the Playback is used,'
                               ' looks as "calculate_length" not found an mp3')
             raise BPMNotFoundError
-        logger_conf.warning(red(f'Bmp {self.BPM} is used'))
+        logger_conf.warning(f'Bmp {self.BPM} is used')
         times = []
         for track in self.Tracks:
             # path = track.get('tmp_midi_path', track.get('midi_path'))

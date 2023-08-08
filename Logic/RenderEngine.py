@@ -109,13 +109,17 @@ class RenderEngine(dawdreamer.RenderEngine):
         """
         logger_render.info(f'{song_data.Name} processing has started:')
 
-        if not (hasattr(song_data, 'BPM') and song_data.check_if_playback()):
+        # false + false
+        if not (hasattr(song_data, 'BPM') or song_data.check_if_playback()):
             raise BPMNotFoundError
         else:  # we have not pure midi config, but still there is a BPM in conf
             if song_data.BPM:
                 self.set_bpm(song_data.BPM)
 
+        logger_render.debug(f'Trying to load the midi')
         self.load_data_into_tracks(song_data)
+        logger_render.debug(f'midis are loaded')
+
         self.song_length = song_data.song_length
         if not self.song_length > 0:
             logger_render.error(f'The length is {self.song_length}')
@@ -200,24 +204,26 @@ class RenderEngine(dawdreamer.RenderEngine):
             mp3_path = params.get('mp3_path')
             if midi_path and Path(midi_path).exists():
                 try:
-                    player.load_midi(str(midi_path), beats=True)
-                    logger_render.debug(f'{midi_path} ({params["midi_path"]}) '
-                                        f'is loaded into {track_name}')
+                    player.load_midi(midi_path, beats=True)
                 except Exception as e:
                     logger_render.error(f'Exception {e} occured during the '
                                         f'load of the midi {midi_path} '
                                         f'into the track {track_name}')
+                else:
+                    logger_render.debug(f'{midi_path}'
+                                        f'is loaded into {track_name}')
 
             elif mp3_path and Path(mp3_path).exists():
                 try:
                     data = self.get_audio_data(mp3_path)
                     player.set_data(data)
-                    logger_render.debug(f'{mp3_path} is loaded into '
-                                        f'{track_name}')
                 except Exception as e:
                     logger_render.error(f'Exception {e} occured during the '
                                         f'load of the MP3 {mp3_path} '
                                         f'into the track {track_name}')
+                else:
+                    logger_render.debug(f'{mp3_path} is loaded into '
+                                        f'{track_name}')
             else:
                 logger_render.error(f'midi file not found {midi_path}')
 

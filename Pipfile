@@ -16,6 +16,8 @@ pretty-errors = "*"
 pydub = "*"
 audiofile = "*"
 mutagen = "*"
+openpyxl = "*"
+flask = "*"
 
 [dev-packages]
 

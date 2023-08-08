@@ -187,21 +187,20 @@ class JsonConfigCreator:
             song_datas.append(song_data)
         return song_datas
 
-    @staticmethod
     def get_config_midi(self, piano_midi, strings_midi, bass_midi, drums_midi):
         piano_name = piano_midi.stem.replace(' - Piano', '')
-        # bass_name = bass_midi.stem.replace(' - Bass', '')
-        # strings_name = strings_midi.stem.replace(' - Strings', '')
-        # drums_name = re.sub(' - Drums_\d', '', drums_midi.stem)
+        bass_name = bass_midi.stem.replace(' - Bass', '')
+        strings_name = strings_midi.stem.replace(' - Strings', '')
+        drums_name = re.sub(' - Drums_\d', '', drums_midi.stem)
         # Currently there is a problem with naming of version's keys (they are
         # different event the shift is equal
-        # if not bool(piano_name == bass_name == strings_name):
-        #     logger_main.debug(f'ERROR: {piano_name}, {bass_name},
-        # {strings_name}')
-        #     raise MidiConsistencyError('Wrong midi file')
-        # if drums_name not in piano_name:
-        #     logger_main.debug(f'ERROR: {piano_name}, {drums_name}')
-        #     raise MidiConsistencyError('Wrong drums midi file')
+        if not bool(piano_name == bass_name == strings_name):
+            logger_json.debug(f'ERROR: {piano_name}, {bass_name},'
+                              f'{strings_name}')
+            raise MidiConsistencyError('Wrong midi file')
+        if drums_name not in piano_name:
+            logger_json.debug(f'ERROR: {piano_name}, {drums_name}')
+            raise MidiConsistencyError('Wrong drums midi file')
 
         config = {'Name': piano_name,
                   'Artist': '',
@@ -224,7 +223,9 @@ class JsonConfigCreator:
 
         for piano_mid, strings_mid, bass_mid, drums_mid in midi_sets:
             try:
-                config = self.get_config_midi(piano_mid, strings_mid, bass_mid,
+                config = self.get_config_midi(piano_mid,
+                                              strings_mid,
+                                              bass_mid,
                                               drums_mid)
                 configs.append(config)
             except MidiConsistencyError:
