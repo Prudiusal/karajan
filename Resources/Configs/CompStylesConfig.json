@@ -1,0 +1,100 @@
+{
+  "PianoDrums": {
+    "name": "PianoDrums",
+    "tracks": [
+      {
+        "track_name": "Piano",
+        "plugins": [
+          {
+            "index": 0,
+            "pluginName": "AK",
+            "pluginPath": "C:\\Program Files\\Steinberg\\VSTPlugins\\XLN Audio\\Addictive Keys.dll",
+            "fxpPresetPath": "C:\\presets\\PianoDrums\\AddictiveKeys_ModernUpright_WideStereo.fxb"
+          }
+        ]
+      },
+      {
+        "track_name": "Strings",
+        "plugins": [
+          {
+            "index": 0,
+            "pluginName": "Kontakt",
+            "pluginPath": "C:\\Program Files\\Common Files\\VST3\\Kontakt 7.vst3",
+            "fxpPresetPath": "Resources/Presets/GUITAR_-_Guitar_Ez_.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "Drums",
+        "plugins": [
+          {
+            "index": 0,
+            "pluginName": "AD2",
+            "pluginPath": "C:\\Program Files\\Steinberg\\VSTPlugins\\XLN Audio\\Addictive Drums 2.dll",
+            "fxpPresetPath": "C:\\presets\\PianoDrums\\AD2_BlackVelvet_Crisp.fxp"
+          }
+        ]
+      },
+      {
+        "track_name": "Bass",
+        "plugins": [
+          {
+            "index": 0,
+            "pluginName": "AMPLE",
+            "pluginPath": "C:\\Program Files\\Common Files\\VST3\\ABP.vst3",
+            "fxpPresetPath": "C:\\presets\\PianoDrums\\Ample Bass Prison Break.vstpreset"
+          }
+        ]
+      }
+    ],
+    "master": {
+      "track_name": "master",
+      "plugins": [
+        {
+          "pluginName": "ozone_Imager",
+          "pluginPath": "C:\\Program Files\\Common Files\\VST3\\iZotope\\Ozone 10 Imager.vst3",
+          "fxpPresetPath": "C:\\Users\\aymar\\procedural-generation\\Resources\\presets\\PianoDrums\\Ozone 10 Imager Main.vstpreset"
+        },
+        {
+          "pluginName": "ozone_Maximizer",
+          "pluginPath": "C:\\Program Files\\Common Files\\VST3\\iZotope\\Ozone 10 Maximizer.vst3",
+          "fxpPresetPath": "C:\\Users\\aymar\\procedural-generation\\Resources\\presets\\PianoDrums\\Ozone 10 Maximize-wide 9k.vstpreset"
+        },
+        {
+          "pluginName": "reverb",
+          "pluginPath": "C:\\Program Files\\Common Files\\VST3\\iZotope\\iZotope Ozone 5 Reverb.vst3",
+          "fxpPresetPath": "C:\\Users\\aymar\\procedural-generation\\Resources\\presets\\PianoDrums\\OzoneReverb5-Theatre11.vstpreset"
+        },
+        {
+          "pluginName": "soothe",
+          "pluginPath": "C:\\Program Files\\Common Files\\VST3\\oeksound\\soothe2_x64.vst3",
+          "fxpPresetPath": "C:\\Users\\aymar\\procedural-generation\\Resources\\presets\\PianoDrums\\soothe-orchestral-high.vstpreset"
+        },
+        {
+          "pluginName": "transient_shaper",
+          "pluginPath": "C:\\Program Files\\Common Files\\VST3\\iZotope\\Neutron 4 Transient Shaper.vst3",
+          "fxpPresetPath": "C:\\Users\\aymar\\procedural-generation\\Resources\\presets\\PianoDrums\\Neutron 4 Transient Shaper.vstpreset"
+        }
+
+      ]
+    }
+  },
+  "TestMP": {
+    "name": "TestMP",
+    "tracks": [
+      {
+        "track_name": "NUll",
+        "plugins": [
+          {
+            "pluginName": "none",
+            "pluginPath": "None",
+            "fxpPresetPath": "None"
+          }
+        ]
+      }
+    ]
+
+  }
+}
+    
+

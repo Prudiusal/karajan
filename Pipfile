@@ -18,6 +18,9 @@ audiofile = "*"
 mutagen = "*"
 openpyxl = "*"
 flask = "*"
+isort = "*"
+black = "*"
+flake8 = "*"
 
 [dev-packages]
 

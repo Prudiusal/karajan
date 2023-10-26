@@ -3,12 +3,8 @@ from os.path import isfile
 from pathlib import Path
 
 # from SongData import SongData
-from Exceptions import JsonNotFoundError
-from Exceptions import SongNotFoundError, StyleNotFoundError
-
+from Exceptions import JsonNotFoundError, SongNotFoundError, StyleNotFoundError
 from logger import logger_conf
-
-
 from song_config import SongConfig
 from style_config import StyleConfig
 
@@ -23,18 +19,20 @@ class ConfigParser:
     *** There were old version, which is not used right not, but during the
     development we had to save previous functionality.
     """
+
     def __init__(self):
         # self.song_config_version = 0
-        self.song_data_struct = 'json'
-        self.style_data_struct = 'json'
+        self.song_data_struct = "json"
+        self.style_data_struct = "json"
 
         self.default_style_config = cfg.STYLE_CONFIG_PATH
         self.style = "OrcheTrack"  # OrcheTrack/PianoTrack
         self.song = "7_Rings"  # 7_Rings/Bruno
         # logger_conf.debug('current path for config is: '
         #                   f'{str(self.config_path.absolute())}')
-        logger_conf.debug('current path for STYLE config is: '
-                          f'{self.default_style_config}')
+        logger_conf.debug(
+            "current path for STYLE config is: " f"{self.default_style_config}"
+        )
 
     def build_midi_data(self, song=None):
         """
@@ -45,12 +43,12 @@ class ConfigParser:
             self.song = song
 
         self.check_json(self.default_song_config)
-        with open(self.default_song_config, 'r') as js:
+        with open(self.default_song_config, "r") as js:
             data = json.load(js)
         if not data.get(self.song):
             raise SongNotFoundError
         song = SongConfig(data[self.song])  # we read only one song's data
-        logger_conf.info(f'{self.style} is used')
+        logger_conf.info(f"{self.style} is used")
         return song
 
     def build_style_data(self, style=None):
@@ -61,10 +59,10 @@ class ConfigParser:
         if style:
             self.style = style
         else:
-            logger_conf.warning(f'Default {self.style} is used')
+            logger_conf.warning(f"Default {self.style} is used")
 
         self.check_json(self.default_style_config)
-        with open(self.default_style_config, 'r') as js:
+        with open(self.default_style_config, "r") as js:
             data = json.load(js)
         if not data.get(self.style):
             raise StyleNotFoundError(self.style)
@@ -76,10 +74,11 @@ class ConfigParser:
     @staticmethod
     def check_json(path: Path):
         if not isfile(path):
-            logger_conf.error(f'Config file {str(path)} not found!')
+            logger_conf.error(f"Config file {str(path)} not found!")
             raise JsonNotFoundError
         else:
-            logger_conf.debug(f'Config file {str(path)} exists.')
+            logger_conf.debug(f"Config file {str(path)} exists.")
+
 
 #     def build_song_data(self, style='HousetrackDemo'):
 #         """

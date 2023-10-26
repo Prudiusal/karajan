@@ -1,39 +1,66 @@
 import unittest
-import settings as cfg
-from Logic import RenderEngine, ConfigParser
-from Logic import WrongStyleType, TracksNotFoundError, BPMNotFoundError
 from pathlib import Path
-from Logic import SongConfig
-from helpers import cases
+
+import settings as cfg
+from Logic import (
+    BPMNotFoundError,
+    ConfigParser,
+    RenderEngine,
+    SongConfig,
+    TracksNotFoundError,
+    WrongStyleType,
+)
 
 
 def get_song_cfg():
-    piano_mids = sorted([p for p in Path(cfg.PIANO_MIDI_PATH).iterdir()
-                         if str(p).endswith('.mid')], key=lambda x: x.name)
-    strings_mids = sorted([p for p in Path(cfg.STRINGS_MIDI_PATH).iterdir()
-                           if str(p).endswith('.mid')], key=lambda x: x.name)
-    bass_mids = sorted([p for p in Path(cfg.BASS_MIDI_PATH).iterdir()
-                        if str(p).endswith('.mid')], key=lambda x: x.name)
-    drums_mids = sorted([p for p in Path(cfg.DRUMS_MIDI_PATH).iterdir()
-                         if str(p).endswith('.mid')], key=lambda x: x.name)
+    piano_mids = sorted(
+        [
+            p
+            for p in Path(cfg.TEST_PIANO_MIDI_PATH).iterdir()
+            if str(p).endswith(".mid")
+        ],
+        key=lambda x: x.name,
+    )
+    strings_mids = sorted(
+        [
+            p
+            for p in Path(cfg.TEST_STRINGS_MIDI_PATH).iterdir()
+            if str(p).endswith(".mid")
+        ],
+        key=lambda x: x.name,
+    )
+    bass_mids = sorted(
+        [
+            p
+            for p in Path(cfg.TEST_BASS_MIDI_PATH).iterdir()
+            if str(p).endswith(".mid")
+        ],
+        key=lambda x: x.name,
+    )
+    drums_mids = sorted(
+        [
+            p
+            for p in Path(cfg.TEST_DRUMS_MIDI_PATH).iterdir()
+            if str(p).endswith(".mid")
+        ],
+        key=lambda x: x.name,
+    )
 
-    conf = {'Name': 'easy on me',
-            'Artist': '',
-            'OutputPath': './WAVs/test_max_plus_one/',
-            'Tracks': [{'track_name': 'Drums',
-                        'midi_path': drums_mids[0]},
-                       {'track_name': 'Piano',
-                        'midi_path': str(piano_mids[0])},
-                       {'track_name': 'Strings',
-                        'midi_path': str(strings_mids[0])},
-                       {'track_name': 'Bass',
-                        'midi_path': str(bass_mids[0])},
-                       ]}
+    conf = {
+        "Name": "easy on me",
+        "Artist": "",
+        "OutputPath": "./WAVs/test_max_plus_one/",
+        "Tracks": [
+            {"track_name": "Drums", "midi_path": drums_mids[0]},
+            {"track_name": "Piano", "midi_path": str(piano_mids[0])},
+            {"track_name": "Strings", "midi_path": str(strings_mids[0])},
+            {"track_name": "Bass", "midi_path": str(bass_mids[0])},
+        ],
+    }
     return SongConfig(conf)
 
 
 class TestSuite(unittest.TestCase):
-
     def setUp(self):
         parser = ConfigParser()
         self.style_data = parser.build_style_data(cfg.STYLE)
@@ -62,7 +89,7 @@ class TestSuite(unittest.TestCase):
             self.engine.construct_graph()
 
     def test_process_song(self):
-        self.song_config.load_csv(cfg.CSV_PATH)
+        self.song_config.load_csv(cfg.TEST_CSV_PATH)
         self.song_config.prepare()
         self.engine.create_tracks(self.style_data)
         self.engine.construct_graph()
@@ -76,20 +103,16 @@ class TestSuite(unittest.TestCase):
         with self.assertRaises(BPMNotFoundError):
             self.engine.process_song(self.song_config)
 
-    def test_load_midi_into_tracks_ok(self):
-        self.song_config.load_csv(cfg.CSV_PATH)
+    def test_load_data_into_tracks_ok(self):
+        self.song_config.load_csv(cfg.TEST_CSV_PATH)
         self.song_config.prepare()
         self.engine.create_tracks(self.style_data)
         self.engine.construct_graph()
-        self.engine.load_midi_into_tracks(self.song_config)
+        self.engine.load_data_into_tracks(self.song_config)
 
-    def test_load_midi_into_tracks_bad(self):
-        self.song_config.load_csv(cfg.CSV_PATH)
+    def test_load_data_into_tracks_bad(self):
+        self.song_config.load_csv(cfg.TEST_CSV_PATH)
         self.song_config.prepare()
         self.engine.create_tracks(self.style_data)
         # self.engine.construct_graph() # nothing will be created
-        self.engine.load_midi_into_tracks(self.song_config)
-
-
-
-
+        self.engine.load_data_into_tracks(self.song_config)

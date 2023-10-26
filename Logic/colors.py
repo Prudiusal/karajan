@@ -1,5 +1,6 @@
 ###############################################################################
 
+
 def red(txt: str):
     """
     It takes a string as input and returns the same string with red text
@@ -8,7 +9,7 @@ def red(txt: str):
     :type txt: str
     :return: the string with the color code.
     """
-    return '\033[1;31;48m' + txt + '\033[1;37;0m'
+    return "\033[1;31;48m" + txt + "\033[1;37;0m"
 
 
 def green(txt: str):
@@ -19,4 +20,4 @@ def green(txt: str):
     :type txt: str
     :return: the string with the color code.
     """
-    return '\033[1;32;48m' + txt + '\033[1;37;0m'
+    return "\033[1;32;48m" + txt + "\033[1;37;0m"

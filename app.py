@@ -1,22 +1,19 @@
 import datetime as dt
-from uuid import uuid4
-from pathlib import Path
-from flask import Flask, request  # , flash
-from werkzeug.exceptions import BadRequestKeyError
-from Logic import JsonConfigCreator
-
 import multiprocessing
+from argparse import ArgumentParser
+from pathlib import Path
+from uuid import uuid4
 
-from Logic import ServerRunner
-from Logic import logger_api
+from flask import Flask, request  # , flash
 
-# from uuid import
+from Logic import ServerRunner, logger_api
+
 
 queue = multiprocessing.JoinableQueue()
 now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
-output_path = f'./WAVs/api_rendering_{now}/'
+output_path = f"./WAVs/api_rendering_{now}/"
 Path(output_path).mkdir(exist_ok=True, parents=True)
-tmp_path = Path('.') / 'tmp' / 'midi_api'
+tmp_path = Path(".") / "tmp" / "midi_api"
 tmp_path.mkdir(exist_ok=True, parents=True)
 # queue = Queue()
 # ----------------------------------
@@ -25,7 +22,7 @@ tmp_path.mkdir(exist_ok=True, parents=True)
 app = Flask(__name__)
 
 
-@app.route('/upload', methods=['POST'])
+@app.route("/upload", methods=["POST"])
 def upload_midi_files():
     """
     This functions recieves a request with midi files
@@ -34,41 +31,40 @@ def upload_midi_files():
     Finally the SongConfig object is created and sent to queue
     """
 
-    name = request.form['name']
-    bpm = request.form['bpm']
-    piano_midi = request.files['piano_midi']
-    piano_path = tmp_path / (str(uuid4()) + '.mid')
+    name = request.form["name"]
+    bpm = request.form["bpm"]
+    piano_midi = request.files["piano_midi"]
+    piano_path = tmp_path / (str(uuid4()) + ".mid")
     piano_midi.save(piano_path.absolute())
 
-    drums_midi = request.files['drums_midi']
-    drums_path = tmp_path / (str(uuid4()) + '.mid')
+    drums_midi = request.files["drums_midi"]
+    drums_path = tmp_path / (str(uuid4()) + ".mid")
     drums_midi.save(drums_path.absolute())
 
-    strings_midi = request.files['strings_midi']
-    strings_path = tmp_path / (str(uuid4()) + '.mid')
+    strings_midi = request.files["strings_midi"]
+    strings_path = tmp_path / (str(uuid4()) + ".mid")
 
     strings_midi.save(strings_path.absolute())
 
-    bass_midi = request.files['bass_midi']
-    bass_path = tmp_path / (str(uuid4()) + '.mid')
+    bass_midi = request.files["bass_midi"]
+    bass_path = tmp_path / (str(uuid4()) + ".mid")
     bass_midi.save(bass_path.absolute())
 
-    config = {'Name': name,
-              'Artist': '',
-              'OutputPath': output_path,
-              'BPM': int(bpm),
-              'Tracks': [{'track_name': 'Drums',
-                          'tmp_midi_path': str(drums_path)},
-                         {'track_name': 'Piano',
-                          'tmp_midi_path': str(piano_path)},
-                         {'track_name': 'Strings',
-                          'tmp_midi_path': str(strings_path)},
-                         {'track_name': 'Bass',
-                          'tmp_midi_path': str(bass_path)},
-                         ]}
+    config = {
+        "Name": name,
+        "Artist": "",
+        "OutputPath": output_path,
+        "BPM": int(bpm),
+        "Tracks": [
+            {"track_name": "Drums", "tmp_midi_path": str(drums_path)},
+            {"track_name": "Piano", "tmp_midi_path": str(piano_path)},
+            {"track_name": "Strings", "tmp_midi_path": str(strings_path)},
+            {"track_name": "Bass", "tmp_midi_path": str(bass_path)},
+        ],
+    }
     queue.put(config)
-    logger_api.info(f'{name} has received and sent to processing')
-    return f'{name} has received and sent to processing'
+    logger_api.info(f"{name} has received and sent to processing")
+    return f"{name} has received and sent to processing"
 
     # try:
     #     bpm = request.form['bpm']
@@ -106,6 +102,16 @@ def upload_midi_files():
 
 
 if __name__ == "__main__":
-    runner = ServerRunner(queue, 2)
+    parser = ArgumentParser(description="Rendering server for midi")
+    parser.add_argument(
+        "--num-workers",
+        type=int,
+        default=multiprocessing.cpu_count(),
+        help="Number of process for rendering (default: CPU count)",
+    )
+    args = parser.parse_args()
+    num_workers = args.num_workers
+    logger_api.info(f"{num_workers} workers are used to render.")
+    runner = ServerRunner(queue, num_workers)
     runner.run_engines()
     app.run(host="0.0.0.0", port=8000)

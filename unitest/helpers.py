@@ -9,13 +9,15 @@ def cases(cases):
                 # new_args = args + (c if isinstance(c, tuple) else (c,))
                 new_args = args + (c if isinstance(c, tuple) else (c,))
                 f(*new_args)
+
         return wrapper
+
     return decorator
 
 
-import logging
-import coloredlogs
-
+# import logging
+#
+# import coloredlogs
 
 # # Here the logs are turned on
 # logging.basicConfig(level=logging.FATAL,
