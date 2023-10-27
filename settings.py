@@ -12,6 +12,8 @@ APPLY_SELECTION = 1
 # RenderEngine parameters
 SAMPLE_RATE = int(environ.get("SAMPLE_RATE", 44100))
 BUFFER_SIZE = int(environ.get("BUFFER_SIZE", 128))
+HOST = environ.get("HOST", "0:0:0:0")
+PORT = int(environ.get("PORT", "8000"))
 
 LOG_PATH = environ.get("LOG_PATH")
 

@@ -5,7 +5,10 @@ import requests
 
 import settings as cfg
 
-URL = "http://localhost:8000/upload"
+# URL = "http://localhost:8000/upload"
+host_api = cfg.HOST
+port_api = cfg.PORT
+URL = f"http://{host_api}:{port_api}/upload"
 
 
 def get_midi_paths_zip():

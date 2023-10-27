@@ -7,6 +7,7 @@ from uuid import uuid4
 from flask import Flask, request  # , flash
 
 from Logic import ServerRunner, logger_api
+import settings as cfg
 
 queue = multiprocessing.JoinableQueue()
 now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
@@ -115,4 +116,7 @@ if __name__ == "__main__":
     logger_api.info(f"{num_workers} workers are used to render.")
     runner = ServerRunner(queue, num_workers)
     runner.run_engines()
-    app.run(host="0.0.0.0", port=8000)
+    # app.run(host="0.0.0.0", port=8000)
+    host_api = cfg.HOST
+    port_api = cfg.PORT
+    app.run(host=host_api, port=port_api)
