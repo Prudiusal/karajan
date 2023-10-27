@@ -8,7 +8,6 @@ from flask import Flask, request  # , flash
 
 from Logic import ServerRunner, logger_api
 
-
 queue = multiprocessing.JoinableQueue()
 now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
 output_path = f"./WAVs/api_rendering_{now}/"
@@ -25,9 +24,9 @@ app = Flask(__name__)
 @app.route("/upload", methods=["POST"])
 def upload_midi_files():
     """
-    This functions recieves a request with midi files
+    This functions receives a request with midi files
     It tries to get midi files and save them in './tmp' dir
-    Then the configutations is extended with some additional parameters
+    Then configurations are extended with some additional parameters
     Finally the SongConfig object is created and sent to queue
     """
 
@@ -97,11 +96,13 @@ def upload_midi_files():
     #     bass_path = tmp_path / (str(uuid4()) + '.mid')
     #     bass_midi.save(bass_path.absolute())
     # except BadRequestKeyError as e:
-    #     print(e)
-    #     bass_path = None
+    #     bass_path= None
 
 
 if __name__ == "__main__":
+    # This code block is responsible for parsing command line arguments and
+    # setting up the server to run with the specified number of worker
+    # processes.
     parser = ArgumentParser(description="Rendering server for midi")
     parser.add_argument(
         "--num-workers",

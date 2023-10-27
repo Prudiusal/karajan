@@ -53,15 +53,6 @@ def test_validate_tracks_internal(style_fixture, track_paste):
         style_fixture.validate()
 
 
-@pytest.mark.parametrize("track_paste", [list(), set(), 1, "s"])
-def test_validate_tracks_internal(style_fixture, track_paste):
-    # assert style_fixture.validate()
-    for i, _ in enumerate(style_fixture.tracks):
-        style_fixture.tracks[i] = track_paste
-    with pytest.raises(StyleTracksConfigError):
-        style_fixture.validate()
-
-
 # @pytest.mark.parametrize('track_paste', [list(), set(), 1, 's'])
 def test_validate_tracks_internal2(style_fixture):
     del style_fixture.tracks[0]["plugins"]

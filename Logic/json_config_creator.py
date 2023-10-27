@@ -30,6 +30,12 @@ class JsonConfigCreator:
 
     @staticmethod
     def get_stem_paths():
+        """
+        The `get_stem_paths` function returns a list of directories that
+        contain stem files. It was used in Stems project. :return: The
+        method `get_stem_paths` returns a list of directories that contain
+        stem files.
+        """
         stem_dir = Path(cfg.STEMS_ROOT_PATH)
         artist_dirs = [d for d in stem_dir.iterdir() if d.is_dir()]
         song_dirs = []
@@ -43,6 +49,15 @@ class JsonConfigCreator:
 
     @staticmethod
     def get_midi_paths_zip():
+        """
+        The function `get_midi_paths_zip` returns a zip object containing
+        the paths of piano, strings, bass, and drums MIDI files, sorted
+        alphabetically. :return: The function `get_midi_paths_zip` returns a
+        zip object containing tuples of four lists: `piano_midi_files`,
+        `strings_midi_files`, `bass_midi_files`, and `drums_midi_files`.
+        Each list contains sorted Path objects representing the paths to
+        MIDI files in the corresponding directory.
+        """
         piano_mids_path = Path(cfg.PIANO_MIDI_PATH)
         strings_mids_path = Path(cfg.STRINGS_MIDI_PATH)
         drums_mids_path = Path(cfg.DRUMS_MIDI_PATH)
@@ -77,6 +92,21 @@ class JsonConfigCreator:
         )
 
     def get_config_mp3(self, files_mp3, files_steps, name, artist):
+        """
+        It was used in Sparrow. The function `get_config_mp3` takes in a
+        list of MP3 files, a list of STEPS json files, a name, and an
+        artist, and returns a configuration dictionary with information
+        about the tracks.
+
+        :param files_mp3: A list of MP3 files for a track
+        :param files_steps: The `files_steps` parameter is a list of file paths
+        to the STEPS json files associated with the MP3 files. These files
+        contain information about the steps or instructions for each track
+        in the MP3 file :param name: The name of the track or song :param
+        artist: The "artist" parameter represents the name of the artist or
+        performer associated with the music tracks :return: a dictionary
+        object named "config".
+        """
         name = name.replace(artist, "").rstrip()
         config = {
             "Name": name,
@@ -115,6 +145,17 @@ class JsonConfigCreator:
         return config
 
     def get_configs_stem(self, paths):
+        """
+        Was used in Stems. The function `get_configs_stem` takes a list of
+        paths as input, iterates over each path, and retrieves
+        configurations for each song in the path, returning a list of
+        configurations.
+
+        :param paths: The `paths` parameter is a list of directories where
+        the songs are located. Each directory represents a song and contains
+        the MP3 file and a JSON file with steps information :return: a list
+        of configurations.
+        """
         now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
         self.output_path = Path(cfg.OUTPUT_PATH) / f"stem_rendering_{now}"
 
@@ -167,6 +208,20 @@ class JsonConfigCreator:
         return configs
 
     def check_artist_names(self, configs):
+        """
+        The function checks if the artist names in a list of configurations
+        match a specific pattern, and if not, logs an error and returns the
+        list of configurations with incorrect artist names.
+
+        :param configs: The `configs` parameter is a list of dictionaries.
+        Each dictionary represents a configuration and contains two keys:
+        "Artist" and "Name". The value of "Artist" is a string representing
+        the name of an artist, and the value of "Name" is a string
+        representing the name of a song :return: a boolean value. If there
+        are any bad artist names in the given configs, the function will
+        call the `correct_artist_names` method and return `True`. If there
+        are no bad artist names, the function will return `None`.
+        """
         bad_configs = []
         pattern = r"Song\d"
         for config in configs:
@@ -186,6 +241,16 @@ class JsonConfigCreator:
             return True
 
     def correct_artist_names(self, bad_configs):
+        """
+        The function corrects artist names in a given list of bad
+        configurations by mapping them to the corresponding artist names in
+        a CSV file.
+
+        :param bad_configs: The `bad_configs` parameter is a list of
+        dictionaries. Each dictionary represents a bad configuration and
+        contains a key-value pair where the key is "Artist" and the value is
+        the ID of the artist from the folders :return: a boolean value of True.
+        """
         stems_csv_path = cfg.STEMS_CSV_PATH
         if not Path(stems_csv_path).exists():
             raise StemsCSVNotFoundError
@@ -209,6 +274,16 @@ class JsonConfigCreator:
 
     @staticmethod
     def prepare_song_configs(configs: dict):
+        """
+        The function prepares song configurations by loading data from a CSV
+        file and handling any errors that occur.
+
+        :param configs: The parameter "configs" is a dictionary that
+        contains the configurations for each song. Each key-value pair in
+        the dictionary represents a song configuration, where the key is the
+        song identifier and the value is the configuration data for that
+        song :type configs: dict :return: a list of SongConfig objects.
+        """
         song_datas = []
         csv_path = cfg.CSV_PATH
         for config in configs:
@@ -224,6 +299,24 @@ class JsonConfigCreator:
         return song_datas
 
     def get_config_midi(self, piano_midi, strings_midi, bass_midi, drums_midi):
+        """
+        The function `get_config_midi` takes in four MIDI files (piano,
+        strings, bass, and drums) and returns a configuration dictionary
+        with the names of the MIDI files and their corresponding track names.
+
+        :param piano_midi: The `piano_midi` parameter is a MIDI file that
+        contains the piano track of a music composition
+        :param strings_midi:
+        The `strings_midi` parameter is a MIDI file that contains the
+        strings track of a musical composition
+        :param bass_midi: The
+        `bass_midi` parameter is a MIDI file that contains the bass track of
+        a musical composition
+        :param drums_midi: The `drums_midi` parameter
+        is a MIDI file that contains the drum track for a musical
+        composition
+        :return: a dictionary object called "config".
+        """
         piano_name = piano_midi.stem.replace(" - Piano", "")
         bass_name = bass_midi.stem.replace(" - Bass", "")
         strings_name = strings_midi.stem.replace(" - Strings", "")
@@ -253,6 +346,17 @@ class JsonConfigCreator:
         return config
 
     def get_configs_midi(self, midi_sets):
+        """
+        The function `get_configs_midi` takes a list of MIDI sets as input
+        and returns a list of configurations based on those MIDI sets,
+        while also handling any inconsistencies in the MIDI tracks.
+
+        :param midi_sets: The parameter `midi_sets` is a list of tuples.
+        Each tuple contains four elements: `piano_mid`, `strings_mid`,
+        `bass_mid`, and `drums_mid`. These elements represent the paths to
+        MIDI files for piano, strings, bass, and drums respectively
+        :return: a list of configurations.
+        """
         configs = []
         now = dt.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
         self.output_path = f"./WAVs/rendering_{now}/"

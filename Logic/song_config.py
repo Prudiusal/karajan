@@ -18,7 +18,6 @@ from mutagen.mp3 import MP3
 
 # from colors import red
 
-
 # from itertools import groupby
 
 # import settings as cfg

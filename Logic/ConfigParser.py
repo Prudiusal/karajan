@@ -73,80 +73,16 @@ class ConfigParser:
 
     @staticmethod
     def check_json(path: Path):
+        """
+        The function `check_json` checks if a JSON file exists at the given
+        path and logs appropriate messages.
+
+        :param path: The `path` parameter is the path to a JSON file that
+        needs to be checked
+        :type path: Path
+        """
         if not isfile(path):
             logger_conf.error(f"Config file {str(path)} not found!")
             raise JsonNotFoundError
         else:
             logger_conf.debug(f"Config file {str(path)} exists.")
-
-
-#     def build_song_data(self, style='HousetrackDemo'):
-#         """
-#         Parses SongsConfig.json for information about genre chosen,
-#         instruments and other information.
-#
-#         TO NIKITA: The functionality is the same, but instead of previously
-#         used 'self' 'style' parameter is used
-#         """
-#         if self.separate:  # this can be estimated as a mark of new version
-#             style = self.build_style_data()
-#             midi = self.build_midi_data()
-#             return style, midi
-#
-#         config_path = './Logic/SongsConfig.json'
-#
-#         if isfile(config_path) is None:
-#             logger_conf.error('Config file not found!')
-#             raise JsonNotFoundError
-#         else:
-#             logger_conf.debug('Config file exists.')
-#
-#         with open(config_path) as json_file:
-#             # :TODO Add Serialization as a class object?
-#             # :TODO Add checks for JSON structure, values. Add an exception
-#             #  raising.
-#             logger_conf.info(f'{style=}')
-#             if json_file is None:
-#                 logger_conf.error(f'Config {config_path} is empty')
-#                 raise JsonError
-#             data = json.load(json_file)
-#             logger_conf.debug('Configuration is loaded.')
-#             song_data = SongData()
-#             logger_conf.debug('Reading config file...')
-#             if data["OutputPath"] is not None:
-#                 song_data.output_path = data["OutputPath"]
-#             else:
-#                 logger_conf.warning('No output path')
-#                 song_data.output_path = '.'
-#
-#             song_data.bpm = float(data["BPM"])
-#             song_data.length = float(data["SongLengthInSeconds"])
-#             logger_conf.debug(data)
-#             logger_conf.info(data[style])
-#             logger_conf.info(f'OutputPath: {song_data.output_path}')
-#             logger_conf.debug(f'BPM: {song_data.bpm}')
-#             logger_conf.debug(f'SongLengthInSeconds: {song_data.length}')
-#             # :TODO RIGHT NOW only the latest instrument for the genre is
-#             #  being loaded. Get rif of the loop.
-#             for i in data[style]:
-#                 song_data.synth_path = i['synthPath']
-#                 song_data.preset_path = i['fxpPresetPath']
-#                 song_data.midi_path = i['midiPath']
-#
-#                 # song_data.length = get_length_to_render(song_data)
-#                 # TODO print in color
-#                 logger_conf.info(f'synthPath: {song_data.synth_path}')
-#                 logger_conf.info(f'fxpPresetPath: {song_data.preset_path}')
-#                 logger_conf.info(f'midiPath: {song_data.midi_path}')
-#
-#             return song_data
-
-
-# def get_length_to_render(song_data: SongData):
-#     if song_data.length is None:
-#         midi_data = pretty_midi.PrettyMIDI(song_data.midi_path)
-#         logger_conf.info(f'midi conf loaded from {song_data.midi_path}')
-#         return midi_data.instruments[0].get_end_time()
-#     else:
-#         logger_conf.warning(f'end time not found, length:{song_data.length}')
-#         return song_data.length

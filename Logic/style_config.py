@@ -13,6 +13,16 @@ class StyleConfig:
     """
 
     def __init__(self, d):
+        """
+        The function initializes an object with attributes based on a
+        dictionary input.
+        Object will have the same attributes as keys in dictionary.
+
+        :param d: The parameter `d` is expected to be a dictionary.
+        It is used to initialize the attributes `name` and `tracks` of the
+        object. If `d` is not a dictionary, it raises a `WrongJsonFormatError`
+        exception. The `__dict__` attribute of the object
+        """
         self.name = None
         self.tracks = None
         if not isinstance(d, dict):
@@ -20,6 +30,12 @@ class StyleConfig:
         self.__dict__ = d
 
     def validate(self):
+        """
+        The function `validate` checks if an StyleConfig has the required
+        attributes and their corresponding types, and raises specific errors
+        if any of the checks fail.
+        :return: a boolean value of True.
+        """
         if not hasattr(self, "name"):
             raise NoStyleNameError
         if not isinstance(self.name, str):

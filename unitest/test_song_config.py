@@ -73,7 +73,6 @@ class TestSuite(unittest.TestCase):
         del self.song_config
 
     def test_init(self):
-
         piano_mids = sorted(
             [
                 p

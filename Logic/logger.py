@@ -18,7 +18,6 @@ file_log = path_log / file_log_name
 #     print('error!')
 #     exit()
 
-
 logging.basicConfig(
     level=LEVEL,
     format="%(asctime)s - %(name)s - %(levelname)s" " %(message)s",

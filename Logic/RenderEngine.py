@@ -145,6 +145,13 @@ class RenderEngine(dawdreamer.RenderEngine):
         )
 
     def process_wav(self, song_data):
+        """
+        The function "process_wav" processes a WAV file by loading it into
+        tracks, loading a graph, and rendering the file.
+
+        :param song_data: The `song_data` parameter is an object that
+        contains information about a song.
+        """
         print("shouldn't be here (process_wav)")
         logger_render.info(f"{song_data.Name} processing has started:")
         # convert to load wav into tracks
@@ -250,6 +257,10 @@ class RenderEngine(dawdreamer.RenderEngine):
                 logger_render.error(f"midi file not found {midi_path}")
 
     def clear_pb_data(self):
+        """
+        The function clears the data of playback processors in a DawDreamer
+        object.
+        """
         for track in self.tracks.values():
             processor = next(iter(track.processors.values()))
             if isinstance(processor, dawdreamer.dawdreamer.PlaybackProcessor):
