@@ -9,10 +9,10 @@ URL = "http://localhost:8000/upload"
 
 
 def get_midi_paths_zip():
-    piano_mids_path = Path(cfg.PIANO_MIDI_PATH)
-    strings_mids_path = Path(cfg.STRINGS_MIDI_PATH)
-    drums_mids_path = Path(cfg.DRUMS_MIDI_PATH)
-    bass_mids_path = Path(cfg.BASS_MIDI_PATH)
+    piano_mids_path = Path(cfg.TEST_PIANO_MIDI_PATH)
+    strings_mids_path = Path(cfg.TEST_STRINGS_MIDI_PATH)
+    drums_mids_path = Path(cfg.TEST_DRUMS_MIDI_PATH)
+    bass_mids_path = Path(cfg.TEST_BASS_MIDI_PATH)
 
     piano_midi_files = sorted(
         [p for p in piano_mids_path.iterdir() if str(p).endswith(".mid")],
